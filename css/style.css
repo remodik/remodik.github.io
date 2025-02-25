@@ -23,6 +23,8 @@ body {
 }
 
 button {
+  text-decoration: underline;
+  cursor: crosshair;
   background-color: #3498db;
   color: white;
   font-size: 18px;
@@ -30,6 +32,5 @@ button {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
   transition: background-color 0.5s ease, border-radius 0.5s ease;
 }

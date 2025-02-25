@@ -20,10 +20,10 @@
 *.coffee   text
 *.css      text
 *.htm      text
-*.html     text
+*.html     text eol=lf
 *.inc      text
 *.ini      text
-*.js       text
+*.js       text eol=lf
 *.json     text
 *.jsx      text
 *.less     text
@@ -42,7 +42,7 @@
 *.tag      text
 *.ts       text
 *.tsx      text
-*.xml      text
+*.xml      text eol=lf
 *.xhtml    text
 
 ## DOCKER
@@ -50,8 +50,8 @@
 Dockerfile     text
 
 ## DOCUMENTATION
-*.markdown   text
-*.md         text
+*.markdown   text eol=lf
+*.md         text eol=lf
 *.mdwn       text
 *.mdown      text
 *.mkd        text
