@@ -2,13 +2,158 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Галерея с плавным открытием</title>
   <link rel="stylesheet" href="css/style.css">
-  <title></title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+      text-align: center;
+    }
+
+    .dropdown_dsbot {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    .dropdown_dsbot img {
+      width: 200px;
+      border-radius: 5px;
+      height: auto;
+      filter: blur(2px);
+      cursor: pointer;
+      transition: filter 0.3s;
+    }
+
+    .dropdown_dsbot img:hover {
+      transform: scale(1.05);
+    }
+
+    .modal {
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-content {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 40px;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    .close-btn:hover {
+      color: #ff6b6b;
+    }
+
+    button {
+      display: block;
+      width: 150px;
+      margin: 20px auto;
+    }
+
+    .ds_bot_desc {
+      margin-top: 25px;
+    }
+
+  </style>
 </head>
 <body>
-<h3>Это страница номер 2</h3>
-<br>
-<button onclick="window.location.href='index.html'">Назад</button><br>
-<img src="img/3YA-bxGefT8.jpg" alt="image_page2" width="320" height="414">
+<h3>Мои проекты</h3>
+<nav>
+  <a href="https://scratch.mit.edu/projects/470912538/" target="_blank">Проект в Scratch</a><br>
+  <a href="https://github.com/remodik/Calculator/blob/master/main.cpp" target="_blank">
+    Консольный калькулятор на C++
+  </a>
+  <div class="ds_bot_desc">
+    Ещё одним из моих проектов является Discord-бот, который написан на языке Python. Ниже представлены примеры команд:
+  </div>
+  <div class="dropdown_dsbot">
+    <img src="img/project/Скриншот%2025-02-2025%20131515.jpg" alt="Команда 1" class="clickable-img">
+    <img src="img/project/Скриншот%2025-02-2025%20131612.jpg" alt="Команда 2" class="clickable-img">
+    <img src="img/project/Скриншот%2025-02-2025%20131836.jpg" alt="Команда 3" class="clickable-img">
+    <img src="img/project/Скриншот%2025-02-2025%20140439.jpg" alt="Команда 4" class="clickable-img">
+  </div>
+</nav>
+
+<button onclick="window.location.href='index.html'">Назад</button>
+
+<div id="image-modal" class="modal">
+  <span class="close-btn">&times;</span>
+  <img class="modal-content" id="full-image" alt="">
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("image-modal");
+    const fullImage = document.getElementById("full-image");
+    const images = document.querySelectorAll(".clickable-img");
+    const closeButton = document.querySelector(".close-btn");
+
+    function openModal(src) {
+      fullImage.src = src;
+      modal.classList.add("active");
+    }
+
+    function closeModal() {
+      modal.classList.remove("active");
+      setTimeout(() => {
+        if (!modal.classList.contains("active")) {
+          modal.style.display = "none";
+        }
+      }, 400);
+    }
+
+    images.forEach(img => {
+      img.addEventListener("click", function () {
+        modal.style.display = "flex";
+        setTimeout(() => {
+          openModal(this.src);
+        }, 10);
+      });
+    });
+
+    closeButton.addEventListener("click", closeModal);
+
+    modal.addEventListener("click", function (event) {
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
+  });
+
+</script>
 </body>
 </html>
