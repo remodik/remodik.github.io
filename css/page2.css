@@ -7,6 +7,12 @@ body {
   text-align: center;
 }
 
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 30px;
+  color: #3498db;
+}
+
 .dropdown_dsbot {
   display: flex;
   justify-content: center;
