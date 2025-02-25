@@ -1,0 +1,17 @@
+a#special_a {
+  color: green;
+}
+
+a.super_a {
+  color: blue;
+}
+
+a {
+  color: red;
+}
+
+a.d {
+  text-decoration: darkblue;
+  cursor: crosshair;
+  font-weight: 1000;
+}
