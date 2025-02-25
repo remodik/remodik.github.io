@@ -15,3 +15,7 @@ a.d {
   cursor: crosshair;
   font-weight: 1000;
 }
+
+button {
+  cursor: crosshair !important;
+}
