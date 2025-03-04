@@ -1,8 +1,6 @@
 body {
   font-family: Arial, sans-serif;
   background-color: #f8f8f8;
-  margin: 0;
-  padding: 20px;
   color: #333;
   text-align: center;
 }
@@ -76,26 +74,41 @@ h1 {
   color: #ff6b6b;
 }
 
-button {
-  display: block;
-  width: 150px;
-  margin: 30px auto;
-  padding: 10px 0;
-  text-align: center;
-  background-color: #3498db;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background-color 0.5s ease, border-radius 0.4s ease;
-}
-
-button:hover {
-  background-color: #1d6fa5;
-  border-radius: 20px;
-}
-
 .ds_bot_desc {
   margin-top: 25px;
+}
+
+.image-controls {
+  display: flex;
+  gap: 8px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.image-controls button {
+  background-color: rgba(0, 0, 0, 0.8);
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: 0.2s;
+}
+
+.image-controls button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.image-controls button img {
+  width: 16px;
+  height: 16px;
+}
+
+.my-projects {
+  text-align: center;
 }
