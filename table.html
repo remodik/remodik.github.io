@@ -37,9 +37,8 @@
 
 <script>
     function getRandomColor() {
-        return `hsl(${Math.random() * 360}, 80%, 60%)`; // Нежные цвета
+        return `hsl(${Math.random() * 360}, 80%, 60%)`;
     }
-
     function createGrid(rows, cols) {
         const table = document.getElementById("grid");
 
@@ -55,14 +54,11 @@
                     this.style.transform = "scale(1.2)";
                     setTimeout(() => this.style.transform = "scale(1)", 100);
                 };
-
                 row.appendChild(cell);
             }
-
             table.appendChild(row);
         }
     }
-
     createGrid(100, 100);
 </script>
 
