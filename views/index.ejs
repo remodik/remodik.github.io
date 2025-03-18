@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Discord OAuth2</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #2C2F33;
+            color: #FFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+        }
+        h1 {
+            margin-top: 50px;
+        }
+        .login-button {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background: #5865F2;
+            color: #FFF;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .login-button:hover {
+            background: #4653c6;
+        }
+    </style>
+</head>
+<body>
+<h1>Авторизация через Discord</h1>
+
+<% if (!isLoggedIn) { %>
+    <a class="login-button" href="/login">Войти с помощью Discord</a>
+<% } else { %>
+    <p>Вы уже авторизованы.</p>
+    <a class="login-button" href="/servers">Посмотреть сервера</a>
+<% } %>
+</body>
+</html>
