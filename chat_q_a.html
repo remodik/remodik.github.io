@@ -34,18 +34,14 @@
 
     <script>
        function getRandomInt(max) {
-            //округление       //случ 
             return Math.floor(Math.random() * max);
         }
-         // пустой массив для сообщений
         const messages = [];
         const names = ["Alice", "Bob", "Charlie", "David", "Eve","Kate"];
         const questions = ["Hello?", "Hi?", "How are you?", "How is your day?", "What's up?"];
         const answers = ["Fine", "Hello", "Thats some answer", "Не хочу отвечать!" ,"Плохо"];
-        //html контейнер для сообщений
         const chatContainer = document.getElementById("chat");
         for (let i = 0; i < 100; i++) {
-            //случайное время
             add_message('q');
             add_message('a');
         }
@@ -53,10 +49,8 @@
 
 
     const time = getRandomInt(24) + ':' + getRandomInt(60);
-            //случайное имя
             let message;
             const name = names[getRandomInt(names.length)];
-            //случайное сообщение
             if(message_type=='q') { message  = questions[getRandomInt(questions.length)]; }
             if(message_type=='a') { message  = answers[getRandomInt(answers.length)]; }
             let chat_row = document.createElement("p");
