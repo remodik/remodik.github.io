@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Canvas</title>
+    <link rel="stylesheet" href="css/back-buttons.css">
     <style>
+
+        .back-button {
+            position: absolute;
+            top: 45%;
+            left: 75%;
+        }
         body {
             font-family: 'Roboto', Arial, sans-serif;
             text-align: center;
@@ -89,7 +96,7 @@
         <button onclick="saveCanvas()">Сохранить</button>
     </div>
 </div>
-
+<button class="back-button" onclick="window.location.href='index.html'">Назад</button>
 <script>
     const canvas = document.getElementById('myCanvas');
     const ctx = canvas.getContext('2d');
