@@ -4,23 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Локальный чат</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 20px;
+            text-align: center;
+        }
+
+        .chat-container {
+            width: 80%;
+            max-width: 500px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+        }
+
+        input, button {
+            width: calc(100% - 20px);
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .message-box {
+            text-align: left;
+            margin-top: 10px;
+            padding: 10px;
+            background: #e9e9e9;
+            border-radius: 5px;
+        }
+
+        .message-time {
+            font-size: 0.8em;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
-<h2>Чат (localStorage)</h2>
-<input id="name" type="text" placeholder="Введите имя">
-<input id="text" type="text" placeholder="Введите сообщение">
-<button onclick="sendMessage()">Отправить</button>
 
-<h3>Сообщения:</h3>
-<div id="messages"></div>
+<div class="chat-container">
+    <h2>Чат</h2>
+    <input id="name" type="text" placeholder="Введите имя">
+    <input id="text" type="text" placeholder="Введите сообщение">
+    <button onclick="sendMessage()">Отправить</button>
+
+    <h3>Сообщения:</h3>
+    <div id="messages"></div>
+</div>
 
 <script>
     function loadMessages() {
         let messages = JSON.parse(localStorage.getItem("messages")) || [];
         let messagesDiv = document.getElementById("messages");
         messagesDiv.innerHTML = "";
+
         messages.forEach(msg => {
-            messagesDiv.innerHTML += `<p><strong>${msg.name}:</strong> ${msg.text}</p>`;
+            messagesDiv.innerHTML += `
+                    <div class="message-box">
+                        <strong>${msg.name}:</strong> ${msg.text}
+                        <div class="message-time">${msg.time}</div>
+                    </div>
+                `;
         });
     }
 
@@ -33,8 +92,14 @@
             return;
         }
 
+        let now = new Date();
+        let time = now.toLocaleString("ru-RU", {
+            day: "2-digit", month: "2-digit", year: "numeric",
+            hour: "2-digit", minute: "2-digit", second: "2-digit"
+        });
+
         let messages = JSON.parse(localStorage.getItem("messages")) || [];
-        messages.push({ name, text });
+        messages.push({ name, text, time });
         localStorage.setItem("messages", JSON.stringify(messages));
 
         document.getElementById("text").value = "";
@@ -43,5 +108,6 @@
 
     loadMessages();
 </script>
+
 </body>
 </html>
