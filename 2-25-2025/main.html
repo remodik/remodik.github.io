@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Проект «Корпоративная доска заметок»</title>
+    <meta name="description" content="Устав проекта, WBS и прогноз рисков для корпоративной доски заметок (ToDo Board) на WPF и SQL Server." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-gradient: radial-gradient(circle at top left, #0f172a, #020617);
+            --card-bg: rgba(15, 23, 42, 0.96);
+            --card-border: rgba(148, 163, 184, 0.35);
+            --accent: #38bdf8;
+            --accent-soft: rgba(56, 189, 248, 0.15);
+            --accent-strong: #0ea5e9;
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+            --divider: rgba(148, 163, 184, 0.35);
+            --shadow-soft: 0 24px 60px rgba(15, 23, 42, 0.85);
+            --radius-lg: 18px;
+            --radius-xl: 24px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            padding: 32px 16px;
+            overflow-x: hidden;
+        }
+
+        .page {
+            max-width: 1120px;
+            width: 100%;
+            background: linear-gradient(135deg, rgba(15,23,42,0.98), rgba(15,23,42,0.96));
+            border-radius: 28px;
+            padding: 28px 26px 32px;
+            box-shadow:
+                    var(--shadow-soft),
+                    0 0 0 1px rgba(56, 189, 248, 0.1),
+                    0 0 40px rgba(56, 189, 248, 0.05);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .page:hover {
+            box-shadow:
+                    0 32px 80px rgba(15, 23, 42, 0.9),
+                    0 0 0 1px rgba(56, 189, 248, 0.15),
+                    0 0 60px rgba(56, 189, 248, 0.1);
+        }
+
+        .glow-circle {
+            position: absolute;
+            width: 360px;
+            height: 360px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(56,189,248,0.25), transparent 70%);
+            filter: blur(8px);
+            opacity: 0.4;
+            top: -140px;
+            right: -120px;
+            pointer-events: none;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .glow-circle-2 {
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.2), transparent 70%);
+            filter: blur(6px);
+            opacity: 0.3;
+            bottom: -120px;
+            left: -80px;
+            pointer-events: none;
+            animation: pulse 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.05); opacity: 0.4; }
+        }
+
+        .glow-line {
+            position: absolute;
+            inset: 0;
+            background-image:
+                    linear-gradient(120deg, rgba(148,163,184,0.08) 1px, transparent 0),
+                    linear-gradient(210deg, rgba(15,23,42,0.7), transparent);
+            background-size: 120px 120px, 100% 100%;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .floating-elements {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 50%;
+            opacity: 0;
+            animation: float 20s linear infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            width: 20px;
+            height: 20px;
+            top: 15%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 12px;
+            height: 12px;
+            top: 60%;
+            left: 85%;
+            animation-delay: 4s;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 16px;
+            height: 16px;
+            top: 80%;
+            left: 15%;
+            animation-delay: 8s;
+        }
+
+        .floating-element:nth-child(4) {
+            width: 8px;
+            height: 8px;
+            top: 30%;
+            left: 90%;
+            animation-delay: 12s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0;
+            }
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        .badge-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            color: var(--text-muted);
+            background: rgba(15,23,42,0.7);
+            transition: var(--transition);
+            cursor: default;
+        }
+
+        .badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        .badge--accent {
+            border-color: var(--accent);
+            color: var(--accent-strong);
+            background: linear-gradient(135deg, rgba(8,47,73,0.75), rgba(56,189,248,0.15));
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.1);
+        }
+
+        h1 {
+            margin: 2px 0 4px;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            background: linear-gradient(90deg, #e5e7eb, #bae6fd);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            border-radius: 2px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            background: rgba(15,23,42,0.7);
+            border-radius: 8px;
+            border: 1px solid rgba(148,163,184,0.2);
+        }
+
+        .meta-label {
+            font-weight: 600;
+            color: #cbd5f5;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+            gap: 22px;
+            margin-top: 24px;
+        }
+
+        @media (max-width: 880px) {
+            .layout {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                scroll-behavior: auto !important;
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+            }
+        }
+
+        .toc {
+            background: rgba(15,23,42,0.9);
+            border-radius: var(--radius-lg);
+            padding: 18px 16px 18px;
+            border: 1px solid rgba(148,163,184,0.5);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
+            transition: var(--transition);
+        }
+
+        .toc:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.5);
+        }
+
+        .toc::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .toc::-webkit-scrollbar-track {
+            background: rgba(15,23,42,0.5);
+            border-radius: 10px;
+        }
+
+        .toc::-webkit-scrollbar-thumb {
+            background: rgba(56, 189, 248, 0.4);
+            border-radius: 10px;
+        }
+
+        .toc-title {
+            font-size: 12px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .toc-title::before {
+            content: "";
+            width: 14px;
+            height: 14px;
+            border-radius: 999px;
+            border: 2px solid var(--accent-strong);
+            box-shadow: 0 0 0 1px rgba(56,189,248,0.25);
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .toc ul {
+            list-style: none;
+            margin: 0;
+            padding-left: 0;
+            font-size: 13px;
+        }
+
+        .toc li {
+            margin-bottom: 6px;
+            position: relative;
+        }
+
+        .toc li > a {
+            color: var(--text-muted);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            border-radius: 8px;
+            transition: var(--transition);
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toc li > a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--accent);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .toc li > a:hover {
+            color: var(--accent-strong);
+            background: rgba(15,23,42,0.9);
+            padding-left: 12px;
+        }
+
+        .toc li > a:hover::before {
+            transform: translateX(0);
+        }
+
+        .toc li.active > a {
+            color: var(--accent-strong);
+            background: rgba(56, 189, 248, 0.1);
+            font-weight: 500;
+        }
+
+        .toc li.active > a::before {
+            transform: translateX(0);
+        }
+
+        .toc-level-1 > a {
+            font-weight: 500;
+        }
+
+        .toc-level-2 {
+            margin-left: 16px;
+        }
+
+        .toc-level-2 > a {
+            font-size: 12px;
+        }
+
+        main {
+            background: rgba(15,23,42,0.9);
+            border-radius: var(--radius-xl);
+            padding: 24px 22px 28px;
+            border: 1px solid rgba(148,163,184,0.5);
+            backdrop-filter: blur(16px);
+            transition: var(--transition);
+        }
+
+        main:hover {
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        section {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px dashed rgba(51,65,85,0.9);
+            transition: var(--transition);
+            opacity: 0.95;
+            transform: translateY(5px);
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        section:last-of-type {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        h2 {
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 700;
+            color: #e2e8f0;
+            margin: 0 0 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        h2::before {
+            content: "";
+            width: 24px;
+            height: 3px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+        }
+
+        h3 {
+            font-size: 16px;
+            margin: 16px 0 8px;
+            color: #e5e7eb;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        h3::before {
+            content: "▸";
+            color: var(--accent);
+            font-size: 14px;
+        }
+
+        p {
+            margin: 6px 0 10px;
+            font-size: 14px;
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 8px 0 12px;
+            font-size: 14px;
+        }
+
+        ul li {
+            margin-bottom: 6px;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        ul li::marker {
+            color: var(--accent);
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,41,59,0.9));
+            border: 1px solid rgba(148,163,184,0.6);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            transition: var(--transition);
+            cursor: default;
+        }
+
+        .pill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            border-color: var(--accent);
+        }
+
+        .pill-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .callout {
+            border-radius: 14px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, rgba(56,189,248,0.12), rgba(56,189,248,0.04));
+            border: 1px solid rgba(56,189,248,0.35);
+            font-size: 13px;
+            color: #e0f2fe;
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .callout::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent);
+        }
+
+        .callout:hover {
+            transform: translateX(4px);
+            box-shadow: 0 8px 16px rgba(56, 189, 248, 0.1);
+        }
+
+        .callout strong {
+            color: #bae6fd;
+        }
+
+        .muted {
+            color: var(--text-muted);
+            font-size: 13px;
+            font-style: italic;
+        }
+
+        .table-wrapper {
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(148,163,184,0.5);
+            background: radial-gradient(circle at top left, rgba(15,23,42,0.9), rgba(15,23,42,0.98));
+            margin-top: 12px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .table-wrapper:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.7);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        thead {
+            background: linear-gradient(90deg, rgba(30,64,175,0.95), rgba(56,189,248,0.65));
+        }
+
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+            border-bottom: 1px solid rgba(15,23,42,0.9);
+            transition: var(--transition);
+        }
+
+        th {
+            font-weight: 600;
+            color: #e5e7eb;
+            border-right: 1px solid rgba(15,23,42,0.55);
+        }
+
+        tbody tr {
+            transition: var(--transition);
+        }
+
+        tbody tr:hover {
+            background: rgba(56, 189, 248, 0.05) !important;
+            transform: translateX(4px);
+        }
+
+        tbody tr:nth-child(even) {
+            background: rgba(15,23,42,0.88);
+        }
+
+        tbody tr:nth-child(odd) {
+            background: rgba(15,23,42,0.96);
+        }
+
+        td {
+            color: #e5e7eb;
+        }
+
+        td:nth-child(1),
+        td:nth-child(2),
+        td:nth-child(3),
+        td:nth-child(4) {
+            white-space: nowrap;
+        }
+
+        td:last-child {
+            width: 40%;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            background: rgba(15,23,42,0.9);
+            border: 1px solid rgba(148,163,184,0.7);
+            color: #e2e8f0;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .tag:hover {
+            transform: scale(1.05);
+        }
+
+        .tag--high {
+            border-color: rgba(248,113,113,0.9);
+            color: #fecaca;
+            background: rgba(127,29,29,0.9);
+            box-shadow: 0 4px 8px rgba(127,29,29,0.3);
+        }
+
+        .tag--medium {
+            border-color: rgba(252,211,77,0.9);
+            color: #fef3c7;
+            background: rgba(113,63,18,0.9);
+            box-shadow: 0 4px 8px rgba(113,63,18,0.3);
+        }
+
+        .tag--low {
+            border-color: rgba(52,211,153,0.9);
+            color: #a7f3d0;
+            background: rgba(6,95,70,0.9);
+            box-shadow: 0 4px 8px rgba(6,95,70,0.3);
+        }
+
+        a {
+            color: var(--accent-strong);
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        a:hover {
+            color: #7dd3fc;
+            text-decoration: underline;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 20px;
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 48px;
+            height: 48px;
+            background: rgba(15,23,42,0.9);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: var(--transition);
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.6);
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scroll-top:hover {
+            background: rgba(56, 189, 248, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(56, 189, 248, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: transparent;
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #7dd3fc);
+            width: 0;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: rgba(15,23,42,0.95);
+            color: var(--text-main);
+            text-align: center;
+            border-radius: 8px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            font-size: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        ::selection {
+            background-color: rgba(56, 189, 248, 0.3);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="scroll-top" id="scrollTop" aria-label="Пролистать наверх" role="button" tabindex="0">
+    <i class="fas fa-chevron-up"></i>
+</div>
+
+<div class="page">
+    <div class="glow-circle"></div>
+    <div class="glow-circle-2"></div>
+    <div class="glow-line"></div>
+
+    <div class="floating-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+
+    <div class="content">
+        <header>
+            <div class="badge-row">
+                <span class="badge badge--accent">Устав проекта</span>
+                <span class="badge">ToDo Board · WPF · SQL Server</span>
+                <span class="badge">Корпоративный продукт</span>
+            </div>
+            <h1>Проект «Корпоративная доска заметок»</h1>
+            <p class="subtitle">
+                Концепция проекта, состав работ и анализ рисков для внедрения корпоративной доски заметок (ToDo Board)
+                в четырёх подразделениях компании. Современное решение для управления задачами 200+ сотрудников.
+            </p>
+            <div class="meta">
+                <span><span class="meta-label">Автор:</span> Головкин Илья, 9/3 РПО 23/2</span>
+                <span><span class="meta-label">Дата:</span> 12/3/2025</span>
+            </div>
+        </header>
+
+        <div class="layout">
+            <aside class="toc">
+                <div class="toc-title">Навигация по проекту</div>
+                <ul id="tocList"></ul>
+            </aside>
+
+            <main id="mainContent">
+                <section id="section-1" class="fade-in">
+                    <div class="pill">
+                        <span class="pill-dot"></span>
+                        Раздел 1 · Устав проекта
+                    </div>
+                    <h2>1. Устав проекта</h2>
+
+                    <section id="section-1-1" class="content-section">
+                        <h3>1.1. Название проекта</h3>
+                        <p><strong>«Корпоративная доска заметок (ToDo Board) для 4 подразделений компании»</strong></p>
+                        <p class="muted">Внутренний код проекта: <strong>TODO-CORP-2025</strong></p>
+                    </section>
+
+                    <section id="section-1-2" class="content-section">
+                        <h3>1.2. Заказчик и инициатор</h3>
+                        <ul>
+                            <li><strong>Заказчик:</strong> <span class="tooltip">[]<span class="tooltip-text">Основной стейкхолдер проекта, ответственный за финансирование и приёмку</span></span></li>
+                            <li><strong>Инициатор проекта:</strong> <span class="tooltip">[]<span class="tooltip-text">Инициатор и бизнес-спонсор проекта</span></span></li>
+                            <li><strong>Руководитель проекта (PM):</strong> <span class="tooltip">[]<span class="tooltip-text">Ответственный за планирование, выполнение и контроль проекта</span></span></li>
+                        </ul>
+                    </section>
+
+                    <section id="section-1-3" class="content-section">
+                        <h3>1.3. Цели проекта</h3>
+                        <ul>
+                            <li>Обеспечить сотрудников (до 200 человек) единой доской для планирования и отслеживания задач.</li>
+                            <li>Сократить время на согласование задач и напоминания за счёт автоматизации уведомлений (Outlook, SMS).</li>
+                            <li>Обеспечить масштабируемость решения для дальнейшего выхода на мобильные и web-клиенты.</li>
+                        </ul>
+                    </section>
+
+                    <section id="section-1-4" class="content-section">
+                        <h3>1.4. Область охвата (Scope)</h3>
+                        <p class="muted">В проект <strong>входят</strong>:</p>
+                        <ul>
+                            <li>
+                                Разработка десктопного приложения на <strong>WPF</strong>:
+                                <ul>
+                                    <li>создание, редактирование и удаление стикеров;</li>
+                                    <li>произвольное размещение и перетаскивание по экрану;</li>
+                                    <li>цветовая дифференциация и нестандартные формы стикеров;</li>
+                                    <li>передача стикера пользователю в рамках своего подразделения.</li>
+                                </ul>
+                            </li>
+                            <li>Разработка <strong>REST API</strong>/сервиса для работы с данными и интеграций.</li>
+                            <li>Хранение данных в <strong>MS SQL Server</strong> на выделенном сервере.</li>
+                            <li>Локальная <strong>XML-сериализация</strong> заметок пользователя (личный backup).</li>
+                            <li>Интеграция с <strong>Outlook</strong> для установки и контроля сроков задач.</li>
+                            <li>Интеграция с <strong>SMS-шлюзом</strong> для рассылки уведомлений.</li>
+                            <li>Подготовка и настройка серверов БД и приложений (SMS, конфигурация, защита).</li>
+                        </ul>
+                    </section>
+
+                    <section id="section-1-5" class="content-section">
+                        <h3>1.5. Основные результаты (Deliverables)</h3>
+                        <ul>
+                            <li>Спецификация требований к системе.</li>
+                            <li>Архитектурная схема (логическая и физическая).</li>
+                            <li>Рабочий прототип WPF-клиента.</li>
+                            <li>Реализованный и задокументированный REST API.</li>
+                            <li>Развёрнутые и настроенные сервера БД и приложений.</li>
+                            <li>Руководство пользователя.</li>
+                            <li>Администраторская документация.</li>
+                            <li>Тестовая и эксплуатационная документация.</li>
+                        </ul>
+                    </section>
+
+                    <section id="section-1-6" class="content-section">
+                        <h3>1.6. Ограничения и допущения</h3>
+                        <p><strong>Ограничения:</strong></p>
+                        <ul>
+                            <li>Обязательное использование <strong>MS SQL Server</strong>.</li>
+                            <li>Использование существующей ИТ-инфраструктуры компании.</li>
+                            <li>Ограниченный бюджет и сроки проекта (до <em>[X месяцев]</em>).</li>
+                        </ul>
+
+                        <p><strong>Допущения:</strong></p>
+                        <ul>
+                            <li>Заказчик своевременно предоставляет доступы, лицензии и оборудование.</li>
+                            <li>Представители всех 4 подразделений участвуют в приёмочных испытаниях.</li>
+                            <li>Организация поддерживает использование Outlook и SMS-шлюза.</li>
+                        </ul>
+                    </section>
+
+                    <section id="section-1-7" class="content-section">
+                        <h3>1.7. Стейкхолдеры и роли</h3>
+                        <ul>
+                            <li><strong>Заказчик:</strong> <em>[Название]</em></li>
+                            <li><strong>Руководитель проекта (PM):</strong> планирование, координация, отчётность.</li>
+                            <li><strong>Бизнес-аналитик:</strong> сбор и формализация требований.</li>
+                            <li><strong>Системный архитектор:</strong> архитектура, интеграции, НФТ.</li>
+                            <li><strong>Разработчики (до 4 чел.):</strong> WPF-клиент, API, интеграции, XML-сериализация.</li>
+                            <li><strong>Тестировщики (до 2 чел.):</strong> функциональное, интеграционное, нагрузочное тестирование.</li>
+                            <li><strong>Системный администратор:</strong> настройка серверов, безопасность, backup.</li>
+                            <li><strong>Техрайтер:</strong> пользовательская и техническая документация.</li>
+                        </ul>
+                    </section>
+
+                    <section id="section-1-8" class="content-section">
+                        <h3>1.8. Крупные этапы и сроки</h3>
+                        <div class="callout">
+                            <strong>Сроки примерные</strong> — подставьте свои реальные значения.
+                        </div>
+                        <ul>
+                            <li>Инициация и сбор требований — <strong>2–3 недели</strong>.</li>
+                            <li>Проектирование архитектуры и БД — <strong>2 недели</strong>.</li>
+                            <li>Разработка API и интеграций (Outlook, SMS) — <strong>4–6 недель</strong>.</li>
+                            <li>Разработка WPF-клиента — <strong>4–6 недель</strong> (параллельно с п. 3).</li>
+                            <li>Тестирование (системное, интеграционное, UAT) — <strong>3–4 недели</strong>.</li>
+                            <li>Развёртывание, обучение, ввод в эксплуатацию — <strong>2 недели</strong>.</li>
+                        </ul>
+                    </section>
+
+                    <section id="section-1-9" class="content-section">
+                        <h3>1.9. Критерии успеха проекта</h3>
+                        <ul>
+                            <li>Система используется во всех 4 подразделениях в течение не менее 1 месяца без критических инцидентов.</li>
+                            <li>Среднее время реакции на задачу сократилось на <strong>X%</strong> (по сравнению с «до»).</li>
+                            <li>Система поддерживает до <strong>200 одновременных пользователей</strong> без заметной деградации производительности.</li>
+                            <li>Уровень удовлетворённости пользователей по результатам опроса — не ниже <strong>Y/5</strong>.</li>
+                        </ul>
+                    </section>
+
+                    <section id="section-1-10" class="content-section">
+                        <h3>1.10. Ключевые риски</h3>
+                        <ul>
+                            <li>Недостаточно точные или меняющиеся требования.</li>
+                            <li>Проблемы интеграции с Outlook/SMS (ограничения API, политика безопасности).</li>
+                            <li>Нехватка ключевых специалистов в нужные моменты проекта.</li>
+                        </ul>
+                    </section>
+                </section>
+
+                <section id="section-2" class="content-section">
+                    <div class="pill">
+                        <span class="pill-dot"></span>
+                        Раздел 2 · Иерархический список работ (WBS)
+                    </div>
+                    <h2>2. Иерархический список работ (WBS)</h2>
+
+                    <h3>2.1. Инициация и анализ требований</h3>
+                    <ul>
+                        <li>2.1.1. Анализ текущего процесса управления задачами.</li>
+                        <li>2.1.2. Интервью с представителями 4 подразделений.</li>
+                        <li>2.1.3. Формализация функциональных требований.</li>
+                        <li>2.1.4. Формализация нефункциональных требований (производительность, безопасность, отказоустойчивость).</li>
+                        <li>2.1.5. Согласование и утверждение спецификации требований.</li>
+                    </ul>
+
+                    <h3>2.2. Проектирование</h3>
+                    <ul>
+                        <li>
+                            2.2.1. Проектирование архитектуры системы:
+                            <ul>
+                                <li>2.2.1.1. Определение модулей (клиент, API, интеграции, БД).</li>
+                                <li>2.2.1.2. Выбор технологий и фреймворков (WPF, .NET, ORM и т.д.).</li>
+                            </ul>
+                        </li>
+                        <li>
+                            2.2.2. Проектирование базы данных (SQL Server):
+                            <ul>
+                                <li>2.2.2.1. Разработка ER-диаграммы.</li>
+                                <li>2.2.2.2. Нормализация и настройка индексов.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            2.2.3. Проектирование API:
+                            <ul>
+                                <li>2.2.3.1. Определение эндпоинтов и DTO.</li>
+                                <li>2.2.3.2. Проработка авторизации и разграничения прав.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            2.2.4. Проектирование интеграций:
+                            <ul>
+                                <li>2.2.4.1. Модель интеграции с Outlook (EWS/Graph API).</li>
+                                <li>2.2.4.2. Модель интеграции с SMS-шлюзом.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            2.2.5. Проектирование UI/UX WPF-приложения:
+                            <ul>
+                                <li>2.2.5.1. Макеты экранов (доска, фильтры, настройки).</li>
+                                <li>2.2.5.2. Сценарии работы со стикерами и группами пользователей.</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <h3>2.3. Инфраструктура и серверы</h3>
+                    <ul>
+                        <li>
+                            2.3.1. Подготовка сервера БД:
+                            <ul>
+                                <li>2.3.1.1. Установка и конфигурация SQL Server.</li>
+                                <li>2.3.1.2. Настройка backup/restore, прав доступа.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            2.3.2. Подготовка сервера приложения:
+                            <ul>
+                                <li>2.3.2.1. Установка ОС и необходимых компонентов.</li>
+                                <li>2.3.2.2. Настройка размещения API/сервисов.</li>
+                            </ul>
+                        </li>
+                        <li>2.3.3. Настройка SMS-шлюза и сетевого взаимодействия.</li>
+                        <li>2.3.4. Настройка мониторинга и логирования.</li>
+                    </ul>
+
+                    <h3>2.4. Разработка серверной части (API)</h3>
+                    <ul>
+                        <li>2.4.1. Реализация модели данных и слоя доступа к БД.</li>
+                        <li>2.4.2. Реализация CRUD-операций над стикерами и пользователями.</li>
+                        <li>2.4.3. Реализация авторизации и разделения по подразделениям.</li>
+                        <li>2.4.4. Реализация интеграции с Outlook.</li>
+                        <li>2.4.5. Реализация модуля SMS-уведомлений.</li>
+                        <li>2.4.6. Реализация логирования и аудита действий.</li>
+                    </ul>
+
+                    <h3>2.5. Разработка WPF-клиента</h3>
+                    <ul>
+                        <li>2.5.1. Реализация аутентификации и работы с сессией.</li>
+                        <li>
+                            2.5.2. Реализация доски стикеров:
+                            <ul>
+                                <li>2.5.2.1. Создание/редактирование/удаление стикеров.</li>
+                                <li>2.5.2.2. Перетаскивание и произвольное размещение.</li>
+                                <li>2.5.2.3. Цветовые схемы и формы.</li>
+                            </ul>
+                        </li>
+                        <li>2.5.3. Передача стикеров другим пользователям в пределах группы.</li>
+                        <li>2.5.4. Локальная XML-сериализация заметок пользователя.</li>
+                        <li>2.5.5. Настройки пользователя (уведомления, фильтры, внешний вид).</li>
+                        <li>2.5.6. Обработка ошибок и пользовательские сообщения.</li>
+                    </ul>
+
+                    <h3>2.6. Тестирование</h3>
+                    <ul>
+                        <li>2.6.1. Разработка тест-плана и тест-кейсов.</li>
+                        <li>2.6.2. Модульное тестирование.</li>
+                        <li>2.6.3. Интеграционное тестирование (API + WPF + Outlook + SMS).</li>
+                        <li>2.6.4. Нагрузочное тестирование (до 200 пользователей).</li>
+                        <li>2.6.5. Пользовательское приёмочное тестирование (UAT).</li>
+                        <li>2.6.6. Анализ дефектов и регресс-тестирование.</li>
+                    </ul>
+
+                    <h3>2.7. Ввод в эксплуатацию</h3>
+                    <ul>
+                        <li>2.7.1. Подготовка руководства пользователя.</li>
+                        <li>2.7.2. Подготовка администраторской документации.</li>
+                        <li>2.7.3. Обучение ключевых пользователей.</li>
+                        <li>2.7.4. Развёртывание в промышленной среде.</li>
+                        <li>2.7.5. Пилотная эксплуатация.</li>
+                        <li>2.7.6. Передача системы на сопровождение.</li>
+                    </ul>
+
+                    <h3>2.8. Управление проектом</h3>
+                    <ul>
+                        <li>2.8.1. Планирование и контроль сроков.</li>
+                        <li>2.8.2. Управление изменениями требований.</li>
+                        <li>2.8.3. Управление рисками.</li>
+                        <li>2.8.4. Регулярная отчётность перед заказчиком.</li>
+                        <li>2.8.5. Закрытие проекта и финальный отчёт.</li>
+                    </ul>
+                </section>
+
+                <section id="section-3" class="content-section">
+                    <div class="pill">
+                        <span class="pill-dot"></span>
+                        Раздел 3 · Прогноз рисков
+                    </div>
+                    <h2>3. Прогноз рисков</h2>
+
+                    <p class="muted">
+                        Риски отсортированы по убыванию «тяжести» (Impact × Probability). Для ключевых рисков определены базовые меры реагирования.
+                    </p>
+
+                    <h3>3.1. Матрица рисков проекта</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>Риск</th>
+                                <th>Вероятность</th>
+                                <th>Влияние</th>
+                                <th>Тяжесть / приоритет</th>
+                                <th>Меры реагирования</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Срыв интеграции с Outlook (ограничения API, политика безопасности)</td>
+                                <td><span class="tag">Средняя</span></td>
+                                <td><span class="tag tag--high">Высокое</span></td>
+                                <td><span class="tag tag--high">Очень высокий</span></td>
+                                <td>Раннее прототипирование интеграции, согласование с ИТ-службой, запас по срокам, альтернативный сценарий.</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Уязвимая конфигурация сервера/БД → утечка данных</td>
+                                <td><span class="tag">Низкая–ср.</span></td>
+                                <td><span class="tag tag--high">Критическое</span></td>
+                                <td><span class="tag tag--high">Очень высокий</span></td>
+                                <td>Политики безопасности, аудит прав, шифрование каналов, обновления, тестирование безопасности.</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Нестабильность SMS-шлюза / задержки уведомлений</td>
+                                <td><span class="tag">Средняя</span></td>
+                                <td><span class="tag tag--medium">Среднее–выс.</span></td>
+                                <td><span class="tag tag--medium">Высокий</span></td>
+                                <td>Надёжный провайдер, логирование статусов, дублирование уведомлений через Outlook/почту.</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Существенные изменения требований после начала разработки</td>
+                                <td><span class="tag">Средняя</span></td>
+                                <td><span class="tag tag--high">Высокое</span></td>
+                                <td><span class="tag tag--medium">Высокий</span></td>
+                                <td>Процесс change-request, фазовая поставка (MVP), прототипы и ранние демо.</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Недоступность ключевых специалистов (болезнь, увольнение)</td>
+                                <td><span class="tag">Средняя</span></td>
+                                <td><span class="tag tag--medium">Среднее</span></td>
+                                <td><span class="tag tag--medium">Средний–высокий</span></td>
+                                <td>Резервирование задач, обмен знаниями (код-ревью, документация), перекрытие компетенций.</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>Недооценка нагрузки (200 одновременных пользователей)</td>
+                                <td><span class="tag">Средняя</span></td>
+                                <td><span class="tag tag--medium">Среднее</span></td>
+                                <td><span class="tag tag--medium">Средний</span></td>
+                                <td>Нагрузочное тестирование, мониторинг, запас по ресурсам, оптимизация запросов к БД.</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>Низкое пользовательское принятие (неудобный UX)</td>
+                                <td><span class="tag">Средняя</span></td>
+                                <td><span class="tag tag--medium">Среднее</span></td>
+                                <td><span class="tag tag--medium">Средний</span></td>
+                                <td>Вовлечение пользователей в UAT, пилотный запуск, сбор обратной связи и доработка интерфейса.</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>Задержки с поставкой оборудования и лицензий</td>
+                                <td><span class="tag tag--low">Низкая</span></td>
+                                <td><span class="tag tag--medium">Среднее</span></td>
+                                <td><span class="tag tag--low">Низкий–средний</span></td>
+                                <td>Ранний заказ, временное использование виртуальных машин или облачных ресурсов.</td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td>Ошибки в локальной XML-сериализации → потеря личных backup-файлов</td>
+                                <td><span class="tag tag--low">Низкая</span></td>
+                                <td><span class="tag tag--medium">Среднее</span></td>
+                                <td><span class="tag tag--low">Низкий–средний</span></td>
+                                <td>Тестирование сериализации, рекомендации по периодическим серверным backup-ам, информирование пользователей.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>3.2. Общий подход к управлению рисками</h3>
+                    <ul>
+                        <li>Регулярное обновление реестра рисков (на статус-встречах проекта).</li>
+                        <li>Назначение ответственных за ключевые риски.</li>
+                        <li>Планирование превентивных действий и процедур реагирования (contingency plan).</li>
+                        <li>Фиксация изменений статусов рисков в отчётности по проекту.</li>
+                    </ul>
+                </section>
+            </main>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initTableOfContents();
+        initScrollTracking();
+        initScrollAnimations();
+        initProgressBar();
+        initScrollToTop();
+
+        setTimeout(initParallax, 100);
+    });
+
+    function initTableOfContents() {
+        const tocList = document.getElementById('tocList');
+
+        if (!tocList) {
+            console.error("Element #tocList not found!");
+            return;
+        }
+
+        tocList.innerHTML = '';
+
+        const mainSections = document.querySelectorAll('main > section[id^="section-"]');
+
+        mainSections.forEach((mainSection, index) => {
+            const sectionId = mainSection.id;
+            const sectionTitle = mainSection.querySelector('h2')?.textContent || `Раздел ${index + 1}`;
+
+            const li = document.createElement('li');
+            li.className = 'toc-level-1';
+
+            const a = document.createElement('a');
+            a.href = `#${sectionId}`;
+
+            const numberSpan = document.createElement('span');
+            numberSpan.textContent = `${index + 1}.`;
+            numberSpan.style.marginRight = '4px';
+
+            const textSpan = document.createElement('span');
+            textSpan.textContent = sectionTitle;
+
+            a.appendChild(numberSpan);
+            a.appendChild(textSpan);
+            li.appendChild(a);
+            tocList.appendChild(li);
+
+            const subSections = mainSection.querySelectorAll('section[id]');
+
+            if (subSections.length > 0) {
+                const subList = document.createElement('ul');
+
+                subSections.forEach((subSection, subIndex) => {
+                    const subId = subSection.id;
+                    const subTitle = subSection.querySelector('h3')?.textContent || `Подраздел ${subIndex + 1}`;
+
+                    if (subId === sectionId) return;
+
+                    const subLi = document.createElement('li');
+                    subLi.className = 'toc-level-2';
+
+                    const subA = document.createElement('a');
+                    subA.href = `#${subId}`;
+                    subA.textContent = subTitle;
+
+                    subLi.appendChild(subA);
+                    subList.appendChild(subLi);
+                });
+
+                if (subList.children.length > 0) {
+                    li.appendChild(subList);
+                }
+            }
+        });
+
+        const tocLinks = tocList.querySelectorAll('a');
+        tocLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                tocLinks.forEach(l => {
+                    l.parentElement.classList.remove('active');
+                });
+
+                this.parentElement.classList.add('active');
+
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    }
+
+    function initScrollTracking() {
+        const sections = document.querySelectorAll('section[id]');
+        const tocLinks = document.querySelectorAll('.toc a');
+
+        if (sections.length === 0 || tocLinks.length === 0) {
+            console.warn("No sections or TOC links found for scroll tracking");
+            return;
+        }
+
+        function updateActiveSection() {
+            let currentSection = '';
+            let closestDistance = Infinity;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                const distance = Math.abs(window.scrollY - sectionTop + 100);
+
+                if (distance < closestDistance && window.scrollY >= sectionTop - 150) {
+                    closestDistance = distance;
+                    currentSection = section.id;
+                }
+            });
+
+            tocLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                link.parentElement.classList.remove('active');
+
+                if (href === `#${currentSection}`) {
+                    link.parentElement.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveSection);
+        updateActiveSection();
+    }
+
+    function initScrollAnimations() {
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        const sections = document.querySelectorAll('.content-section, main > section');
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    }
+
+    function initProgressBar() {
+        const progressBar = document.getElementById('progressBar');
+
+        if (!progressBar) {
+            console.error("Progress bar element not found!");
+            return;
+        }
+
+        window.addEventListener('scroll', function() {
+            const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (window.scrollY / windowHeight) * 100;
+
+            progressBar.style.width = Math.min(scrolled, 100) + '%';
+        });
+    }
+
+    function initScrollToTop() {
+        const scrollButton = document.getElementById('scrollTop');
+
+        if (!scrollButton) {
+            console.error("Scroll to top button not found!");
+            return;
+        }
+
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                scrollButton.classList.add('visible');
+            } else {
+                scrollButton.classList.remove('visible');
+            }
+        });
+
+        scrollButton.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+
+    function initParallax() {
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.glow-circle, .glow-circle-2');
+
+            parallaxElements.forEach(element => {
+                const speed = element.classList.contains('glow-circle-2') ? 0.3 : 0.5;
+                const yPos = -(scrolled * speed);
+                element.style.transform = `translateY(${yPos}px) scale(${1 + scrolled * 0.0001})`;
+            });
+        });
+    }
+</script>
+</body>
+</html>
