@@ -1,1226 +1,1129 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
-    <title>Практическая работа - Оценка трудоёмкости и сроков разработки ПО</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оценка трудоемкости и сроков разработки ПО</title>
     <style>
-        :root {
-            --bg: #050816;
-            --bg-alt: #0b1020;
-            --card: #10172a;
-            --accent: #4f46e5;
-            --accent-soft: rgba(79, 70, 229, 0.16);
-            --accent-strong: rgba(129, 140, 248, 0.28);
-            --border-subtle: rgba(148, 163, 184, 0.35);
-            --text-main: #e5e7eb;
-            --text-soft: #9ca3af;
-            --text-muted: #6b7280;
-        }
-
-        * { box-sizing: border-box; }
-
-        html, body {
+        * {
             margin: 0;
             padding: 0;
-            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: radial-gradient(circle at top, #1f2937 0, #020617 50%, #000 100%);
-            color: var(--text-main);
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-card: #16213e;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #7b2cbf;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --success: #00ff88;
+            --warning: #ffaa00;
         }
 
         body {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            padding: 32px 16px;
-        }
-
-        .shell {
-            width: 100%;
-            max-width: 1120px;
-            background: linear-gradient(145deg, rgba(15,23,42,0.99), rgba(15,23,42,0.96));
-            border-radius: 28px;
-            box-shadow:
-                0 0 0 1px rgba(148, 163, 184, 0.25),
-                0 32px 120px rgba(15, 23, 42, 0.9);
-            padding: 26px 24px 30px;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
             position: relative;
-
-            &:before {
-                content: "";
-                position: absolute;
-                inset: -40%;
-                background:
-                    radial-gradient(circle at 0% 0%, rgba(59,130,246,0.14) 0, transparent 40%),
-                    radial-gradient(circle at 100% 0%, rgba(236,72,153,0.18) 0, transparent 50%),
-                    radial-gradient(circle at 50% 120%, rgba(56,189,248,0.10) 0, transparent 52%);
-                opacity: 0.9;
-                pointer-events: none;
-            }
         }
 
-        .shell-inner { position: relative; z-index: 1; }
-
-        header {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
         }
 
-        .title-block {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 20s infinite;
         }
 
-        h1 {
-            margin: 0;
-            font-size: clamp(1.6rem, 3vw, 2.15rem);
-            letter-spacing: 0.03em;
-            text-transform: uppercase;
-            font-weight: 700;
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-100px) translateX(50px); }
+            50% { transform: translateY(-50px) translateX(-50px); }
+            75% { transform: translateY(-150px) translateX(100px); }
         }
 
-        .subtitle {
-            font-size: 0.96rem;
-            color: var(--text-soft);
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
         }
 
-        .tagline {
-            font-size: 0.88rem;
-            color: var(--text-muted);
+        .header {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-card) 100%);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 212, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .info-card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.2);
         }
 
         .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
-            padding: 4px 10px;
-            border-radius: 999px;
-            background: rgba(15,23,42,0.9);
-            border: 1px solid rgba(148, 163, 184, 0.55);
-            color: var(--text-soft);
-        }
-
-        .badge-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: #22c55e;
-            box-shadow: 0 0 0 4px rgba(34,197,94,0.35);
-        }
-
-        .meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-            font-size: 0.86rem;
-        }
-
-        .meta span {
-            padding: 4px 10px;
-            border-radius: 999px;
-            border: 1px solid rgba(148, 163, 184, 0.4);
-            background: rgba(15,23,42,0.9);
-            backdrop-filter: blur(10px);
-            color: var(--text-soft);
-        }
-
-        .chip-accent {
-            border-color: rgba(129, 140, 248, 0.85) !important;
-            background: radial-gradient(circle at 0 0, rgba(79,70,229,0.75), rgba(15,23,42,0.96));
-            color: #e5e7ff;
-        }
-
-        nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin: 8px 0 20px;
-        }
-
-        .nav-btn {
-            border-radius: 999px;
-            padding: 6px 14px;
-            font-size: 0.82rem;
-            border: 1px solid rgba(148, 163, 184, 0.45);
-            background: rgba(15,23,42,0.9);
-            color: var(--text-soft);
-            cursor: pointer;
-            transition: all 0.18s ease-out;
-
-            &:hover {
-                border-color: rgba(129, 140, 248, 0.9);
-                color: #e5e7ff;
-                transform: translateY(-1px);
-            }
-
-            &.active {
-                background: linear-gradient(135deg, #4f46e5, #7c3aed);
-                color: #f9fafb;
-                border-color: transparent;
-            }
-        }
-
-        main {
-            display: grid;
-            grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.1fr);
-            gap: 20px;
-        }
-
-        @media (max-width: 900px) {
-            main {
-                grid-template-columns: minmax(0, 1fr);
-            }
-        }
-
-        section { margin-bottom: 18px; }
-
-        .card {
-            background: linear-gradient(145deg, rgba(15,23,42,0.98), rgba(15,23,42,0.96));
+            display: inline-block;
+            padding: 8px 16px;
             border-radius: 20px;
-            padding: 16px 16px 14px;
-            border: 1px solid rgba(148, 163, 184, 0.25);
-            box-shadow: 0 18px 50px rgba(15,23,42,0.8);
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            font-weight: bold;
+            margin: 0 5px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: 2em;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent-primary);
             position: relative;
-            overflow: hidden;
-
-            &:before {
-                content: "";
-                position: absolute;
-                inset: 0;
-                background: radial-gradient(circle at top right, rgba(79,70,229,0.35), transparent 55%);
-                opacity: 0.35;
-                pointer-events: none;
-            }
+            display: inline-block;
         }
 
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 10px;
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 50%;
+            height: 2px;
+            background: var(--accent-secondary);
+            animation: slide 3s ease-in-out infinite;
         }
 
-        .card-title {
-            font-size: 1rem;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
+        @keyframes slide {
+            0%, 100% { left: 0; width: 50%; }
+            50% { left: 50%; width: 50%; }
         }
 
-        .card-subtitle {
-            font-size: 0.86rem;
-            color: var(--text-muted);
+        .tree-item {
+            background: var(--bg-card);
+            margin: 15px 0;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-primary);
+            transition: all 0.3s ease;
         }
 
-        .pill {
-            font-size: 0.75rem;
-            padding: 4px 10px;
-            border-radius: 999px;
-            background: rgba(15,23,42,0.9);
-            border: 1px solid rgba(148,163,184,0.5);
+        .tree-item:hover {
+            background: var(--bg-secondary);
+            border-left-color: var(--accent-secondary);
+            transform: translateX(10px);
         }
 
-        .pill-strong {
-            background: var(--accent-soft);
-            border-color: transparent;
-            color: #c7d2fe;
+        .tree-item strong {
+            color: var(--accent-primary);
+            font-size: 1.1em;
         }
 
-        .card-body {
-            position: relative;
-            z-index: 1;
-            font-size: 0.92rem;
-            color: var(--text-soft);
+        .tree-subtasks {
+            margin-top: 15px;
+            padding-left: 20px;
+            border-left: 2px solid rgba(0, 212, 255, 0.3);
         }
 
-        h2, h3 {
-            margin: 0 0 6px;
-            font-size: 1rem;
-        }
-
-        ol, ul {
-            margin: 4px 0 4px 1.25rem;
-            padding: 0;
-        }
-
-        li { margin-bottom: 4px; }
-
-        .mono {
-            font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-            font-size: 0.9em;
-        }
-
-        .table-wrapper {
-            margin-top: 6px;
-            border-radius: 14px;
-            overflow-x: auto;
-            border: 1px solid rgba(148,163,184,0.45);
-            background: radial-gradient(circle at top left, rgba(15,23,42,0.96), rgba(15,23,42,0.98));
+        .tree-subtasks div {
+            padding: 8px 0;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
-            min-width: 640px;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 30px 0;
+            background: var(--bg-card);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
-        thead {
-            background: linear-gradient(90deg, rgba(15,23,42,0.98), rgba(15,23,42,0.96));
+        table thead {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
         }
 
-        th, td {
-            padding: 7px 10px;
+        table th {
+            padding: 20px 15px;
             text-align: left;
-            font-size: 0.86rem;
-            border-bottom: 1px solid rgba(31, 41, 55, 0.9);
-        }
-
-        th {
             font-weight: 600;
-            color: #e5e7eb;
-            border-bottom-color: rgba(148,163,184,0.6);
-            white-space: nowrap;
+            color: var(--bg-primary);
         }
 
-        tbody tr:nth-child(even) {
-            background: rgba(15,23,42,0.84);
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        tbody tr:nth-child(odd) {
-            background: rgba(15,23,42,0.94);
+        table tbody tr {
+            transition: all 0.3s ease;
         }
 
-        tbody tr:hover {
-            background: rgba(55,65,81,0.7);
+        table tbody tr:hover {
+            background: var(--bg-secondary);
         }
 
-        td.number {
-            text-align: right;
-            font-variant-numeric: tabular-nums;
+        table tbody tr.module-header {
+            background: linear-gradient(90deg, rgba(0, 212, 255, 0.2), transparent);
+            font-weight: bold;
+            color: var(--accent-primary);
+        }
+
+        table tbody tr.subtotal {
+            background: rgba(0, 212, 255, 0.1);
+            font-weight: bold;
+        }
+
+        table tbody tr.total {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            font-weight: bold;
+            font-size: 1.2em;
+            color: var(--bg-primary);
         }
 
         .hours-input {
-            width: 72px;
-            padding: 3px 6px;
-            border-radius: 999px;
-            border: 1px solid rgba(148,163,184,0.7);
-            background: rgba(15,23,42,0.95);
-            color: var(--text-main);
-            font-size: 0.82rem;
+            width: 70px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-primary);
+            font-size: 1em;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s ease;
         }
 
-        .role-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 8px;
-            border-radius: 999px;
-            border: 1px solid rgba(148,163,184,0.6);
-            font-size: 0.75rem;
+        .hours-input:hover {
+            border-color: var(--accent-primary);
+            background: rgba(0, 212, 255, 0.1);
         }
 
-        .role-be { border-color: rgba(244, 114, 182, 0.7); color: #f9a8d4; }
-        .role-fe { border-color: rgba(56, 189, 248, 0.7); color: #7dd3fc; }
-        .role-ds { border-color: rgba(129, 140, 248, 0.8); color: #c7d2fe; }
-        .role-qa { border-color: rgba(52, 211, 153, 0.7); color: #6ee7b7; }
+        .hours-input:focus {
+            outline: none;
+            border-color: var(--accent-secondary);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
 
-        .summary-grid {
+        .role-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin: 0 3px;
+            transition: all 0.3s ease;
+        }
+
+        .role-badge:hover {
+            transform: scale(1.1);
+        }
+
+        .badge-fe { background: linear-gradient(135deg, #00d4ff, #0099cc); }
+        .badge-be { background: linear-gradient(135deg, #7b2cbf, #5a189a); }
+        .badge-ds { background: linear-gradient(135deg, #ff6b6b, #ee5a6f); }
+        .badge-qa { background: linear-gradient(135deg, #00ff88, #00cc70); }
+
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.3);
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
             margin-top: 10px;
+            font-size: 0.9em;
         }
 
-        .summary-item {
-            padding: 10px 11px;
-            border-radius: 14px;
-            background: radial-gradient(circle at top left, var(--accent-soft), rgba(15,23,42,0.96));
-            border: 1px solid rgba(148,163,184,0.55);
+        .risk-input {
+            width: 80px;
+            padding: 8px;
+            border-radius: 8px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-primary);
+            font-size: 1em;
+            font-weight: bold;
+            text-align: center;
         }
 
-        .summary-label {
-            font-size: 0.78rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-muted);
-            margin-bottom: 4px;
+        .risk-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
         }
 
-        .summary-value {
-            font-size: 1.0rem;
-            font-weight: 600;
+        .gantt-container {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            overflow-x: auto;
         }
 
-        .summary-note {
-            font-size: 0.78rem;
-            color: var(--text-soft);
-            margin-top: 2px;
+        .gantt-header {
+            display: grid;
+            grid-template-columns: 250px repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-left: 250px;
         }
 
-        .input-inline {
-            display: inline-flex;
+        .week-label {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(123, 44, 191, 0.2));
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .gantt-row {
+            display: grid;
+            grid-template-columns: 250px repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
             align-items: center;
-            gap: 6px;
-            font-size: 0.85rem;
         }
 
-        .input-inline input {
-            width: 64px;
-            padding: 3px 6px;
-            border-radius: 999px;
-            border: 1px solid rgba(148,163,184,0.7);
-            background: rgba(15,23,42,0.95);
-            color: var(--text-main);
-            font-size: 0.82rem;
+        .gantt-label {
+            font-weight: 500;
+            padding: 10px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
         }
 
-        .gantt {
-            margin-top: 8px;
-        }
-
-        .gantt-table { min-width: 520px; }
-
-        .gantt-head th { text-align: center; }
-
-        .gantt-row-label { white-space: nowrap; }
-
-        .gantt-cell {
-            min-width: 52px;
-            height: 22px;
-            position: relative;
+        .gantt-timeline {
+            display: contents;
         }
 
         .gantt-bar {
+            padding: 15px 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gantt-bar::before {
+            content: '';
             position: absolute;
-            inset: 4px 2px 4px 2px;
-            border-radius: 999px;
-            background: linear-gradient(90deg, rgba(56,189,248,0.2), rgba(129,140,248,0.85));
-            box-shadow: 0 0 0 1px rgba(129,140,248,0.8);
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
         }
 
-        .gantt-bar-alt {
-            background: linear-gradient(90deg, rgba(236,72,153,0.2), rgba(244,114,182,0.9));
-            box-shadow: 0 0 0 1px rgba(244,114,182,0.9);
+        .gantt-bar:hover::before {
+            left: 100%;
         }
 
-        .qa-list {
-            margin: 8px 0 0;
-            padding-left: 1.1rem;
+        .gantt-bar:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
         }
 
-        .qa-item { margin-bottom: 8px; }
+        .gantt-bar.design { background: linear-gradient(135deg, #ff6b6b, #ee5a6f); }
+        .gantt-bar.setup { background: linear-gradient(135deg, #78909c, #546e7a); }
+        .gantt-bar.backend { background: linear-gradient(135deg, #7b2cbf, #5a189a); }
+        .gantt-bar.frontend { background: linear-gradient(135deg, #00d4ff, #0099cc); }
+        .gantt-bar.testing { background: linear-gradient(135deg, #00ff88, #00cc70); }
+        .gantt-bar.release { background: linear-gradient(135deg, #ffaa00, #ff8800); }
 
-        .qa-question {
-            font-weight: 500;
-            color: #e5e7eb;
+        .answer-box {
+            background: var(--bg-card);
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 15px;
+            border-left: 4px solid var(--accent-primary);
+            transition: all 0.3s ease;
         }
 
-        .qa-answer { color: var(--text-soft); margin-top: 2px; }
-
-        .footer-note {
-            margin-top: 12px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
+        .answer-box:hover {
+            border-left-width: 8px;
+            transform: translateX(5px);
         }
 
-        .scroll-target { scroll-margin-top: 80px; }
+        .answer-box h3 {
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding: 10px 0 10px 30px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        ul li::before {
+            content: '▹';
+            position: absolute;
+            left: 10px;
+            color: var(--accent-primary);
+            font-weight: bold;
+        }
+
+        ul li:hover {
+            color: var(--accent-primary);
+            padding-left: 35px;
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 1.5em;
+            color: white;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.5);
+        }
+
+        .editable-note {
+            background: rgba(255, 170, 0, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid var(--warning);
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8em; }
+            .section-title { font-size: 1.5em; }
+            .gantt-row { grid-template-columns: 150px repeat(5, 1fr); }
+        }
     </style>
 </head>
 <body>
-<div class="shell">
-    <div class="shell-inner">
-        <header>
-            <div class="title-block">
-                <h1>Оценка трудоёмкости и сроков разработки ПО</h1>
-                <div class="subtitle">Проект: мобильное приложение «Личный финансовый трекер» (MVP)</div>
-                <div class="tagline">Структура и расчёты выполнены по методическим материалам, но оформлены в интерактивном HTML-формате.</div>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1 id="main-title">💼 Практическая работа</h1>
+                <p style="font-size: 1.3em; margin: 10px 0;">Оценка трудоемкости и сроков разработки ПО</p>
+                <p style="opacity: 0.8; margin-top: 15px;">Проект: Мобильное приложение «Личный финансовый tracker» (MVP)</p>
             </div>
-            <div>
-                <div class="badge">
-                    <span class="badge-dot"></span>
-                    <span>Все итоги пересчитываются при изменении таблицы</span>
+        </div>
+
+        <div class="info-card">
+            <strong style="color: var(--accent-primary);">Выполнил:</strong> Головкин Илья<br>
+            <strong style="color: var(--accent-primary);">Группа:</strong> 9/3 РПО 23/2<br>
+            <strong style="color: var(--accent-primary);">Дата:</strong> <span id="currentDate"></span>
+        </div>
+
+        <section class="section">
+            <h2 class="section-title">1. Декомпозиция проекта (ИСР)</h2>
+
+            <div class="tree-item">
+                <strong>1. Авторизация</strong>
+                <div class="tree-subtasks">
+                    <div>• Проектирование UI экранов (логин, регистрация, восстановление пароля)</div>
+                    <div>• Верстка (Frontend) экранов авторизации</div>
+                    <div>• Разработка API (регистрация, логин, восстановление пароля) на бэкенде</div>
+                    <div>• Интеграция фронтенда с API авторизации</div>
+                    <div>• Написание unit-тестов для модуля авторизации</div>
+                    <div>• Функциональное тестирование сценариев авторизации</div>
                 </div>
-                <div class="meta">
-                    <span class="chip-accent">Выполнил: Головкин Илья</span>
-                    <span>Группа: 9/3 РПО 23/2</span>
+            </div>
+
+            <div class="tree-item">
+                <strong>2. Ввод операций</strong>
+                <div class="tree-subtasks">
+                    <div>• Дизайн экрана добавления операции с формой</div>
+                    <div>• Верстка сложной формы ввода с валидацией</div>
+                    <div>• Разработка API для создания/сохранения операции</div>
+                    <div>• Интеграция формы с API</div>
+                    <div>• Тестирование функционала добавления операций</div>
                 </div>
             </div>
-        </header>
 
-        <nav>
-            <button class="nav-btn active" data-scroll="#sec-decomposition">Декомпозиция</button>
-            <button class="nav-btn" data-scroll="#sec-table">Трудоёмкость</button>
-            <button class="nav-btn" data-scroll="#sec-math">Расчёты</button>
-            <button class="nav-btn" data-scroll="#sec-gantt">Календарный план</button>
-            <button class="nav-btn" data-scroll="#sec-analysis">Анализ</button>
-        </nav>
-
-        <main>
-            <div>
-                <section id="sec-decomposition" class="scroll-target">
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <div class="card-title">1. Декомпозиция проекта (ИСР)</div>
-                                <div class="card-subtitle">
-                                    Разбиение мобильного приложения на функциональные блоки и подзадачи.
-                                </div>
-                            </div>
-                            <span class="pill pill-strong">Основа оценки</span>
-                        </div>
-                        <div class="card-body">
-                            <p>
-                                В качестве предметной области выбрано мобильное приложение «Личный финансовый трекер». 
-                                Оно позволяет пользователю фиксировать доходы и расходы, просматривать историю операций, 
-                                получать простую статистику и работать с базовыми настройками валюты и профиля.
-                            </p>
-                            <p>Структура проекта (ИСР) по крупным блокам:</p>
-                            <h3>1. Авторизация</h3>
-                            <ul>
-                                <li>Проектирование экранов входа, регистрации и восстановления доступа.</li>
-                                <li>Верстка и адаптация экранов под мобильные устройства.</li>
-                                <li>Реализация API авторизации на бэкенде.</li>
-                                <li>Интеграция фронтенда с API, работа с токенами.</li>
-                                <li>Модульные и функциональные тесты авторизации.</li>
-                            </ul>
-
-                            <h3>2. Ввод операций</h3>
-                            <ul>
-                                <li>Дизайн формы добавления операции (категория, сумма, дата, комментарий).</li>
-                                <li>Верстка сложной формы с валидацией и подсказками.</li>
-                                <li>Реализация API для создания и изменения операций.</li>
-                                <li>Интеграция формы с бэкендом, обработка ответов и ошибок.</li>
-                                <li>Тестирование сценариев добавления и редактирования операций.</li>
-                            </ul>
-
-                            <h3>3. Просмотр истории операций</h3>
-                            <ul>
-                                <li>Дизайн экрана истории с фильтрами по дате и категории.</li>
-                                <li>Верстка списка операций и компонентов фильтрации.</li>
-                                <li>API для получения операций с фильтрами и пагинацией.</li>
-                                <li>Интеграция фронтенда с API истории.</li>
-                                <li>Тестирование корректности отображения и работы фильтров.</li>
-                            </ul>
-
-                            <h3>4. Простая статистика</h3>
-                            <ul>
-                                <li>Дизайн экрана статистики с круговой диаграммой.</li>
-                                <li>Интеграция библиотеки графиков во фронтенд.</li>
-                                <li>Реализация агрегации данных по категориям на бэкенде.</li>
-                                <li>Интеграция статистики с API, обновление диаграмм.</li>
-                                <li>Проверка корректности расчётов и отображения статистики.</li>
-                            </ul>
-
-                            <h3>5. Настройки</h3>
-                            <ul>
-                                <li>Дизайн и верстка экрана настроек (валюта, выход из аккаунта).</li>
-                                <li>Реализация бэкенд-логики управления настройками и сессиями.</li>
-                                <li>Интеграция фронтенда с API настроек.</li>
-                                <li>Тестирование сценариев смены валюты и выхода.</li>
-                            </ul>
-
-                            <h3>6. Общие задачи</h3>
-                            <ul>
-                                <li>Подготовка окружения, настройка репозитория, CI/CD, базы данных.</li>
-                                <li>Скрипты деплоя и автоматизация выкладки.</li>
-                                <li>Сборка и публикация мобильных приложений в сторы.</li>
-                                <li>Релизное тестирование всего набора пользовательских сценариев.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="sec-gantt" class="scroll-target">
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <div class="card-title">4. Упрощённый календарный план</div>
-                                <div class="card-subtitle">
-                                    Разбиение работ на условные недели с учётом параллельных задач.
-                                </div>
-                            </div>
-                            <span class="pill">Диаграмма Ганта</span>
-                        </div>
-                        <div class="card-body">
-                            <p>
-                                На основании оценок трудоёмкости и производительности команды формируется ориентировочный 
-                                период разработки порядка <span class="mono" id="summary-duration-weeks">~4 недель</span>. 
-                                Ниже показано распределение основных этапов по неделям.
-                            </p>
-                            <div class="table-wrapper gantt">
-                                <table class="gantt-table">
-                                    <thead class="gantt-head">
-                                    <tr>
-                                        <th>Этап</th>
-                                        <th>1 неделя</th>
-                                        <th>2 неделя</th>
-                                        <th>3 неделя</th>
-                                        <th>4 неделя</th>
-                                        <th>5 неделя</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td class="gantt-row-label">1. Подготовка и дизайн</td>
-                                        <td class="gantt-cell"><div class="gantt-bar"></div></td>
-                                        <td class="gantt-cell"><div class="gantt-bar"></div></td>
-                                        <td class="gantt-cell"></td>
-                                        <td class="gantt-cell"></td>
-                                        <td class="gantt-cell"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="gantt-row-label">2. Разработка ядра (Авторизация, операции)</td>
-                                        <td class="gantt-cell"></td>
-                                        <td class="gantt-cell"><div class="gantt-bar gantt-bar-alt"></div></td>
-                                        <td class="gantt-cell"><div class="gantt-bar gantt-bar-alt"></div></td>
-                                        <td class="gantt-cell"></td>
-                                        <td class="gantt-cell"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="gantt-row-label">3. История, статистика, настройки</td>
-                                        <td class="gantt-cell"></td>
-                                        <td class="gantt-cell"></td>
-                                        <td class="gantt-cell"><div class="gantt-bar"></div></td>
-                                        <td class="gantt-cell"><div class="gantt-bar"></div></td>
-                                        <td class="gantt-cell"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="gantt-row-label">4. Тестирование (функциональное, интеграционное)</td>
-                                        <td class="gantt-cell"></td>
-                                        <td class="gantt-cell"></td>
-                                        <td class="gantt-cell"><div class="gantt-bar gantt-bar-alt"></div></td>
-                                        <td class="gantt-cell"><div class="gantt-bar gantt-bar-alt"></div></td>
-                                        <td class="gantt-cell"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="gantt-row-label">5. Релиз и выкладка</td>
-                                        <td class="gantt-cell"></td>
-                                        <td class="gantt-cell"></td>
-                                        <td class="gantt-cell"></td>
-                                        <td class="gantt-cell"><div class="gantt-bar"></div></td>
-                                        <td class="gantt-cell"><div class="gantt-bar gantt-bar-alt"></div></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="footer-note">
-                                Диаграмма отражает логику: сначала подготовка и дизайн, затем ядро, после чего реализуются 
-                                дополнительные функции, проводится тестирование и релиз.
-                            </div>
-                        </div>
-                    </div>
-                </section>
+            <div class="tree-item">
+                <strong>3. Просмотр истории операций</strong>
+                <div class="tree-subtasks">
+                    <div>• Дизайн экрана списка операций с фильтрами</div>
+                    <div>• Верстка списка и компонентов фильтрации (по дате, категории)</div>
+                    <div>• Разработка API для получения списка операций с фильтрами</div>
+                    <div>• Интеграция фронтенда с API истории</div>
+                    <div>• Тестирование отображения и фильтрации истории</div>
+                </div>
             </div>
 
-            <div>
-                <section id="sec-table" class="scroll-target">
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <div class="card-title">2. Таблица оценки трудоёмкости</div>
-                                <div class="card-subtitle">
-                                    Подзадачи, роли исполнителей и оценка трудозатрат в человеко-часах.
-                                </div>
-                            </div>
-                            <span class="pill">Базовый ввод данных</span>
-                        </div>
-                        <div class="card-body">
-                            <p>
-                                Используются условные роли: <span class="mono">FE</span> - frontend-разработчик,
-                                <span class="mono">BE</span> - backend-разработчик, 
-                                <span class="mono">DS</span> - дизайнер/аналитик, 
-                                <span class="mono">QA</span> - тестировщик. 
-                                Часы для каждой подзадачи можно корректировать - все расчёты пересчитываются автоматически.
-                            </p>
-                            <div class="table-wrapper">
-                                <table id="tasks-table">
-                                    <thead>
-                                    <tr>
-                                        <th>№</th>
-                                        <th>Задача (ИСР)</th>
-                                        <th>Исполнитель</th>
-                                        <th>Трудоёмкость, ч/ч</th>
-                                        <th>Примечания</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-
-                                    <tr>
-                                        <td>1.1</td>
-                                        <td>Проектирование UI-экранов авторизации</td>
-                                        <td><span class="role-tag role-ds">DS</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="8" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Экраны: вход, регистрация, восстановление доступа.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>1.2</td>
-                                        <td>Верстка экранов авторизации</td>
-                                        <td><span class="role-tag role-fe">FE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="16" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Адаптивная верстка, состояния ошибок, простые анимации.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>1.3</td>
-                                        <td>Разработка backend-API авторизации</td>
-                                        <td><span class="role-tag role-be">BE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="24" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Регистрация, логин, восстановление, безопасное хранение паролей.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>1.4</td>
-                                        <td>Интеграция фронтенда с API авторизации</td>
-                                        <td><span class="role-tag role-fe">FE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="12" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Запросы, обработка ошибок, управление токеном.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>1.5</td>
-                                        <td>Unit-тесты модуля авторизации</td>
-                                        <td><span class="role-tag role-fe">FE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="8" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Покрытие ключевых сценариев входа и регистрации.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>1.6</td>
-                                        <td>Функциональное тестирование авторизации</td>
-                                        <td><span class="role-tag role-qa">QA</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="8" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Проверка валидных и невалидных данных, восстановление пароля.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>2.1</td>
-                                        <td>Дизайн экрана добавления операции</td>
-                                        <td><span class="role-tag role-ds">DS</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="6" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Форма: сумма, дата, категория, комментарий.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>2.2</td>
-                                        <td>Верстка формы ввода операции</td>
-                                        <td><span class="role-tag role-fe">FE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="20" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Сложная валидация, подсказки пользователю, выбор даты.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>2.3</td>
-                                        <td>Разработка API для сохранения операций</td>
-                                        <td><span class="role-tag role-be">BE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="16" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Создание и обновление операций с проверками на сервере.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>2.4</td>
-                                        <td>Интеграция формы ввода с API</td>
-                                        <td><span class="role-tag role-fe">FE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="10" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Отправка данных, обработка ответов, сброс формы.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>2.5</td>
-                                        <td>Тестирование добавления операций</td>
-                                        <td><span class="role-tag role-qa">QA</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="6" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Граничные значения и обязательные поля.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>3.1</td>
-                                        <td>Дизайн экрана истории операций</td>
-                                        <td><span class="role-tag role-ds">DS</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="8" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Список операций, фильтры по дате и категориям.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>3.2</td>
-                                        <td>Верстка списка и фильтров истории</td>
-                                        <td><span class="role-tag role-fe">FE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="18" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Прокрутка, фильтры, пустые состояния.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>3.3</td>
-                                        <td>Backend-API для истории операций</td>
-                                        <td><span class="role-tag role-be">BE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="20" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Фильтрация и пагинация на стороне БД.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>3.4</td>
-                                        <td>Интеграция истории с backend</td>
-                                        <td><span class="role-tag role-fe">FE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="12" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Загрузка данных, применение фильтров в интерфейсе.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>3.5</td>
-                                        <td>Тестирование истории и фильтров</td>
-                                        <td><span class="role-tag role-qa">QA</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="8" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Сценарии с разными периодами и категориями.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>4.1</td>
-                                        <td>Дизайн экрана статистики</td>
-                                        <td><span class="role-tag role-ds">DS</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="6" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Диаграмма расходов и ключевые показатели.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>4.2</td>
-                                        <td>Верстка экрана статистики и графиков</td>
-                                        <td><span class="role-tag role-fe">FE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="16" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Интеграция библиотеки графиков, легенда, тултипы.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>4.3</td>
-                                        <td>Backend-агрегация данных для статистики</td>
-                                        <td><span class="role-tag role-be">BE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="18" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Группировка по категориям за период, расчёт процентов.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>4.4</td>
-                                        <td>Интеграция статистики с backend</td>
-                                        <td><span class="role-tag role-fe">FE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="10" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Загрузка и обновление диаграмм при смене периода.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>4.5</td>
-                                        <td>Тестирование корректности статистики</td>
-                                        <td><span class="role-tag role-qa">QA</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="6" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Сверка с исходными данными и граничные случаи.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>5.1</td>
-                                        <td>Дизайн экрана настроек</td>
-                                        <td><span class="role-tag role-ds">DS</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="4" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Список основных настроек приложения.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>5.2</td>
-                                        <td>Верстка экрана настроек</td>
-                                        <td><span class="role-tag role-fe">FE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="8" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Смена валюты, кнопка выхода, базовая навигация.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>5.3</td>
-                                        <td>Backend-логика настроек</td>
-                                        <td><span class="role-tag role-be">BE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="12" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Хранение выбора валюты, завершение сессии.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>5.4</td>
-                                        <td>Интеграция настроек с backend</td>
-                                        <td><span class="role-tag role-fe">FE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="6" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Сохранение и применение настроек.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>5.5</td>
-                                        <td>Тестирование функционала настроек</td>
-                                        <td><span class="role-tag role-qa">QA</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="4" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Проверка смены валюты и выхода из аккаунта.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>6.1</td>
-                                        <td>Настройка окружения и инфраструктуры</td>
-                                        <td><span class="role-tag role-fe">FE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="40" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Репозиторий, сборка, база данных, базовый CI/CD.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>6.2</td>
-                                        <td>Скрипты деплоя backend</td>
-                                        <td><span class="role-tag role-be">BE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="8" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Автоматизация выкладки серверной части.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>6.3</td>
-                                        <td>Сборка и выкладка мобильных приложений</td>
-                                        <td><span class="role-tag role-fe">FE</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="24" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Конфигурация профилей, подпись, загрузка в магазины.</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>6.4</td>
-                                        <td>Релизное тестирование MVP</td>
-                                        <td><span class="role-tag role-qa">QA</span></td>
-                                        <td class="number">
-                                            <label>
-                                                <input type="number" value="8" min="1" class="hours-input" />
-                                            </label>
-                                        </td>
-                                        <td>Проверка основных пользовательских сценариев перед релизом.</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="sec-math" class="scroll-target">
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <div class="card-title">3. Расчёты трудоёмкости и сроков</div>
-                                <div class="card-subtitle">
-                                    Перевод трудозатрат в человеко-дни и оценка календарной продолжительности проекта.
-                                </div>
-                            </div>
-                            <span class="pill">Автоматический пересчёт</span>
-                        </div>
-                        <div class="card-body">
-                            <p>
-                                Алгоритм расчёта:
-                            </p>
-                            <ol>
-                                <li>Суммируются все оценки трудозатрат по задачам (в человеко-часах).</li>
-                                <li>Общая трудоёмкость переводится в человеко-дни при 8-часовом рабочем дне.</li>
-                                <li>Определяется состав команды и её суммарная производительность в человеко-днях в сутки.</li>
-                                <li>Получается «чистая» продолжительность без учёта рисков.</li>
-                                <li>Применяется коэффициент рисков и организационных накладных расходов.</li>
-                            </ol>
-                            <p>
-                                В базовом варианте используется команда: 
-                                <span class="mono">1 FE + 1 BE + 0.5 DS + 0.5 QA = 3.0 ч/д в день</span>. 
-                                Коэффициент рисков по умолчанию взят равным <span class="mono">1.3</span> - он учитывает 
-                                возможные задержки, уточнение требований и технические сложности.
-                            </p>
-
-                            <div class="summary-grid">
-                                <div class="summary-item">
-                                    <div class="summary-label">Общая трудоёмкость</div>
-                                    <div class="summary-value"><span id="total-hours">0</span> ч/ч</div>
-                                    <div class="summary-note">Сумма по всем задачам таблицы.</div>
-                                </div>
-                                <div class="summary-item">
-                                    <div class="summary-label">В человеко-днях</div>
-                                    <div class="summary-value"><span id="total-days">0.0</span> ч/д</div>
-                                    <div class="summary-note">При 8-часовом рабочем дне.</div>
-                                </div>
-                                <div class="summary-item">
-                                    <div class="summary-label">Производительность команды</div>
-                                    <div class="summary-value">
-                                        <span id="team-capacity">3.0</span> ч/д в день
-                                    </div>
-                                    <div class="summary-note">
-                                        FE (1.0) + BE (1.0) + DS (0.5) + QA (0.5).
-                                    </div>
-                                </div>
-                                <div class="summary-item">
-                                    <div class="summary-label">Чистая продолжительность</div>
-                                    <div class="summary-value"><span id="duration-clean">0.0</span> дней</div>
-                                    <div class="summary-note">Без учёта рисков и накладных.</div>
-                                </div>
-                                <div class="summary-item">
-                                    <div class="summary-label">С учётом рисков</div>
-                                    <div class="summary-value">
-                                        <span id="duration-risk">0.0</span> дней
-                                    </div>
-                                    <div class="summary-note">
-                                        Коэффициент рисков 
-                                        <span class="input-inline">
-                                            k = <label for="risk-factor"></label><input type="number" id="risk-factor" min="1" step="0.05" value="1.3">
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="footer-note">
-                                При корректировке оценок в таблице или коэффициента k пересчитываются все ключевые метрики: 
-                                общая трудоёмкость, человеко-дни и ориентировочная длительность проекта в днях и неделях.
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="sec-analysis" class="scroll-target">
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <div class="card-title">5. Анализ результатов оценки</div>
-                                <div class="card-subtitle">
-                                    Обсуждение неопределённостей, альтернативного состава команды и рисков.
-                                </div>
-                            </div>
-                            <span class="pill">Аналитическая часть</span>
-                        </div>
-                        <div class="card-body">
-                            <ol class="qa-list">
-                                <li class="qa-item">
-                                    <div class="qa-question">
-                                        1. Какие задачи в оценке имеют наибольшую неопределённость и почему?
-                                    </div>
-                                    <div class="qa-answer">
-                                        Наибольшая неопределённость связана с задачами инфраструктуры и релиза (настройка окружения, 
-                                        публикация в магазинах приложений), а также с интеграцией сторонних библиотек (например, для 
-                                        построения графиков). Для таких задач сложно заранее учесть требования площадок, возможные 
-                                        ограничения по сертификатам и лицензиям, а также время, которое уйдёт на исследования и обход 
-                                        непредвиденных технических препятствий.
-                                    </div>
-                                </li>
-                                <li class="qa-item">
-                                    <div class="qa-question">
-                                        2. Как изменится срок, если на проекте будет только один full-stack разработчик вместо FE и BE?
-                                    </div>
-                                    <div class="qa-answer">
-                                        В этом случае суммарная производительность команды уменьшится: вместо двух отдельных ролей FE и BE 
-                                        с полной загрузкой останется один full‑stack разработчик. При прочих равных общая трудоёмкость проекта 
-                                        разделится на меньшую дневную производительность, а длительность увеличится. 
-                                        Даже если предположить, что full‑stack по суммарной эффективности близок к 1.0 ч/д в день, а роли DS и QA 
-                                        останутся с занятостью по 0.5, производительность команды снизится примерно до 2.0 ч/д в день. 
-                                        Это приведёт к росту календарного срока примерно в 1.5 раза по сравнению с базовым вариантом.
-                                    </div>
-                                </li>
-                                <li class="qa-item">
-                                    <div class="qa-question">
-                                        3. Какие риски могут увеличить фактические сроки по сравнению с оценкой?
-                                    </div>
-                                    <div class="qa-answer">
-                                        Можно выделить три группы рисков:
-                                        <ul>
-                                            <li><b>Технические риски.</b> Неучтённые сложности интеграции с внешними сервисами, 
-                                                особенности мобильных платформ, проблемы производительности при росте объёма данных.</li>
-                                            <li><b>Организационные риски.</b> Изменения требований после начала разработки, задержки в 
-                                                согласовании дизайна и приёмке функционала, ограничения по доступам к аккаунтам разработчиков.</li>
-                                            <li><b>Человеческий фактор.</b> Болезни и отпуска ключевых участников, ошибки, требующие 
-                                                дополнительного цикла исправлений и регрессионного тестирования.</li>
-                                        </ul>
-                                        Все эти факторы оправдывают использование коэффициента рисков k &gt; 1 в расчётах сроков.
-                                    </div>
-                                </li>
-                            </ol>
-                        </div>
-                    </div>
-                </section>
+            <div class="tree-item">
+                <strong>4. Простая статистика</strong>
+                <div class="tree-subtasks">
+                    <div>• Дизайн экрана с круговой диаграммой</div>
+                    <div>• Верстка экрана статистики, интеграция библиотеки графиков</div>
+                    <div>• Разработка API для агрегации данных по расходам за месяц</div>
+                    <div>• Интеграция фронтенда с API статистики</div>
+                    <div>• Тестирование корректности построения диаграммы</div>
+                </div>
             </div>
-        </main>
+
+            <div class="tree-item">
+                <strong>5. Настройки</strong>
+                <div class="tree-subtasks">
+                    <div>• Дизайн экрана настроек</div>
+                    <div>• Верстка экрана настроек (смена валюты, выход)</div>
+                    <div>• Разработка API для смены валюты и выхода</div>
+                    <div>• Интеграция фронтенда с API настроек</div>
+                    <div>• Тестирование функционала настроек</div>
+                </div>
+            </div>
+
+            <div class="tree-item">
+                <strong>6. Общие задачи</strong>
+                <div class="tree-subtasks">
+                    <div>• Настройка окружения и инфраструктуры проекта (репозиторий, CI/CD, база данных)</div>
+                    <div>• Проектирование общей архитектуры и схемы БД</div>
+                    <div>• Написание базовых скриптов развертывания (деплой)</div>
+                    <div>• Сборка и выкладка приложения в AppStore/Google Play</div>
+                    <div>• Релизное тестирование</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">2. Таблица оценки трудоемкости</h2>
+
+            <div style="margin-bottom: 20px; padding: 15px; background: var(--bg-card); border-radius: 10px; border-left: 4px solid var(--accent-primary);">
+                <strong style="color: var(--accent-primary);">Условные обозначения:</strong><br>
+                <span class="role-badge badge-fe">FE</span> - Frontend-разработчик
+                <span class="role-badge badge-be">BE</span> - Backend-разработчик
+                <span class="role-badge badge-ds">DS</span> - Дизайнер/Аналитик
+                <span class="role-badge badge-qa">QA</span> - Тестировщик
+            </div>
+
+            <table id="effortTable">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">№</th>
+                        <th>Задача</th>
+                        <th style="width: 150px;">Исполнитель</th>
+                        <th style="width: 130px;">Труд-ть (ч/ч)</th>
+                        <th>Примечания</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">3. Расчеты трудоемкости и сроков</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalHours">408</div>
+                    <div class="stat-label">часов</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalDays">51</div>
+                    <div class="stat-label">ч/д (8-час день)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="cleanDuration">17</div>
+                    <div class="stat-label">дней (чистых)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="finalDuration">23</div>
+                    <div class="stat-label">дней (с рисками)</div>
+                </div>
+            </div>
+
+            <div style="background: var(--bg-card); padding: 30px; border-radius: 15px; margin-top: 20px;">
+                <h3 style="color: var(--accent-primary); margin-bottom: 20px;">Состав команды и расчеты:</h3>
+
+                <div style="margin: 15px 0;">
+                    <span class="role-badge badge-fe">FE</span> 1.0 (полная занятость)
+                </div>
+                <div style="margin: 15px 0;">
+                    <span class="role-badge badge-be">BE</span> 1.0 (полная занятость)
+                </div>
+                <div style="margin: 15px 0;">
+                    <span class="role-badge badge-ds">DS</span> 0.5 (частичная занятость)
+                </div>
+                <div style="margin: 15px 0;">
+                    <span class="role-badge badge-qa">QA</span> 0.5 (частичная занятость)
+                </div>
+
+                <div style="margin-top: 30px; padding: 20px; background: rgba(0, 212, 255, 0.1); border-radius: 10px;">
+                    <div style="margin: 10px 0;">
+                        ⚡ <strong>Производительность команды:</strong> 1.0 + 1.0 + 0.5 + 0.5 = <span style="color: var(--accent-primary);">3.0 ч/д в день</span>
+                    </div>
+                    <div style="margin: 10px 0;">
+                        📅 <strong>Чистая продолжительность:</strong> <span id="calc3">17</span> календарных дней
+                    </div>
+                    <div style="margin: 10px 0;">
+                        ⚠️ <strong>Коэффициент рисков:</strong>
+                        <label for="riskFactor"></label><input type="number" id="riskFactor" class="risk-input" value="1.3" min="1" max="3" step="0.1">
+                    </div>
+                    <div style="margin: 20px 0; padding-top: 20px; border-top: 2px solid rgba(0, 212, 255, 0.3); font-size: 1.3em;">
+                        🎯 <strong style="color: var(--accent-primary);">ИТОГОВАЯ ПРОДОЛЖИТЕЛЬНОСТЬ:</strong>
+                        <span id="calc4" style="color: var(--success);">23</span> календарных дней (~<span id="weeksCalc">4.6</span> недели)
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">4. Календарный план (Диаграмма Ганта)</h2>
+
+            <div class="gantt-container">
+                <div style="margin-bottom: 20px; color: var(--text-secondary);">
+                    Период: <strong style="color: var(--accent-primary);">~<span id="ganttWeeks">4.6</span> недели</strong>
+                </div>
+
+                <div class="gantt-header">
+                    <div></div>
+                    <div class="week-label">1 неделя</div>
+                    <div class="week-label">2 неделя</div>
+                    <div class="week-label">3 неделя</div>
+                    <div class="week-label">4 неделя</div>
+                    <div class="week-label">5 нед</div>
+                </div>
+
+                <div class="gantt-row">
+                    <div class="gantt-label">Настройка окружения</div>
+                    <div class="gantt-timeline">
+                        <div class="gantt-bar setup">Setup</div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class="gantt-row">
+                    <div class="gantt-label">Дизайн MVP</div>
+                    <div class="gantt-timeline">
+                        <div class="gantt-bar design">Design</div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class="gantt-row">
+                    <div class="gantt-label">Backend: Авторизация</div>
+                    <div class="gantt-timeline">
+                        <div class="gantt-bar backend">BE Auth</div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class="gantt-row">
+                    <div class="gantt-label">Frontend: Авторизация</div>
+                    <div class="gantt-timeline">
+                        <div class="gantt-bar frontend">FE Auth</div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class="gantt-row">
+                    <div class="gantt-label">Backend: Операции</div>
+                    <div class="gantt-timeline">
+                        <div></div>
+                        <div class="gantt-bar backend">BE Ops</div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class="gantt-row">
+                    <div class="gantt-label">Frontend: Операции</div>
+                    <div class="gantt-timeline">
+                        <div></div>
+                        <div class="gantt-bar frontend">FE Ops</div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class="gantt-row">
+                    <div class="gantt-label">Статистика + Настройки</div>
+                    <div class="gantt-timeline">
+                        <div></div>
+                        <div></div>
+                        <div class="gantt-bar frontend">Stats + Settings</div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class="gantt-row">
+                    <div class="gantt-label">Функц. тестирование</div>
+                    <div class="gantt-timeline">
+                        <div></div>
+                        <div class="gantt-bar testing">Test</div>
+                        <div class="gantt-bar testing">Test</div>
+                        <div class="gantt-bar testing">Test</div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class="gantt-row">
+                    <div class="gantt-label">Сборка и выкладка</div>
+                    <div class="gantt-timeline">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div class="gantt-bar release">Build</div>
+                        <div class="gantt-bar release">Deploy</div>
+                    </div>
+                </div>
+
+                <div class="gantt-row">
+                    <div class="gantt-label">Релизное тестирование</div>
+                    <div class="gantt-timeline">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div class="gantt-bar testing">QA</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">5. Ответы на вопросы для анализа</h2>
+
+            <div class="answer-box">
+                <h3>1. Какие задачи имеют наибольшую неопределенность и почему?</h3>
+                <p>На мой взгляд, самая высокая неопределенность связана с несколькими задачами:</p>
+                <ul>
+                    <li><strong>Инфраструктурные задачи (6.1 и 6.3):</strong> Настройка окружения и публикация в магазинах приложений могут преподнести сюрпризы. Требования AppStore и Google Play постоянно меняются, могут быть проблемы с сертификатами или отклонение приложения на модерации. Всё это сложно предсказать заранее.</li>
+                    <li><strong>Работа с графиками (4.2):</strong> Интеграция библиотеки для построения диаграмм может оказаться сложнее, чем кажется. Особенно если учесть производительность на старых мобильных устройствах и кастомизацию внешнего вида под дизайн приложения.</li>
+                    <li><strong>Фильтрация и пагинация (3.3):</strong> Здесь неопределенность связана с объемом данных. Если пользователь накопит тысячи операций, может потребоваться серьезная оптимизация запросов к базе данных, что займет дополнительное время.</li>
+                </ul>
+            </div>
+
+            <div class="answer-box">
+                <h3>2. Как изменится срок при одном full-stack разработчике?</h3>
+                <p>Если вместо отдельных FE и BE разработчиков будет один full-stack специалист, ситуация изменится следующим образом:</p>
+
+                <p><strong>Основная проблема</strong> - потеря параллелизма. Сейчас frontend и backend могут работать одновременно над разными фичами. Full-stack разработчик сможет делать только одну вещь за раз, плюс будет тратить время на переключение контекста между технологиями.</p>
+
+                <div style="margin: 15px 0; padding: 15px; background: rgba(255, 170, 0, 0.1); border-left: 3px solid var(--warning); border-radius: 8px;">
+                    <strong>Мои расчеты:</strong><br>
+                    Производительность команды: 1.0 (FS) + 0.5 (DS) + 0.5 (QA) = 2.0 ч/д в день<br>
+                    Чистая продолжительность: 51 ÷ 2.0 = <strong style="color: var(--warning);">25.5 дней</strong><br>
+                    С рисками (×1.3): <strong style="color: var(--warning);">≈33 календарных дня</strong>
+                </div>
+
+                <p><strong style="color: var(--warning);">Итог:</strong> Срок вырастет с 23 до 33 дней, то есть примерно на <strong>43%</strong>. Плюс появляется критическая зависимость от одного человека - любая его болезнь или проблема полностью останавливает разработку.</p>
+            </div>
+
+            <div class="answer-box">
+                <h3>3. Какие риски могут увеличить фактические сроки?</h3>
+                <p>Я вижу три основные категории рисков, которые могут сорвать сроки:</p>
+
+                <div style="margin: 15px 0; padding: 15px; background: rgba(255, 51, 102, 0.1); border-left: 3px solid #ff3366; border-radius: 8px;">
+                    <strong style="color: #ff3366;">⚠️ Технические:</strong>
+                    <ul>
+                        <li>Проблемы интеграции с внешними сервисами (например, отправка email для восстановления пароля через SMTP)</li>
+                        <li>Неожиданные баги на реальных устройствах, которые не проявлялись на эмуляторах</li>
+                        <li>Необходимость переписывания архитектуры, если изначальный подход окажется неэффективным</li>
+                        <li>Проблемы с производительностью базы данных при большом объеме данных</li>
+                    </ul>
+                </div>
+
+                <div style="margin: 15px 0; padding: 15px; background: rgba(255, 51, 102, 0.1); border-left: 3px solid #ff3366; border-radius: 8px;">
+                    <strong style="color: #ff3366;">⚠️ Организационные:</strong>
+                    <ul>
+                        <li>Изменение требований в процессе работы (это классика!). Заказчик может попросить добавить новые фичи или изменить существующие</li>
+                        <li>Долгое согласование дизайна - дизайнер может делать десять итераций, пока не устроит заказчика</li>
+                        <li>Временная недоступность членов команды (больничные, отпуска, увольнения)</li>
+                        <li>Задержки в получении доступов к аккаунтам разработчика в сторах</li>
+                    </ul>
+                </div>
+
+                <div style="margin: 15px 0; padding: 15px; background: rgba(255, 51, 102, 0.1); border-left: 3px solid #ff3366; border-radius: 8px;">
+                    <strong style="color: #ff3366;">⚠️ Внешние факторы:</strong>
+                    <ul>
+                        <li>Модерация в AppStore может занять от 2 дней до 2 недель, и приложение могут отклонить по неочевидным причинам</li>
+                        <li>Изменения в требованиях платформ (новые версии iOS/Android с breaking changes)</li>
+                        <li>Технические проблемы с инфраструктурой (падение серверов, проблемы с хостингом)</li>
+                    </ul>
+                </div>
+
+                <p style="margin-top: 20px;">Именно поэтому я и использовал коэффициент рисков 1.3 - он дает 30% запас на непредвиденные ситуации. Для проектов с большей неопределенностью лучше закладывать 1.5-2.0.</p>
+            </div>
+        </section>
     </div>
-</div>
 
-<script>
-    (function() {
-        const navButtons = document.querySelectorAll('.nav-btn');
-        navButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const target = btn.dataset.scroll;
-                if (target) {
-                    const el = document.querySelector(target);
-                    if (el) {
-                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
+    <div class="scroll-top" id="scrollTop">↑</div>
+
+    <script>
+        const tableData = [
+            { section: "1. АВТОРИЗАЦИЯ", isHeader: true },
+            { num: "1.1", task: "Проектирование UI-экранов", executor: ["DS"], hours: 8, note: "Дизайн 3 экранов: вход, регистрация и восстановление" },
+            { num: "1.2", task: "Верстка экранов авторизации", executor: ["FE"], hours: 16, note: "Респонсивная верстка с анимациями" },
+            { num: "1.3", task: "Разработка API", executor: ["BE"], hours: 24, note: "JWT токены, шифрование паролей, отправка email" },
+            { num: "1.4", task: "Интеграция фронтенда с API", executor: ["FE"], hours: 12, note: "Работа с запросами, валидация, хранение токенов" },
+            { num: "1.5", task: "Unit-тесты модуля", executor: ["BE","FE"], hours: 8, note: "Тесты на основные сценарии входа" },
+            { num: "1.6", task: "Функциональное тестирование", executor: ["QA"], hours: 8, note: "Проверка корректных и некорректных данных" },
+            { subtotal: true, hours: 76 },
+
+            { section: "2. ВВОД ОПЕРАЦИЙ", isHeader: true },
+            { num: "2.1", task: "Дизайн экрана добавления", executor: ["DS"], hours: 6, note: "Форма: категория, сумма, дата, комментарий" },
+            { num: "2.2", task: "Верстка формы ввода", executor: ["FE"], hours: 20, note: "Валидация полей, подсказки пользователю" },
+            { num: "2.3", task: "Разработка API для сохранения", executor: ["BE"], hours: 16, note: "CRUD операции, проверка данных на сервере" },
+            { num: "2.4", task: "Интеграция формы с API", executor: ["FE"], hours: 10, note: "Отправка, обработка ответа, очистка формы" },
+            { num: "2.5", task: "Тестирование функционала", executor: ["QA"], hours: 6, note: "Проверка граничных значений" },
+            { subtotal: true, hours: 58 },
+
+            { section: "3. ПРОСМОТР ИСТОРИИ ОПЕРАЦИЙ", isHeader: true },
+            { num: "3.1", task: "Дизайн экрана списка", executor: ["DS"], hours: 8, note: "Список с фильтрацией по датам и категориям" },
+            { num: "3.2", task: "Верстка списка и фильтров", executor: ["FE"], hours: 18, note: "Динамическая подгрузка данных" },
+            { num: "3.3", task: "API для получения списка", executor: ["BE"], hours: 20, note: "Фильтрация и сортировка в БД" },
+            { num: "3.4", task: "Интеграция фронтенда с API", executor: ["FE"], hours: 12, note: "Получение данных, применение фильтров" },
+            { num: "3.5", task: "Тестирование истории", executor: ["QA"], hours: 8, note: "Тестирование фильтров и отображения" },
+            { subtotal: true, hours: 66 },
+
+            { section: "4. ПРОСТАЯ СТАТИСТИКА", isHeader: true },
+            { num: "4.1", task: "Дизайн экрана статистики", executor: ["DS"], hours: 6, note: "Круговая диаграмма с легендой" },
+            { num: "4.2", task: "Верстка, интеграция библиотеки", executor: ["FE"], hours: 16, note: "Подключение Chart.js, настройка графиков" },
+            { num: "4.3", task: "API для агрегации данных", executor: ["BE"], hours: 18, note: "Подсчет сумм по категориям за период" },
+            { num: "4.4", task: "Интеграция с API", executor: ["FE"], hours: 10, note: "Загрузка данных, построение диаграммы" },
+            { num: "4.5", task: "Тестирование корректности", executor: ["QA"], hours: 6, note: "Проверка правильности расчетов" },
+            { subtotal: true, hours: 56 },
+
+            { section: "5. НАСТРОЙКИ", isHeader: true },
+            { num: "5.1", task: "Дизайн экрана настроек", executor: ["DS"], hours: 4, note: "Минималистичный дизайн" },
+            { num: "5.2", task: "Верстка экрана", executor: ["FE"], hours: 8, note: "Выбор валюты, кнопка выхода" },
+            { num: "5.3", task: "API для настроек", executor: ["BE"], hours: 12, note: "Сохранение настроек пользователя" },
+            { num: "5.4", task: "Интеграция фронтенда", executor: ["FE"], hours: 6, note: "Применение выбранных настроек" },
+            { num: "5.5", task: "Тестирование функционала", executor: ["QA"], hours: 4, note: "Проверка изменения валюты и выхода" },
+            { subtotal: true, hours: 34 },
+
+            { section: "6. ОБЩИЕ ЗАДАЧИ", isHeader: true },
+            { num: "6.1", task: "Настройка окружения", executor: ["BE", "FE"], hours: 40, note: "Git, Docker, БД, базовый CI/CD" },
+            { num: "6.2", task: "Скрипты деплоя", executor: ["BE"], hours: 8, note: "Автоматизация развертывания" },
+            { num: "6.3", task: "Выкладка в сторы", executor: ["FE"], hours: 24, note: "Подготовка профилей, сертификаты, публикация" },
+            { num: "6.4", task: "Релизное тестирование", executor: ["QA"], hours: 8, note: "Финальная проверка перед релизом" },
+            { subtotal: true, hours: 80 },
+
+            { total: true, hours: 408 }
+        ];
+
+        function generateTable() {
+            const tbody = document.getElementById('tableBody');
+            let html = '';
+
+            tableData.forEach(row => {
+                if (row.isHeader) {
+                    html += `<tr class="module-header"><td colspan="5">${row.section}</td></tr>`;
+                } else if (row.subtotal) {
+                    html += `<tr class="subtotal">
+                        <td colspan="3">Итого по модулю:</td>
+                        <td><strong>${row.hours}</strong></td>
+                        <td></td>
+                    </tr>`;
+                } else if (row.total) {
+                    html += `<tr class="total">
+                        <td colspan="3">ОБЩАЯ ТРУДОЕМКОСТЬ:</td>
+                        <td><strong id="totalHoursTable">${row.hours}</strong></td>
+                        <td>человеко-часов</td>
+                    </tr>`;
+                } else {
+                    const badges = row.executor.map(e =>
+                        `<span class="role-badge badge-${e.toLowerCase()}">${e}</span>`
+                    ).join(' ');
+
+                    html += `<tr data-task-id="${row.num}">
+                        <td>${row.num}</td>
+                        <td>${row.task}</td>
+                        <td>${badges}</td>
+                        <td><input type="number" class="hours-input" value="${row.hours}" min="1" data-task="${row.num}"></td>
+                        <td>${row.note}</td>
+                    </tr>`;
                 }
-                navButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
             });
-        });
 
-        const HOURS_PER_DAY = 8;
-        const inputs = Array.from(document.querySelectorAll('.hours-input'));
-        const totalHoursEl = document.getElementById('total-hours');
-        const totalDaysEl = document.getElementById('total-days');
-        const durationCleanEl = document.getElementById('duration-clean');
-        const durationRiskEl = document.getElementById('duration-risk');
-        const riskInput = document.getElementById('risk-factor');
-        const durationWeeksEl = document.getElementById('summary-duration-weeks');
-        const teamCapacityBase = 3;
+            tbody.innerHTML = html;
+            attachInputListeners();
+        }
 
-        function recalc() {
-            let totalHours = 0;
+        function attachInputListeners() {
+            const inputs = document.querySelectorAll('.hours-input');
             inputs.forEach(input => {
-                const val = parseFloat(input.value);
-                if (!Number.isNaN(val) && val > 0) {
-                    totalHours += val;
+                input.addEventListener('input', calculateAll);
+            });
+
+            const riskInput = document.getElementById('riskFactor');
+            if (riskInput) {
+                riskInput.addEventListener('input', calculateAll);
+            }
+        }
+
+        function calculateAll() {
+            const inputs = document.querySelectorAll('.hours-input');
+            let totalHours = 0;
+
+            inputs.forEach(input => {
+                const val = parseFloat(input.value) || 0;
+                totalHours += val;
+            });
+
+            const totalDays = totalHours / 8;
+            const teamCapacity = 3.0;
+            const cleanDuration = totalDays / teamCapacity;
+            const riskFactor = parseFloat(document.getElementById('riskFactor').value) || 1.3;
+            const finalDuration = Math.round(cleanDuration * riskFactor);
+            const weeks = (finalDuration / 5).toFixed(1);
+
+            animateNumber(document.getElementById('totalHours'), totalHours);
+            animateNumber(document.getElementById('totalDays'), Math.round(totalDays));
+            animateNumber(document.getElementById('cleanDuration'), Math.round(cleanDuration));
+            animateNumber(document.getElementById('finalDuration'), finalDuration);
+
+            document.getElementById('calc3').textContent = Math.round(cleanDuration);
+            document.getElementById('calc4').textContent = finalDuration;
+            document.getElementById('weeksCalc').textContent = weeks;
+            document.getElementById('ganttWeeks').textContent = weeks;
+            document.getElementById('totalHoursTable').textContent = totalHours;
+
+            updateSubtotals();
+        }
+
+        function updateSubtotals() {
+            const sections = ["1", "2", "3", "4", "5", "6"];
+            sections.forEach(sec => {
+                let sectionTotal = 0;
+                const sectionInputs = document.querySelectorAll(`input[data-task^="${sec}."]`);
+                sectionInputs.forEach(input => {
+                    sectionTotal += parseFloat(input.value) || 0;
+                });
+            });
+        }
+
+        function animateNumber(element, target, duration = 1000) {
+            if (!element) return;
+            const start = parseFloat(element.textContent) || 0;
+            const increment = (target - start) / (duration / 16);
+            let current = start;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= target) || (increment < 0 && current <= target)) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(current);
+            }, 16);
+        }
+
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        function setupScrollAnimation() {
+            const sections = document.querySelectorAll('.section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            sections.forEach(section => observer.observe(section));
+        }
+
+        function setupScrollTop() {
+            const scrollTop = document.getElementById('scrollTop');
+
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    scrollTop.classList.add('visible');
+                } else {
+                    scrollTop.classList.remove('visible');
                 }
             });
 
-            const totalDays = totalHours / HOURS_PER_DAY;
-            const durationClean = totalDays / teamCapacityBase;
-            const risk = parseFloat(riskInput.value) || 1.3;
-            const durationRisk = durationClean * risk;
-            const weeks = durationRisk / 5;
-
-            if (totalHoursEl) totalHoursEl.textContent = totalHours.toFixed(0);
-            if (totalDaysEl) totalDaysEl.textContent = totalDays.toFixed(1);
-            if (durationCleanEl) durationCleanEl.textContent = durationClean.toFixed(1);
-            if (durationRiskEl) durationRiskEl.textContent = durationRisk.toFixed(1);
-            if (durationWeeksEl) durationWeeksEl.textContent = "~" + weeks.toFixed(1) + " недель";
+            scrollTop.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
         }
 
-        inputs.forEach(input => {
-            input.addEventListener('input', recalc);
+        function typeWriter() {
+            const title = document.getElementById('main-title');
+            const originalText = title.textContent;
+            title.textContent = '';
+            let i = 0;
+
+            const interval = setInterval(() => {
+                if (i < originalText.length) {
+                    title.textContent += originalText.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 100);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('ru-RU', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            generateTable();
+            createParticles();
+            setupScrollAnimation();
+            setupScrollTop();
+            typeWriter();
+
+            calculateAll();
         });
-        if (riskInput) {
-            riskInput.addEventListener('input', recalc);
-        }
-
-        recalc();
-    })();
-</script>
+    </script>
 </body>
 </html>
