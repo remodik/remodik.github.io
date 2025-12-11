@@ -1350,7 +1350,6 @@
 
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
                 const distance = Math.abs(window.scrollY - sectionTop + 100);
 
                 if (distance < closestDistance && window.scrollY >= sectionTop - 150) {
