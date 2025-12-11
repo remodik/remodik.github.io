@@ -192,7 +192,7 @@
     `;
 
     function getBasePath() {
-        const path = window.location.pathname;
+        const path = globalThis.location.pathname;
 
         if (path.includes('/12-3-2025/') || path.includes('/12-10-2025/')) {
             return '..';
@@ -223,7 +223,7 @@
     `;
 
     function setActivePage() {
-        const currentPath = window.location.pathname;
+        const currentPath = globalThis.location.pathname;
         const links = document.querySelectorAll('.nav-menu a');
 
         links.forEach(link => {
@@ -284,7 +284,7 @@
     }
 })();
 
-window.addNavItem = function(icon, text, href, dataPage) {
+globalThis.addNavItem = function(icon, text, href, dataPage) {
     const navMenu = document.getElementById('navMenu');
     if (navMenu) {
         const li = document.createElement('li');
