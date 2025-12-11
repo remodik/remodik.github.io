@@ -1,14 +1,12 @@
 (function() {
     const styles = `
         <style id="nav-header-styles">
-            /* === ПОЛНЫЙ СБРОС СТИЛЕЙ ДЛЯ МЕНЮ === */
             .nav-header * {
                 margin: 0 !important;
                 padding: 0 !important;
                 box-sizing: border-box !important;
             }
 
-            /* === БАЗОВЫЕ СТИЛИ ХЕДЕРА === */
             .nav-header {
                 position: fixed !important;
                 top: 0 !important;
@@ -44,7 +42,6 @@
                 gap: 10px !important;
             }
 
-            /* === ИЗОЛИРОВАННЫЕ СТИЛИ МЕНЮ === */
             .nav-menu {
                 display: flex !important;
                 gap: 10px !important;
@@ -60,7 +57,6 @@
                 padding: 0 !important;
             }
 
-            /* СБРАСЫВАЕМ ВСЕ ПСЕВДОЭЛЕМЕНТЫ ДЛЯ МЕНЮ */
             .nav-menu li::before,
             .nav-menu li::after,
             .nav-menu a::before,
@@ -84,9 +80,6 @@
                 overflow: hidden !important;
             }
 
-            /* === ЭФФЕКТЫ ДЛЯ КНОПОК === */
-
-            /* 1. Скользящий свет при наведении */
             .nav-menu a:hover::before {
                 content: '' !important;
                 display: block !important;
@@ -99,11 +92,8 @@
                 transition: left 0.6s ease !important;
             }
 
-            .nav-menu a:hover::before {
-                left: 100% !important;
-            }
+            .nav-menu a:hover::before { left: 100% !important; }
 
-            /* 2. Появление стрелки слева */
             .nav-menu a::after {
                 content: '▹' !important;
                 position: absolute !important;
@@ -129,7 +119,6 @@
                 box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2) !important;
             }
 
-            /* 3. Активный пункт - пульсирующая подсветка */
             .nav-menu a.active {
                 animation: pulse-menu 2s ease-in-out infinite !important;
                 background: rgba(0, 212, 255, 0.15) !important;
@@ -147,7 +136,6 @@
                 }
             }
 
-            /* 4. Мобильное меню */
             .mobile-menu-btn {
                 display: none !important;
                 background: none !important;
@@ -158,10 +146,7 @@
                 padding: 5px !important;
             }
 
-            /* Отступ для контента под хедером */
-            body {
-                padding-top: 70px !important;
-            }
+            body { padding-top: 70px !important; }
 
             @media (max-width: 768px) {
                 .nav-menu {
@@ -176,17 +161,9 @@
                     display: none !important;
                 }
 
-                .nav-menu.active {
-                    display: flex !important;
-                }
-
-                .mobile-menu-btn {
-                    display: block !important;
-                }
-
-                .nav-menu a {
-                    width: 100% !important;
-                }
+                .nav-menu.active { display: flex !important; }
+                .mobile-menu-btn { display: block !important; }
+                .nav-menu a { width: 100% !important; }
             }
         </style>
     `;
