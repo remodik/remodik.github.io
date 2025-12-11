@@ -1,419 +1,522 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
-    <title>HTML-практики</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Практические работы | Головкин Илья</title>
     <style>
-        :root {
-            --bg: #020617;
-            --card: #020617;
-            --card-soft: #020617;
-            --accent: #4f46e5;
-            --accent-soft: rgba(79, 70, 229, 0.15);
-            --accent-strong: rgba(129, 140, 248, 0.35);
-            --border-subtle: rgba(148, 163, 184, 0.4);
-            --text-main: #e5e7eb;
-            --text-soft: #9ca3af;
-            --text-muted: #6b7280;
-        }
-
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
-        html, body {
-            margin: 0;
-            padding: 0;
-            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background:
-                radial-gradient(circle at top, #1f2937 0, #020617 45%, #000 100%);
-            color: var(--text-main);
-        }
-
         body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #0f0f23 100%);
+            color: #e0e0e0;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            padding: 32px 16px;
-        }
-
-        .shell {
-            width: 100%;
-            max-width: 1120px;
-            background: radial-gradient(circle at top left, rgba(15,23,42,0.98), rgba(15,23,42,0.97));
-            border-radius: 28px;
-            box-shadow:
-                0 0 0 1px rgba(148, 163, 184, 0.25),
-                0 30px 120px rgba(15, 23, 42, 0.9);
-            padding: 24px 22px 26px;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
-        .shell::before {
-            content: "";
-            position: absolute;
-            inset: -40%;
-            background:
-                radial-gradient(circle at 0% 0%, rgba(59,130,246,0.14) 0, transparent 42%),
-                radial-gradient(circle at 100% 0%, rgba(236,72,153,0.18) 0, transparent 50%),
-                radial-gradient(circle at 50% 120%, rgba(56,189,248,0.10) 0, transparent 52%);
-            opacity: 0.9;
+        /* Навигационный хедер */
+        .nav-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .nav-logo {
+            font-size: 1.3em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 10px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu li {
+            position: relative;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            color: #a0a0a0;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            border: 1px solid transparent;
+        }
+
+        .nav-menu a:hover {
+            color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-menu a.active {
+            color: #00d4ff;
+            background: rgba(0, 212, 255, 0.15);
+            border-color: rgba(0, 212, 255, 0.4);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #00d4ff;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(15, 15, 35, 0.98);
+                flex-direction: column;
+                padding: 20px;
+                border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+                display: none;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .nav-menu a {
+                width: 100%;
+            }
+        }
+
+        /* Основной контент со смещением под хедер */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
+            z-index: 0;
         }
 
-        .shell-inner {
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00d4ff;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-100px) translateX(50px); }
+            50% { transform: translateY(-50px) translateX(-50px); }
+            75% { transform: translateY(-150px) translateX(100px); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 90px 20px 20px; /* Смещение под хедер */
             position: relative;
             z-index: 1;
         }
 
-        header {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 14px;
-            margin-bottom: 18px;
-        }
-
-        .title-block {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: clamp(1.7rem, 3vw, 2.1rem);
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
-
-        .subtitle {
-            font-size: 0.96rem;
-            color: var(--text-soft);
-        }
-
-        .tagline {
-            font-size: 0.86rem;
-            color: var(--text-muted);
-        }
-
-        .meta {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 8px;
-            font-size: 0.86rem;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 10px;
-            border-radius: 999px;
-            background: rgba(15,23,42,0.9);
-            border: 1px solid rgba(148, 163, 184, 0.5);
-            color: var(--text-soft);
-            font-size: 0.8rem;
-        }
-
-        .badge-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: #22c55e;
-            box-shadow: 0 0 0 4px rgba(34,197,94,0.35);
-        }
-
-        .meta span {
-            padding: 3px 9px;
-            border-radius: 999px;
-            border: 1px solid rgba(148, 163, 184, 0.4);
-            background: rgba(15,23,42,0.9);
-            color: var(--text-soft);
-        }
-
-        @media (max-width: 720px) {
-            .meta {
-                align-items: flex-start;
-            }
-        }
-
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .search-group {
-            flex: 1 1 220px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 10px;
-            border-radius: 999px;
-            border: 1px solid rgba(148,163,184,0.5);
-            background: rgba(15,23,42,0.95);
-        }
-
-        .search-group input {
-            flex: 1;
-            border: none;
-            outline: none;
-            background: transparent;
-            color: var(--text-main);
-            font-size: 0.9rem;
-        }
-
-        .search-icon {
-            width: 16px;
-            height: 16px;
-            border-radius: 999px;
-            border: 2px solid rgba(148,163,184,0.9);
+        .header {
+            text-align: center;
+            padding: 60px 20px 40px;
             position: relative;
         }
 
-        .search-icon::after {
-            content: "";
+        .header::before {
+            content: '';
             position: absolute;
-            width: 8px;
-            height: 2px;
-            border-radius: 999px;
-            background: rgba(148,163,184,0.9);
-            transform: translate(7px, 7px) rotate(45deg);
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 3s ease-in-out infinite;
         }
 
-        .toggle-empty {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.82rem;
-            padding: 6px 10px;
-            border-radius: 999px;
-            border: 1px solid rgba(148,163,184,0.4);
-            background: rgba(15,23,42,0.9);
-            cursor: pointer;
-            color: var(--text-soft);
-            user-select: none;
+        @keyframes pulse {
+            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.5; }
+            50% { transform: translateX(-50%) scale(1.1); opacity: 0.7; }
         }
 
-        .toggle-empty input {
-            width: 14px;
-            height: 14px;
+        .header-content {
+            position: relative;
+            z-index: 1;
         }
 
-        main {
+        h1 {
+            font-size: clamp(2.5em, 5vw, 4em);
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf, #00d4ff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            animation: gradient 3s ease infinite;
+        }
+
+        @keyframes gradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            color: #a0a0a0;
+            margin-bottom: 10px;
+        }
+
+        .student-info {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50px;
+            font-size: 1.1em;
+        }
+
+        .works-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-            gap: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
         }
 
-        @media (max-width: 900px) {
-            main {
-                grid-template-columns: minmax(0, 1fr);
-            }
+        .work-card {
+            background: linear-gradient(145deg, rgba(22, 33, 62, 0.9), rgba(26, 26, 46, 0.9));
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
-        .column {
+        .work-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .work-card:hover::before {
+            left: 100%;
+        }
+
+        .work-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 212, 255, 0.3);
+            border-color: rgba(0, 212, 255, 0.5);
+        }
+
+        .work-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+            border-radius: 15px;
             display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .card {
-            background: radial-gradient(circle at top left, rgba(15,23,42,0.98), rgba(15,23,42,0.96));
-            border-radius: 18px;
-            padding: 12px 12px 10px;
-            border: 1px solid rgba(148, 163, 184, 0.35);
-            box-shadow: 0 14px 45px rgba(15,23,42,0.9);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
+            justify-content: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
         }
 
-        .card-title {
-            font-size: 0.95rem;
-            font-weight: 600;
+        .work-card:hover .work-icon {
+            transform: rotate(10deg) scale(1.1);
         }
 
-        .card-subtitle {
-            font-size: 0.8rem;
-            color: var(--text-muted);
+        .work-date {
+            font-size: 0.9em;
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-weight: bold;
         }
 
-        .date-pill {
-            font-size: 0.8rem;
-            padding: 4px 8px;
-            border-radius: 999px;
-            border: 1px solid rgba(148,163,184,0.55);
-            background: rgba(15,23,42,0.9);
+        .work-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #fff;
         }
 
-        .file-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .work-description {
+            color: #a0a0a0;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .work-tags {
             display: flex;
-            flex-direction: column;
-            gap: 6px;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
         }
 
-        .file-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.88rem;
+        .tag {
+            padding: 5px 12px;
+            background: rgba(0, 212, 255, 0.15);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            font-size: 0.85em;
+            color: #00d4ff;
         }
 
-        .file-link {
+        .work-link {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            text-decoration: none;
-            color: var(--text-main);
-            padding: 4px 8px;
-            border-radius: 999px;
-            background: rgba(15,23,42,0.9);
-            border: 1px solid rgba(148,163,184,0.4);
-            transition: all 0.16s ease-out;
-        }
-
-        .file-link span.label {
-            font-size: 0.86rem;
-        }
-
-        .file-link .dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 999px;
-            background: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-soft);
-        }
-
-        .file-link:hover {
-            border-color: var(--accent-strong);
-            box-shadow: 0 0 0 1px var(--accent-strong);
-            transform: translateY(-1px);
-        }
-
-        .file-meta {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            white-space: nowrap;
-        }
-
-        .file-item.hidden {
-            display: none;
-        }
-
-        .card.hidden {
-            display: none;
-        }
-
-        .legend {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 6px;
-        }
-
-        .legend span {
-            padding: 2px 7px;
-            border-radius: 999px;
-            border: 1px dashed rgba(148,163,184,0.6);
-            margin-right: 4px;
-        }
-
-        footer {
-            margin-top: 12px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            display: flex;
-            justify-content: space-between;
             gap: 10px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .work-link:hover {
+            background: linear-gradient(135deg, #00e5ff, #00aadd);
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: #666;
+        }
+
+        .footer a {
+            color: #00d4ff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #00e5ff;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
             flex-wrap: wrap;
         }
 
-        footer a {
-            color: #a5b4fc;
-            text-decoration: none;
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 212, 255, 0.05);
+            border-radius: 15px;
+            min-width: 150px;
         }
 
-        footer a:hover {
-            text-decoration: underline;
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #a0a0a0;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
-<div class="shell">
-    <div class="shell-inner">
-        <header>
-            <div class="title-block">
-                <h1>HTML-практические работы</h1>
-                <div class="subtitle">Сборник отчётов и практик, выложенных на GitHub Pages.</div>
-                <div class="tagline">Эта страница служит навигатором: по каждому файлу можно перейти по ссылке и открыть отчёт в браузере.</div>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 id="mainTitle">💼 Портфолио работ</h1>
+                <p class="subtitle">Практические работы по разработке ПО</p>
+                <div class="student-info">
+                    <strong>Головкин Илья</strong> • Группа 9/3 РПО 23/2
+                </div>
             </div>
         </header>
 
-        <main>
-            <div class="column">
-                <section class="card" data-date="2025-02-25">
-                    <div class="card-header">
-                        <div>
-                            <div class="card-title">Проект «Корпоративная доска заметок»</div>
-                            <div class="card-subtitle">Устав проекта, WBS и прогноз рисков для корпоративной доски заметок (ToDo Board) на WPF и SQL Server.</div>
-                        </div>
-                        <span class="date-pill">25.02.2025</span>
-                    </div>
-                    <ul class="file-list">
-                        <li class="file-item">
-                            <a class="file-link" href="2-25-2025/main.html">
-                                <span class="dot"></span>
-                                <span class="label">Перейти</span>
-                            </a>
-                        </li>
-                    </ul>
-                </section>
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="workCount">2</div>
+                <div class="stat-label">Практических работ</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">HTML/CSS/JS</div>
+                <div class="stat-label">Технологии</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Интерактивность</div>
+            </div>
+        </div>
+
+        <div class="works-grid" id="worksGrid">
+            <div class="work-card" onclick="openWork('12-3-2025/main.html')">
+                <div class="work-icon">📊</div>
+                <div class="work-date">3 декабря 2025</div>
+                <h3 class="work-title">Проект «Корпоративная доска заметок»</h3>
+                <p class="work-description">
+                    Устав проекта, WBS и прогноз рисков для корпоративной доски заметок (ToDo Board) на WPF и SQL Server.
+                </p>
+                <div class="work-tags">
+                    <span class="tag">HTML5</span>
+                    <span class="tag">CSS3</span>
+                    <span class="tag">JavaScript</span>
+                </div>
+                <a href="12-3-2025/main.html" class="work-link" onclick="event.stopPropagation()">
+                    Открыть работу →
+                </a>
             </div>
 
-            <div class="column">
-                <section class="card" data-date="2025-12-10">
-                    <div class="card-header">
-                        <div>
-                            <div class="card-title">Оценка трудоёмкости и сроков разработки ПО</div>
-                        </div>
-                        <span class="date-pill">10.12.2025</span>
-                    </div>
-                    <ul class="file-list">
-                        <li class="file-item">
-                            <a class="file-link" href="12-10-2025/main.html">
-                                <span class="dot"></span>
-                                <span class="label">Перейти</span>
-                            </a>
-                        </li>
-                    </ul>
-                </section>
+            <div class="work-card" onclick="openWork('12-10-2025/main.html')">
+                <div class="work-icon">🔧</div>
+                <div class="work-date">10 декабря 2025</div>
+                <h3 class="work-title">Оценка трудоемкости и сроков разработки ПО</h3>
+                <p class="work-description">
+                    Интерактивная работа по планированию проекта мобильного приложения.
+                    Включает декомпозицию задач, расчет трудоемкости с возможностью редактирования в реальном времени,
+                    диаграмму Ганта и анализ рисков.
+                </p>
+                <div class="work-tags">
+                    <span class="tag">Планирование</span>
+                    <span class="tag">Оценка проектов</span>
+                    <span class="tag">Интерактив</span>
+                    <span class="tag">Диаграмма Ганта</span>
+                </div>
+                <a href="12-10-2025/main.html" class="work-link" onclick="event.stopPropagation()">
+                    Открыть работу →
+                </a>
             </div>
-        </main>
+        </div>
 
-        <footer>
-            <span>Репозиторий GitHub: <a href="https://github.com/remodik/remodik.github.io" target="_blank" rel="noreferrer">remodik.github.io</a></span>
+        <footer class="footer">
+            <p style="margin-top: 10px;">
+                <a href="https://github.com" target="_blank">GitHub</a> •
+                Hosted on GitHub Pages
+            </p>
         </footer>
     </div>
-</div>
+
+    <script>
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('navMenu').classList.toggle('active');
+        });
+
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        function openWork(url) {
+            window.location.href = url;
+        }
+
+        function typeWriter() {
+            const title = document.getElementById('mainTitle');
+            const originalText = title.textContent;
+            title.textContent = '';
+            let i = 0;
+
+            const interval = setInterval(() => {
+                if (i < originalText.length) {
+                    title.textContent += originalText.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 80);
+        }
+
+        function animateCounter() {
+            const counter = document.getElementById('workCount');
+            const target = 2;
+            let current = 0;
+
+            const interval = setInterval(() => {
+                if (current < target) {
+                    current++;
+                    counter.textContent = current;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 300);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            typeWriter();
+            animateCounter();
+        });
+    </script>
+    <script src="nav-header.js"></script>
 </body>
 </html>
