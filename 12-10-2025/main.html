@@ -538,7 +538,6 @@
         <div class="info-card">
             <strong style="color: var(--accent-primary);">Выполнил:</strong> Головкин Илья<br>
             <strong style="color: var(--accent-primary);">Группа:</strong> 9/3 РПО 23/2<br>
-            <strong style="color: var(--accent-primary);">Дата:</strong> <span id="currentDate"></span>
         </div>
 
         <section class="section">
@@ -1005,7 +1004,7 @@
             });
 
             const totalDays = totalHours / 8;
-            const teamCapacity = 3.0;
+            const teamCapacity = 3;
             const cleanDuration = totalDays / teamCapacity;
             const riskFactor = parseFloat(document.getElementById('riskFactor').value) || 1.3;
             const finalDuration = Math.round(cleanDuration * riskFactor);
