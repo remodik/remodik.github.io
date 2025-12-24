@@ -171,7 +171,7 @@
     function getBasePath() {
         const path = globalThis.location.pathname;
 
-        if (path.includes('/12-3-2025/') || path.includes('/12-10-2025/')) {
+        if (path.includes('/12-3-2025/') || path.includes('/12-10-2025/' || path.includes('/12-24-2025/'))) {
             return '..';
         }
 
@@ -192,6 +192,7 @@
                     <li><a href="${basePath}/index.html" data-page="home">Главная</a></li>
                     <li><a href="${basePath}/12-3-2025/main.html" data-page="work1">Корпоративная доска заметок</a></li>
                     <li><a href="${basePath}/12-10-2025/main.html" data-page="work2">Оценка трудоемкости</a></li>
+                    <li><a href="${basePath}/12-24-2025/main.html" data-page="work3">Устав проекта EduTrack</a></li>
                 </ul>
 
                 <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
