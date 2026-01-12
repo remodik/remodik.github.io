@@ -40,19 +40,97 @@
                 display: flex !important;
                 align-items: center !important;
                 gap: 10px !important;
+                transition: all 0.3s ease !important;
+            }
+
+            .nav-logo:hover {
+                transform: scale(1.05) !important;
+            }
+
+            .burger-btn {
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+                width: 45px !important;
+                height: 45px !important;
+                background: rgba(0, 212, 255, 0.1) !important;
+                border: 1px solid rgba(0, 212, 255, 0.3) !important;
+                border-radius: 12px !important;
+                cursor: pointer !important;
+                transition: all 0.3s ease !important;
+                position: relative !important;
+                gap: 5px !important;
+            }
+
+            .burger-btn:hover {
+                background: rgba(0, 212, 255, 0.2) !important;
+                border-color: rgba(0, 212, 255, 0.5) !important;
+                transform: scale(1.05) !important;
+            }
+
+            .burger-btn span {
+                display: block !important;
+                width: 22px !important;
+                height: 2px !important;
+                background: #00d4ff !important;
+                border-radius: 2px !important;
+                transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+            }
+
+            .burger-btn.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px) !important;
+            }
+
+            .burger-btn.active span:nth-child(2) {
+                opacity: 0 !important;
+                transform: translateX(-10px) !important;
+            }
+
+            .burger-btn.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -5px) !important;
+            }
+
+            .nav-dropdown {
+                position: absolute !important;
+                top: 100% !important;
+                right: 20px !important;
+                width: 320px !important;
+                max-height: 0 !important;
+                overflow: hidden !important;
+                background: rgba(15, 15, 35, 0.98) !important;
+                backdrop-filter: blur(20px) !important;
+                border: 1px solid rgba(0, 212, 255, 0.2) !important;
+                border-radius: 16px !important;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 212, 255, 0.1) !important;
+                transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+                opacity: 0 !important;
+                transform: translateY(-10px) !important;
+                margin-top: 10px !important;
+            }
+
+            .nav-dropdown.active {
+                max-height: 500px !important;
+                opacity: 1 !important;
+                transform: translateY(0) !important;
+            }
+
+            .nav-dropdown-header {
+                padding: 18px 20px !important;
+                border-bottom: 1px solid rgba(0, 212, 255, 0.15) !important;
+                font-size: 0.75em !important;
+                text-transform: uppercase !important;
+                letter-spacing: 2px !important;
+                color: #666 !important;
             }
 
             .nav-menu {
-                display: flex !important;
-                gap: 10px !important;
                 list-style: none !important;
-                flex-wrap: wrap !important;
+                padding: 10px !important;
                 margin: 0 !important;
-                padding: 0 !important;
             }
 
             .nav-menu li {
-                position: relative !important;
                 margin: 0 !important;
                 padding: 0 !important;
             }
@@ -68,134 +146,188 @@
             .nav-menu a {
                 display: flex !important;
                 align-items: center !important;
-                gap: 8px !important;
-                padding: 10px 18px !important;
+                gap: 12px !important;
+                padding: 14px 16px !important;
                 color: #a0a0a0 !important;
                 text-decoration: none !important;
-                border-radius: 10px !important;
-                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+                border-radius: 12px !important;
+                transition: all 0.3s ease !important;
                 font-size: 0.95em !important;
                 border: 1px solid transparent !important;
                 position: relative !important;
                 overflow: hidden !important;
             }
 
-            .nav-menu a:hover::before {
-                content: '' !important;
-                display: block !important;
-                position: absolute !important;
-                top: 0 !important;
-                left: -100% !important;
-                width: 100% !important;
-                height: 100% !important;
-                background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.3), transparent) !important;
-                transition: left 0.6s ease !important;
+            .nav-menu a .nav-icon {
+                font-size: 1.3em !important;
+                width: 35px !important;
+                height: 35px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                background: rgba(0, 212, 255, 0.1) !important;
+                border-radius: 8px !important;
+                transition: all 0.3s ease !important;
             }
 
-            .nav-menu a:hover::before { left: 100% !important; }
+            .nav-menu a .nav-text {
+                flex: 1 !important;
+            }
 
-            .nav-menu a::after {
-                content: '▹' !important;
-                position: absolute !important;
-                left: -15px !important;
+            .nav-menu a .nav-arrow {
                 opacity: 0 !important;
+                transform: translateX(-10px) !important;
                 transition: all 0.3s ease !important;
                 color: #00d4ff !important;
-                font-size: 1.2em !important;
-                display: block !important;
-            }
-
-            .nav-menu a:hover::after {
-                left: 8px !important;
-                opacity: 1 !important;
             }
 
             .nav-menu a:hover {
-                padding-left: 30px !important;
-                transform: translateY(-3px) !important;
                 color: #00d4ff !important;
-                background: rgba(0, 212, 255, 0.15) !important;
-                border-color: rgba(0, 212, 255, 0.4) !important;
-                box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2) !important;
+                background: rgba(0, 212, 255, 0.1) !important;
+                border-color: rgba(0, 212, 255, 0.2) !important;
+                transform: translateX(5px) !important;
+            }
+
+            .nav-menu a:hover .nav-icon {
+                background: rgba(0, 212, 255, 0.2) !important;
+                transform: scale(1.1) !important;
+            }
+
+            .nav-menu a:hover .nav-arrow {
+                opacity: 1 !important;
+                transform: translateX(0) !important;
             }
 
             .nav-menu a.active {
-                animation: pulse-menu 2s ease-in-out infinite !important;
                 background: rgba(0, 212, 255, 0.15) !important;
-                border-color: rgba(0, 212, 255, 0.4) !important;
+                border-color: rgba(0, 212, 255, 0.3) !important;
                 color: #00d4ff !important;
-                font-weight: 600 !important;
             }
 
-            @keyframes pulse-menu {
-                0%, 100% {
-                    box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4) !important;
+            .nav-menu a.active .nav-icon {
+                background: linear-gradient(135deg, #00d4ff, #7b2cbf) !important;
+            }
+
+            .nav-menu .nav-divider {
+                height: 1px !important;
+                background: rgba(0, 212, 255, 0.1) !important;
+                margin: 8px 16px !important;
+            }
+
+            .nav-menu .nav-section-title {
+                padding: 10px 16px 5px !important;
+                font-size: 0.7em !important;
+                text-transform: uppercase !important;
+                letter-spacing: 1.5px !important;
+                color: #555 !important;
+            }
+
+            .nav-overlay {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                background: rgba(0, 0, 0, 0.5) !important;
+                opacity: 0 !important;
+                visibility: hidden !important;
+                transition: all 0.3s ease !important;
+                z-index: 9998 !important;
+            }
+
+            .nav-overlay.active {
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+
+            body {
+                padding-top: 75px !important;
+            }
+
+            @media (max-width: 480px) {
+                .nav-dropdown {
+                    right: 10px !important;
+                    left: 10px !important;
+                    width: auto !important;
                 }
-                50% {
-                    box-shadow: 0 0 0 8px rgba(0, 212, 255, 0) !important;
-                }
-            }
 
-            .mobile-menu-btn {
-                display: none !important;
-                background: none !important;
-                border: none !important;
-                color: #00d4ff !important;
-                font-size: 1.5em !important;
-                cursor: pointer !important;
-                padding: 5px !important;
-            }
-
-            body { padding-top: 70px !important; }
-
-            @media (max-width: 768px) {
-                .nav-menu {
-                    position: absolute !important;
-                    top: 100% !important;
-                    left: 0 !important;
-                    right: 0 !important;
-                    background: rgba(15, 15, 35, 0.98) !important;
-                    flex-direction: column !important;
-                    padding: 20px !important;
-                    border-bottom: 1px solid rgba(0, 212, 255, 0.2) !important;
+                .nav-logo span:last-child {
                     display: none !important;
                 }
-
-                .nav-menu.active { display: flex !important; }
-                .mobile-menu-btn { display: block !important; }
-                .nav-menu a { width: 100% !important; }
             }
         </style>
     `;
 
     function getBasePath() {
         const path = globalThis.location.pathname;
-
-        if (path.includes('/12-3-2025/') || path.includes('/12-10-2025/' || path.includes('/12-24-2025/'))) {
+        if (path.includes('/12-3-2025/') ||
+            path.includes('/12-10-2025/') ||
+            path.includes('/12-24-2025/') ||
+            path.includes('/01-12-2026/')) {
             return '..';
         }
-
         return '.';
     }
 
     const basePath = getBasePath();
 
     const headerHTML = `
+        <div class="nav-overlay" id="navOverlay"></div>
         <nav class="nav-header">
             <div class="nav-container">
                 <a href="${basePath}/index.html" class="nav-logo">
                     <span>💼</span>
-                    <span>Портфолио</span>
+                    <span>Портфолио работ</span>
                 </a>
                 
-                <ul class="nav-menu" id="navMenu">
-                    <li><a href="${basePath}/index.html" data-page="home">Главная</a></li>
-                    <li><a href="${basePath}/12-3-2025/main.html" data-page="work1">Корпоративная доска заметок</a></li>
-                    <li><a href="${basePath}/12-10-2025/main.html" data-page="work2">Оценка трудоемкости</a></li>
-                    <li><a href="${basePath}/12-24-2025/main.html" data-page="work3">Устав проекта EduTrack</a></li>
-                </ul>
+                <button class="burger-btn" id="burgerBtn" aria-label="Меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
 
-                <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+                <div class="nav-dropdown" id="navDropdown">
+                    <div class="nav-dropdown-header">📂 Навигация по проектам</div>
+                    <ul class="nav-menu" id="navMenu">
+                        <li>
+                            <a href="${basePath}/index.html" data-page="home">
+                                <span class="nav-icon">🏠</span>
+                                <span class="nav-text">Главная</span>
+                                <span class="nav-arrow">→</span>
+                            </a>
+                        </li>
+                        <li class="nav-divider"></li>
+                        <li class="nav-section-title">Практические работы</li>
+                        <li>
+                            <a href="${basePath}/12-3-2025/main.html" data-page="work1">
+                                <span class="nav-icon">📊</span>
+                                <span class="nav-text">Корпоративная доска</span>
+                                <span class="nav-arrow">→</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="${basePath}/12-10-2025/main.html" data-page="work2">
+                                <span class="nav-icon">🔧</span>
+                                <span class="nav-text">Оценка трудоемкости</span>
+                                <span class="nav-arrow">→</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="${basePath}/12-24-2025/main.html" data-page="work3">
+                                <span class="nav-icon">🛠️</span>
+                                <span class="nav-text">Устав EduTrack</span>
+                                <span class="nav-arrow">→</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="${basePath}/01-12-2026/main.html" data-page="work4">
+                                <span class="nav-icon">🏦</span>
+                                <span class="nav-text">План коммуникаций</span>
+                                <span class="nav-arrow">→</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </nav>
     `;
@@ -207,16 +339,11 @@
         links.forEach(link => {
             link.classList.remove('active');
             const href = link.getAttribute('href');
-
-            if (currentPath === href || (href !== '/' && currentPath.includes(href))) {
+            if (currentPath.endsWith(href.replace(basePath, '')) ||
+                (href.includes('index.html') && (currentPath === '/' || currentPath.endsWith('/index.html')))) {
                 link.classList.add('active');
             }
         });
-
-        if (currentPath === '/' || currentPath === '/index.html') {
-            const homeLink = document.querySelector('.nav-menu a[data-page="home"]');
-            if (homeLink) homeLink.classList.add('active');
-        }
     }
 
     function initNavHeader() {
@@ -233,24 +360,32 @@
 
         setActivePage();
 
-        const mobileBtn = document.getElementById('mobileMenuBtn');
-        const navMenu = document.getElementById('navMenu');
+        const burgerBtn = document.getElementById('burgerBtn');
+        const navDropdown = document.getElementById('navDropdown');
+        const navOverlay = document.getElementById('navOverlay');
 
-        if (mobileBtn && navMenu) {
-            mobileBtn.addEventListener('click', function() {
-                navMenu.classList.toggle('active');
+        function toggleMenu() {
+            burgerBtn.classList.toggle('active');
+            navDropdown.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+        }
+
+        function closeMenu() {
+            burgerBtn.classList.remove('active');
+            navDropdown.classList.remove('active');
+            navOverlay.classList.remove('active');
+        }
+
+        if (burgerBtn && navDropdown) {
+            burgerBtn.addEventListener('click', toggleMenu);
+            navOverlay.addEventListener('click', closeMenu);
+
+            navDropdown.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', closeMenu);
             });
 
-            navMenu.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', function() {
-                    navMenu.classList.remove('active');
-                });
-            });
-
-            document.addEventListener('click', function(e) {
-                if (!navMenu.contains(e.target) && !mobileBtn.contains(e.target)) {
-                    navMenu.classList.remove('active');
-                }
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeMenu();
             });
         }
     }
@@ -261,12 +396,3 @@
         initNavHeader();
     }
 })();
-
-globalThis.addNavItem = function(icon, text, href, dataPage) {
-    const navMenu = document.getElementById('navMenu');
-    if (navMenu) {
-        const li = document.createElement('li');
-        li.innerHTML = `<a href="${href}" data-page="${dataPage}">${icon} ${text}</a>`;
-        navMenu.appendChild(li);
-    }
-};
