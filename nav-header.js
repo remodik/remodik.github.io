@@ -262,8 +262,7 @@
         const path = globalThis.location.pathname;
         if (path.includes('/12-3-2025/') ||
             path.includes('/12-10-2025/') ||
-            path.includes('/12-24-2025/') ||
-            path.includes('/01-12-2026/')) {
+            path.includes('/12-24-2025/')) {
             return '..';
         }
         return '.';
@@ -320,7 +319,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="${basePath}/01-12-2026/main.html" data-page="work4">
+                            <a href="${basePath}/12-10-2025/main-2.html" data-page="work4">
                                 <span class="nav-icon">🏦</span>
                                 <span class="nav-text">План коммуникаций</span>
                                 <span class="nav-arrow">→</span>
