@@ -30,17 +30,40 @@
             }
 
             .nav-logo {
+                color: #00d4ff !important;
+                text-decoration: none !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 10px !important;
+                transition: all 0.3s ease !important;
+            }
+
+            .nav-logo .nav-logo-icon {
+                width: 24px !important;
+                height: 24px !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                flex: 0 0 auto !important;
+            }
+
+            .nav-logo .nav-logo-text {
                 font-size: 1.3em !important;
                 font-weight: bold !important;
                 background: linear-gradient(135deg, #00d4ff, #7b2cbf) !important;
                 -webkit-background-clip: text !important;
                 -webkit-text-fill-color: transparent !important;
                 background-clip: text !important;
-                text-decoration: none !important;
-                display: flex !important;
-                align-items: center !important;
-                gap: 10px !important;
-                transition: all 0.3s ease !important;
+            }
+
+            .nav-logo .nav-logo-icon svg {
+                width: 100% !important;
+                height: 100% !important;
+                stroke: currentColor !important;
+                stroke-width: 2 !important;
+                fill: none !important;
+                stroke-linecap: round !important;
+                stroke-linejoin: round !important;
             }
 
             .nav-logo:hover {
@@ -110,9 +133,25 @@
             }
 
             .nav-dropdown.active {
-                max-height: 500px !important;
+                max-height: calc(100vh - 110px) !important;
+                overflow-y: auto !important;
+                overscroll-behavior: contain !important;
+                -webkit-overflow-scrolling: touch !important;
                 opacity: 1 !important;
                 transform: translateY(0) !important;
+            }
+
+            .nav-dropdown::-webkit-scrollbar {
+                width: 8px !important;
+            }
+
+            .nav-dropdown::-webkit-scrollbar-track {
+                background: rgba(255, 255, 255, 0.03) !important;
+            }
+
+            .nav-dropdown::-webkit-scrollbar-thumb {
+                background: rgba(0, 212, 255, 0.35) !important;
+                border-radius: 999px !important;
             }
 
             .nav-dropdown-header {
@@ -122,6 +161,28 @@
                 text-transform: uppercase !important;
                 letter-spacing: 2px !important;
                 color: #666 !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 8px !important;
+            }
+
+            .nav-dropdown-header .nav-header-icon {
+                width: 14px !important;
+                height: 14px !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                flex: 0 0 auto !important;
+            }
+
+            .nav-dropdown-header .nav-header-icon svg {
+                width: 100% !important;
+                height: 100% !important;
+                stroke: currentColor !important;
+                stroke-width: 2 !important;
+                fill: none !important;
+                stroke-linecap: round !important;
+                stroke-linejoin: round !important;
             }
 
             .nav-menu {
@@ -159,7 +220,6 @@
             }
 
             .nav-menu a .nav-icon {
-                font-size: 1.3em !important;
                 width: 35px !important;
                 height: 35px !important;
                 display: flex !important;
@@ -168,6 +228,16 @@
                 background: rgba(0, 212, 255, 0.1) !important;
                 border-radius: 8px !important;
                 transition: all 0.3s ease !important;
+            }
+
+            .nav-menu a .nav-icon svg {
+                width: 18px !important;
+                height: 18px !important;
+                stroke: currentColor !important;
+                stroke-width: 2 !important;
+                fill: none !important;
+                stroke-linecap: round !important;
+                stroke-linejoin: round !important;
             }
 
             .nav-menu a .nav-text {
@@ -271,36 +341,51 @@
 
     const basePath = getBasePath();
 
+    const iconSvg = {
+        home: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>',
+        portfolio: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/></svg>',
+        folder: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"/></svg>',
+        flask: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 2h4"/><path d="M12 2v6l5.5 9.5A2.5 2.5 0 0 1 15.4 21H8.6a2.5 2.5 0 0 1-2.1-3.5L12 8"/><path d="M8.5 14h7"/></svg>',
+        building: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="10" width="18" height="10" rx="1"/><path d="M6 10V6l6-3 6 3v4"/><path d="M8 14h.01M12 14h.01M16 14h.01"/></svg>',
+        fileText: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/><path d="M9 13h6M9 17h6M9 9h2"/></svg>',
+        wrench: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.2 2.2-2.6-.5-.5-2.6z"/></svg>',
+        chart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 14 3-3 3 2 4-5"/></svg>'
+    };
+
+    function renderIcon(name) {
+        return iconSvg[name] || iconSvg.folder;
+    }
+
     const navWorks = [
         {
             url: 'quality-systems/operator_manual_practice_work_2.html',
-            icon: '🧪',
+            icon: 'flask',
             title: 'Руководство оператора (ПР №2)',
             subject: 'Обеспечение качества функционирования компьютерных систем'
         },
         {
             url: '12-10-2025/main-2.html',
-            icon: '🏦',
+            icon: 'building',
             title: 'План коммуникаций',
-            subject: 'Проектные коммуникации'
+            subject: 'Управление программными проектами'
         },
         {
             url: '12-24-2025/main.html',
-            icon: '🛠️',
+            icon: 'fileText',
             title: 'Устав EduTrack',
             subject: 'Управление программными проектами'
         },
         {
             url: '12-10-2025/main.html',
-            icon: '🔧',
+            icon: 'wrench',
             title: 'Оценка трудоемкости',
             subject: 'Управление программными проектами'
         },
         {
             url: '12-3-2025/main.html',
-            icon: '📊',
+            icon: 'chart',
             title: 'Корпоративная доска',
-            subject: 'Программная инженерия'
+            subject: 'Управление программными проектами'
         }
     ];
 
@@ -318,7 +403,7 @@
             ${works.map((work) => `
                 <li>
                     <a href="${basePath}/${work.url}" data-page="${work.url}">
-                        <span class="nav-icon">${work.icon}</span>
+                        <span class="nav-icon">${renderIcon(work.icon)}</span>
                         <span class="nav-text">${work.title}</span>
                         <span class="nav-arrow">→</span>
                     </a>
@@ -329,7 +414,7 @@
         return `
             <li>
                 <a href="${basePath}/index.html" data-page="home">
-                    <span class="nav-icon">🏠</span>
+                    <span class="nav-icon">${renderIcon('home')}</span>
                     <span class="nav-text">Главная</span>
                     <span class="nav-arrow">→</span>
                 </a>
@@ -345,8 +430,8 @@
         <nav class="nav-header">
             <div class="nav-container">
                 <a href="${basePath}/index.html" class="nav-logo">
-                    <span>💼</span>
-                    <span>Практические по предметам</span>
+                    <span class="nav-logo-icon">${renderIcon('portfolio')}</span>
+                    <span class="nav-logo-text">Практические по предметам</span>
                 </a>
                 
                 <button class="burger-btn" id="burgerBtn" aria-label="Меню">
@@ -356,7 +441,10 @@
                 </button>
 
                 <div class="nav-dropdown" id="navDropdown">
-                    <div class="nav-dropdown-header">📂 Навигация по предметам</div>
+                    <div class="nav-dropdown-header">
+                        <span class="nav-header-icon">${renderIcon('folder')}</span>
+                        <span>Навигация по предметам</span>
+                    </div>
                     <ul class="nav-menu" id="navMenu">
                         ${buildNavMenu()}
                     </ul>

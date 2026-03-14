@@ -138,6 +138,25 @@
             gap: 8px;
         }
 
+        .subject-btn-icon {
+            width: 16px;
+            height: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+        }
+
+        .subject-btn-icon svg {
+            width: 100%;
+            height: 100%;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
         .subject-btn:hover {
             background: rgba(0, 212, 255, 0.16);
             border-color: rgba(0, 212, 255, 0.6);
@@ -181,6 +200,9 @@
             position: absolute;
             top: 16px;
             right: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             padding: 6px 12px;
             border-radius: 999px;
             border: 1px solid rgba(0, 212, 255, 0.35);
@@ -192,6 +214,25 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+
+        .subject-badge-icon {
+            width: 14px;
+            height: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+        }
+
+        .subject-badge-icon svg {
+            width: 100%;
+            height: 100%;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         .work-card::before {
@@ -223,10 +264,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2em;
+            color: #ffffff;
             margin-top: 20px;
             margin-bottom: 20px;
             transition: all 0.3s ease;
+        }
+
+        .work-icon svg {
+            width: 32px;
+            height: 32px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         .work-card:hover .work-icon {
@@ -389,7 +440,7 @@
     <div class="container">
         <header class="header">
             <div class="header-content">
-                <h1 id="mainTitle">💼 Портфолио работ</h1>
+                <h1 id="mainTitle">Портфолио работ</h1>
                 <p class="subtitle">Практические работы по нескольким предметам</p>
                 <div class="student-info">
                     <strong>Головкин Илья</strong> • Группа 9/3 РПО 23/2
@@ -425,13 +476,30 @@
     </div>
 
     <script>
+        const iconSvg = {
+            books: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5a2.5 2.5 0 0 1 2.5-2.5H11v15H5.5A2.5 2.5 0 0 0 3 21V6.5z"/><path d="M21 6.5A2.5 2.5 0 0 0 18.5 4H13v15h5.5A2.5 2.5 0 0 1 21 21V6.5z"/></svg>',
+            book: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h11v17H6a2 2 0 0 0-2 2V5z"/><path d="M17 3h1a2 2 0 0 1 2 2v16"/></svg>',
+            flask: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 2h4"/><path d="M12 2v6l5.5 9.5A2.5 2.5 0 0 1 15.4 21H8.6a2.5 2.5 0 0 1-2.1-3.5L12 8"/><path d="M8.5 14h7"/></svg>',
+            building: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="10" width="18" height="10" rx="1"/><path d="M6 10V6l6-3 6 3v4"/><path d="M8 14h.01M12 14h.01M16 14h.01"/></svg>',
+            fileText: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/><path d="M9 13h6M9 17h6M9 9h2"/></svg>',
+            wrench: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.2 2.2-2.6-.5-.5-2.6z"/></svg>',
+            chart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 14 3-3 3 2 4-5"/></svg>',
+            shield: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v6c0 5 3.4 8.7 7 9.9 3.6-1.2 7-4.9 7-9.9V6z"/></svg>',
+            briefcase: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/></svg>',
+            puzzle: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2h3a2 2 0 0 1 2 2v3h3a2 2 0 0 1 2 2v3h-3a2 2 0 1 0 0 4h3v3a2 2 0 0 1-2 2h-3v-3a2 2 0 1 0-4 0v3h-3a2 2 0 0 1-2-2v-3H5a2 2 0 0 1-2-2v-3h3a2 2 0 1 0 0-4H3V9a2 2 0 0 1 2-2h3V4a2 2 0 0 1 2-2h2"/></svg>'
+        };
+
+        function renderIcon(name) {
+            return iconSvg[name] || iconSvg.book;
+        }
+
         const works = [
             {
                 url: 'quality-systems/operator_manual_practice_work_2.html',
                 date: '14 марта 2026',
                 title: 'Руководство оператора (Практическая №2)',
                 description: 'Практическая работа с оформлением руководства оператора по ГОСТ 19.505-79: назначение, условия выполнения, порядок запуска и сообщения оператору.',
-                icon: '🧪',
+                icon: 'flask',
                 subject: 'Обеспечение качества функционирования компьютерных систем',
                 tags: ['ГОСТ 19.505-79', 'Руководство оператора', 'Эксплуатация ПО']
             },
@@ -440,10 +508,10 @@
                 date: '10 декабря 2025',
                 title: 'План коммуникаций — Банк «Прогресс»',
                 description: 'Интерактивный план коммуникаций для проекта мобильного банковского приложения. Включает матрицу стейкхолдеров, каналы связи и диаграмму информационных потоков.',
-                icon: '🏦',
+                icon: 'building',
                 iconStyle: 'background: linear-gradient(135deg, #c9a227, #8b7317);',
                 linkVariant: 'gold',
-                subject: 'Проектные коммуникации',
+                subject: 'Управление программными проектами',
                 tags: [
                     { label: 'Three.js', variant: 'gold' },
                     { label: 'WebGL', variant: 'gold' },
@@ -456,7 +524,7 @@
                 date: '24 декабря 2025',
                 title: 'Устав проекта EduTrack',
                 description: 'Профессиональный устав проекта для образовательного приложения EduTrack. Система управления персональным обучением и карьерой для студентов колледжей.',
-                icon: '🛠️',
+                icon: 'fileText',
                 subject: 'Управление программными проектами',
                 tags: ['Устав проекта', 'Риск-анализ', 'Управление проектами']
             },
@@ -465,7 +533,7 @@
                 date: '10 декабря 2025',
                 title: 'Оценка трудоемкости и сроков разработки ПО',
                 description: 'Интерактивная работа по планированию проекта мобильного приложения. Включает декомпозицию задач, расчет трудоемкости, диаграмму Ганта и анализ рисков.',
-                icon: '🔧',
+                icon: 'wrench',
                 subject: 'Управление программными проектами',
                 tags: ['Планирование', 'Оценка проектов', 'Интерактив', 'Диаграмма Ганта']
             },
@@ -474,17 +542,15 @@
                 date: '3 декабря 2025',
                 title: 'Проект «Корпоративная доска заметок»',
                 description: 'Устав проекта, WBS и прогноз рисков для корпоративной доски заметок (ToDo Board) на WPF и SQL Server.',
-                icon: '📊',
-                subject: 'Программная инженерия',
+                icon: 'chart',
+                subject: 'Управление программными проектами',
                 tags: ['WBS', 'Риски', 'WPF', 'SQL Server']
             }
         ];
 
         const subjectMeta = {
-            'Обеспечение качества функционирования компьютерных систем': { icon: '🛡️' },
-            'Проектные коммуникации': { icon: '💬' },
-            'Управление программными проектами': { icon: '📌' },
-            'Программная инженерия': { icon: '🧩' }
+            'Обеспечение качества функционирования компьютерных систем': { icon: 'shield' },
+            'Управление программными проектами': { icon: 'briefcase' }
         };
 
         let selectedSubject = 'all';
@@ -513,19 +579,20 @@
             });
 
             const buttons = [
-                { id: 'all', title: 'Все предметы', count: works.length, icon: '📚' },
+                { id: 'all', title: 'Все предметы', count: works.length, icon: 'books' },
                 ...Array.from(countsBySubject.entries()).map(([subject, count]) => ({
                     id: subject,
                     title: subject,
                     count,
-                    icon: subjectMeta[subject]?.icon || '📘'
+                    icon: subjectMeta[subject]?.icon || 'book'
                 }))
             ];
 
             const subjectFilter = document.getElementById('subjectFilter');
             subjectFilter.innerHTML = buttons.map((button) => `
                 <button class="subject-btn${button.id === selectedSubject ? ' active' : ''}" data-subject="${button.id}">
-                    <span>${button.icon} ${button.title}</span>
+                    <span class="subject-btn-icon">${renderIcon(button.icon)}</span>
+                    <span>${button.title}</span>
                     <span class="subject-count">${button.count}</span>
                 </button>
             `).join('');
@@ -555,12 +622,15 @@
 
                 const linkClass = work.linkVariant === 'gold' ? 'work-link gold' : 'work-link';
                 const iconStyle = work.iconStyle ? ` style="${work.iconStyle}"` : '';
-                const subjectIcon = subjectMeta[work.subject]?.icon || '📘';
+                const subjectIcon = subjectMeta[work.subject]?.icon || 'book';
 
                 return `
                     <article class="work-card" data-url="${work.url}">
-                        <div class="subject-badge">${subjectIcon} ${work.subject}</div>
-                        <div class="work-icon"${iconStyle}>${work.icon}</div>
+                        <div class="subject-badge">
+                            <span class="subject-badge-icon">${renderIcon(subjectIcon)}</span>
+                            <span>${work.subject}</span>
+                        </div>
+                        <div class="work-icon"${iconStyle}>${renderIcon(work.icon)}</div>
                         <div class="work-date">${work.date}</div>
                         <h3 class="work-title">${work.title}</h3>
                         <p class="work-description">${work.description}</p>
