@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Практическая работа №2 — Руководство оператора</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: rgba(17, 24, 39, 0.72);
+      --panel-2: rgba(30, 41, 59, 0.72);
+      --text: #e5eefb;
+      --muted: #a9b8d0;
+      --accent: #7c3aed;
+      --accent-2: #22d3ee;
+      --accent-3: #38bdf8;
+      --ok: #22c55e;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --border: rgba(148, 163, 184, 0.22);
+      --shadow: 0 20px 60px rgba(0,0,0,.35);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(124,58,237,.35), transparent 28%),
+        radial-gradient(circle at top right, rgba(34,211,238,.22), transparent 24%),
+        linear-gradient(135deg, #020617 0%, #0f172a 45%, #111827 100%);
+      min-height: 100vh;
+    }
+
+    .bg-grid::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: radial-gradient(circle at center, black 40%, transparent 90%);
+      pointer-events: none;
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 56px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      background: linear-gradient(135deg, rgba(124,58,237,.22), rgba(34,211,238,.12));
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      padding: 34px;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56,189,248,.28), transparent 60%);
+      right: -120px;
+      top: -120px;
+      filter: blur(8px);
+      pointer-events: none;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      color: #dbeafe;
+      font-size: 14px;
+      letter-spacing: .02em;
+    }
+
+    h1 {
+      margin: 18px 0 12px;
+      font-size: clamp(30px, 5vw, 54px);
+      line-height: 1.05;
+      max-width: 860px;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 860px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.4fr .9fr;
+      gap: 20px;
+      align-items: end;
+    }
+
+    .hero-card {
+      margin-top: 26px;
+      background: rgba(2, 6, 23, .42);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 18px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .stat {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      background: rgba(255,255,255,.04);
+    }
+
+    .stat b {
+      display: block;
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    .nav {
+      position: sticky;
+      top: 14px;
+      z-index: 50;
+      margin: 18px 0 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 18px;
+      background: rgba(15, 23, 42, .72);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .nav a {
+      color: var(--text);
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid transparent;
+      transition: .2s ease;
+      font-size: 14px;
+    }
+
+    .nav a:hover {
+      transform: translateY(-1px);
+      border-color: rgba(56,189,248,.35);
+      background: rgba(56,189,248,.08);
+    }
+
+    .section {
+      margin-top: 26px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--panel);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .section-header {
+      padding: 24px 24px 12px;
+      border-bottom: 1px solid rgba(148,163,184,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), transparent);
+    }
+
+    .section h2 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .section .desc {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .section-body {
+      padding: 24px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 20px;
+    }
+
+    p, li {
+      color: #d9e4f4;
+      line-height: 1.72;
+    }
+
+    ul, ol {
+      margin: 0;
+      padding-left: 22px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+      background: rgba(2,6,23,.28);
+      border: 1px solid var(--border);
+    }
+
+    th, td {
+      text-align: left;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(148,163,184,.12);
+      vertical-align: top;
+    }
+
+    th {
+      background: rgba(255,255,255,.05);
+      color: #cfe6ff;
+      font-weight: 700;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .tag {
+      display: inline-flex;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .03em;
+      margin-bottom: 10px;
+    }
+
+    .tag.ok { background: rgba(34,197,94,.12); color: #86efac; }
+    .tag.warn { background: rgba(245,158,11,.12); color: #fcd34d; }
+    .tag.danger { background: rgba(239,68,68,.12); color: #fca5a5; }
+    .tag.info { background: rgba(56,189,248,.12); color: #93c5fd; }
+
+    .qa-item {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+    }
+
+    .qa-item h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    footer {
+      margin-top: 26px;
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      background: rgba(15,23,42,.55);
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid, .grid-2, .stats { grid-template-columns: 1fr; }
+      .container { width: min(100% - 20px, 1180px); }
+      .hero { padding: 22px; }
+      .section-header, .section-body { padding: 18px; }
+      h1 { font-size: 34px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="container">
+    <header class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="badge">Практическая работа №2 • ГОСТ 19.505-79</div>
+          <h1>Разработка руководства оператора</h1>
+          <p class="subtitle">
+            Оформленное руководство оператора для информационной системы: с назначением программы,
+            условиями выполнения, порядком запуска и завершения, а также сообщениями оператору.
+          </p>
+        </div>
+        <div class="hero-card">
+          <div class="stats">
+            <div class="stat">
+              <b>4</b>
+              <span>основных раздела</span>
+            </div>
+            <div class="stat">
+              <b>1</b>
+              <span>оператор для работы</span>
+            </div>
+            <div class="stat">
+              <b>60</b>
+              <span>минут на выполнение</span>
+            </div>
+            <div class="stat">
+              <b>HTML</b>
+              <span>современное оформление</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <nav class="nav">
+      <a href="#purpose">Назначение</a>
+      <a href="#conditions">Условия выполнения</a>
+      <a href="#execution">Выполнение программы</a>
+      <a href="#messages">Сообщения оператору</a>
+      <a href="#qa">Контрольные вопросы</a>
+    </nav>
+
+    <section class="section" id="purpose">
+      <div class="section-header">
+        <h2>1. Назначение программы</h2>
+        <p class="desc">Сведения о назначении системы и информация, достаточная для понимания её функций и эксплуатации.</p>
+      </div>
+      <div class="section-body">
+        <div class="card">
+          <span class="tag info">Раздел 1</span>
+          <p>
+            Информационная система предназначена для хранения, обработки и отображения данных о пользователях
+            и объектах системы. Программа обеспечивает удобную работу оператора с записями, формами,
+            результатами обработки и запросами к базе данных.
+          </p>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Основные функции</h3>
+            <ul>
+              <li>регистрация и авторизация пользователей;</li>
+              <li>хранение и обработка данных;</li>
+              <li>просмотр и редактирование информации;</li>
+              <li>выполнение запросов к базе данных;</li>
+              <li>отображение результатов работы пользователю.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Для чего используется</h3>
+            <p>
+              Программа используется оператором для управления данными системы, контроля корректности ввода,
+              просмотра результатов и завершения типовых рабочих операций.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="conditions">
+      <div class="section-header">
+        <h2>2. Условия выполнения программы</h2>
+        <p class="desc">Минимальный состав аппаратных и программных средств, достаточный для корректной работы.</p>
+      </div>
+      <div class="section-body">
+        <div class="grid-2">
+          <div class="card">
+            <h3>Аппаратные требования</h3>
+            <ul>
+              <li>процессор: 2-ядерный Intel Core i3 или аналогичный;</li>
+              <li>оперативная память: от 4 ГБ;</li>
+              <li>свободное место на диске: от 500 МБ;</li>
+              <li>монитор: разрешение не ниже 1280×720.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Программные требования</h3>
+            <ul>
+              <li>Windows 10 / Linux / macOS;</li>
+              <li>Python 3.10 или выше;</li>
+              <li>браузер Google Chrome, Edge или Firefox;</li>
+              <li>доступ к локальной сети или Интернету.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card">
+          <span class="tag ok">Важно</span>
+          <p>Для работы программы достаточно <b>одного оператора</b>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="execution">
+      <div class="section-header">
+        <h2>3. Выполнение программы</h2>
+        <p class="desc">Последовательность действий оператора при запуске, использовании и завершении работы программы.</p>
+      </div>
+      <div class="section-body">
+        <div class="grid-2">
+          <div class="card">
+            <h3>Запуск программы</h3>
+            <ol>
+              <li>Включить компьютер.</li>
+              <li>Открыть программу или веб-страницу системы.</li>
+              <li>Ввести логин и пароль.</li>
+              <li>Нажать кнопку «Войти».</li>
+            </ol>
+            <p>После успешной авторизации открывается главное меню программы.</p>
+          </div>
+          <div class="card">
+            <h3>Завершение работы</h3>
+            <ol>
+              <li>Нажать кнопку «Выход».</li>
+              <li>Закрыть окно программы.</li>
+            </ol>
+            <p>После этого работа программы считается завершённой.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Команды и действия оператора</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Команда</th>
+                <th>Назначение</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Просмотр данных</td>
+                <td>Отображение информации из базы данных.</td>
+              </tr>
+              <tr>
+                <td>Добавить запись</td>
+                <td>Создание новой записи в системе.</td>
+              </tr>
+              <tr>
+                <td>Редактировать</td>
+                <td>Изменение существующих данных.</td>
+              </tr>
+              <tr>
+                <td>Удалить</td>
+                <td>Удаление выбранной записи.</td>
+              </tr>
+              <tr>
+                <td>Поиск</td>
+                <td>Поиск информации по заданным параметрам.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="messages">
+      <div class="section-header">
+        <h2>4. Сообщения оператору</h2>
+        <p class="desc">Типовые сообщения, возникающие во время работы программы, и соответствующие действия оператора.</p>
+      </div>
+      <div class="section-body">
+        <div class="card">
+          <table>
+            <thead>
+              <tr>
+                <th>Сообщение</th>
+                <th>Описание</th>
+                <th>Действие оператора</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag danger">Ошибка</span><br>«Неверный логин или пароль»</td>
+                <td>Ошибка авторизации пользователя.</td>
+                <td>Проверить правильность введённых данных и повторить попытку.</td>
+              </tr>
+              <tr>
+                <td><span class="tag warn">Сеть</span><br>«Нет соединения с сервером»</td>
+                <td>Проблема подключения к сети или серверу.</td>
+                <td>Проверить Интернет или локальную сеть и повторить действие.</td>
+              </tr>
+              <tr>
+                <td><span class="tag danger">Сбой</span><br>«Ошибка загрузки данных»</td>
+                <td>Возникла ошибка при обработке или получении данных.</td>
+                <td>Перезапустить программу. При повторении ошибки обратиться к администратору.</td>
+              </tr>
+              <tr>
+                <td><span class="tag ok">Успешно</span><br>«Операция выполнена успешно»</td>
+                <td>Операция завершена без ошибок.</td>
+                <td>Продолжить работу в обычном режиме.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h3>Действия при сбое программы</h3>
+          <ol>
+            <li>Закрыть программу.</li>
+            <li>Повторно запустить её.</li>
+            <li>Если ошибка повторяется — сообщить администратору системы.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="qa">
+      <div class="section-header">
+        <h2>Контрольные вопросы</h2>
+        <p class="desc">Краткие ответы по содержанию практической работы.</p>
+      </div>
+      <div class="section-body">
+        <div class="qa-item">
+          <h3>1. Перечислите основные разделы руководства оператора по ГОСТ 19.505-79.</h3>
+          <p>Назначение программы, условия выполнения программы, выполнение программы, сообщения оператору.</p>
+        </div>
+        <div class="qa-item">
+          <h3>2. Составление каких частей руководства оператора является обязательным?</h3>
+          <p>Обязательными являются аннотация и содержание документа.</p>
+        </div>
+        <div class="qa-item">
+          <h3>3. Можно ли объединять разделы руководства оператора или вводить новые?</h3>
+          <p>Да. Допускается объединение отдельных разделов и введение новых при необходимости.</p>
+        </div>
+        <div class="qa-item">
+          <h3>4. Каково минимальное количество персонала, требуемого для работы программы?</h3>
+          <p>Минимально требуется один оператор.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Оформление подготовлено для учебной практической работы по теме «Разработка руководства оператора».
+    </footer>
+  </div>
+  <script src="../nav-header.js"></script>
+</body>
+</html>

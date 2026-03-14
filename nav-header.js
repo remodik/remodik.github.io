@@ -262,7 +262,8 @@
         const path = globalThis.location.pathname;
         if (path.includes('/12-3-2025/') ||
             path.includes('/12-10-2025/') ||
-            path.includes('/12-24-2025/')) {
+            path.includes('/12-24-2025/') ||
+            path.includes('/quality-systems/')) {
             return '..';
         }
         return '.';
@@ -270,13 +271,82 @@
 
     const basePath = getBasePath();
 
+    const navWorks = [
+        {
+            url: 'quality-systems/operator_manual_practice_work_2.html',
+            icon: '🧪',
+            title: 'Руководство оператора (ПР №2)',
+            subject: 'Обеспечение качества функционирования компьютерных систем'
+        },
+        {
+            url: '12-10-2025/main-2.html',
+            icon: '🏦',
+            title: 'План коммуникаций',
+            subject: 'Проектные коммуникации'
+        },
+        {
+            url: '12-24-2025/main.html',
+            icon: '🛠️',
+            title: 'Устав EduTrack',
+            subject: 'Управление программными проектами'
+        },
+        {
+            url: '12-10-2025/main.html',
+            icon: '🔧',
+            title: 'Оценка трудоемкости',
+            subject: 'Управление программными проектами'
+        },
+        {
+            url: '12-3-2025/main.html',
+            icon: '📊',
+            title: 'Корпоративная доска',
+            subject: 'Программная инженерия'
+        }
+    ];
+
+    function buildNavMenu() {
+        const groupedWorks = new Map();
+
+        navWorks.forEach((work) => {
+            const existingWorks = groupedWorks.get(work.subject) || [];
+            existingWorks.push(work);
+            groupedWorks.set(work.subject, existingWorks);
+        });
+
+        const subjectSections = Array.from(groupedWorks.entries()).map(([subject, works]) => `
+            <li class="nav-section-title">${subject}</li>
+            ${works.map((work) => `
+                <li>
+                    <a href="${basePath}/${work.url}" data-page="${work.url}">
+                        <span class="nav-icon">${work.icon}</span>
+                        <span class="nav-text">${work.title}</span>
+                        <span class="nav-arrow">→</span>
+                    </a>
+                </li>
+            `).join('')}
+        `).join('');
+
+        return `
+            <li>
+                <a href="${basePath}/index.html" data-page="home">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-text">Главная</span>
+                    <span class="nav-arrow">→</span>
+                </a>
+            </li>
+            <li class="nav-divider"></li>
+            <li class="nav-section-title">Предметы и практические</li>
+            ${subjectSections}
+        `;
+    }
+
     const headerHTML = `
         <div class="nav-overlay" id="navOverlay"></div>
         <nav class="nav-header">
             <div class="nav-container">
                 <a href="${basePath}/index.html" class="nav-logo">
                     <span>💼</span>
-                    <span>Портфолио работ</span>
+                    <span>Практические по предметам</span>
                 </a>
                 
                 <button class="burger-btn" id="burgerBtn" aria-label="Меню">
@@ -286,60 +356,34 @@
                 </button>
 
                 <div class="nav-dropdown" id="navDropdown">
-                    <div class="nav-dropdown-header">📂 Навигация по проектам</div>
+                    <div class="nav-dropdown-header">📂 Навигация по предметам</div>
                     <ul class="nav-menu" id="navMenu">
-                        <li>
-                            <a href="${basePath}/index.html" data-page="home">
-                                <span class="nav-icon">🏠</span>
-                                <span class="nav-text">Главная</span>
-                                <span class="nav-arrow">→</span>
-                            </a>
-                        </li>
-                        <li class="nav-divider"></li>
-                        <li class="nav-section-title">Практические работы</li>
-                        <li>
-                            <a href="${basePath}/12-3-2025/main.html" data-page="work1">
-                                <span class="nav-icon">📊</span>
-                                <span class="nav-text">Корпоративная доска</span>
-                                <span class="nav-arrow">→</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="${basePath}/12-10-2025/main.html" data-page="work2">
-                                <span class="nav-icon">🔧</span>
-                                <span class="nav-text">Оценка трудоемкости</span>
-                                <span class="nav-arrow">→</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="${basePath}/12-24-2025/main.html" data-page="work3">
-                                <span class="nav-icon">🛠️</span>
-                                <span class="nav-text">Устав EduTrack</span>
-                                <span class="nav-arrow">→</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="${basePath}/12-10-2025/main-2.html" data-page="work4">
-                                <span class="nav-icon">🏦</span>
-                                <span class="nav-text">План коммуникаций</span>
-                                <span class="nav-arrow">→</span>
-                            </a>
-                        </li>
+                        ${buildNavMenu()}
                     </ul>
                 </div>
             </div>
         </nav>
     `;
 
+    function normalizePath(path) {
+        return path.replace(/\/+$/, '') || '/';
+    }
+
     function setActivePage() {
-        const currentPath = globalThis.location.pathname;
+        const currentPath = normalizePath(globalThis.location.pathname);
         const links = document.querySelectorAll('.nav-menu a');
 
         links.forEach(link => {
             link.classList.remove('active');
             const href = link.getAttribute('href');
-            if (currentPath.endsWith(href.replace(basePath, '')) ||
-                (href.includes('index.html') && (currentPath === '/' || currentPath.endsWith('/index.html')))) {
+            const targetPath = normalizePath(new URL(href, globalThis.location.href).pathname);
+            const isIndexPage = targetPath.endsWith('/index.html');
+            const indexDirectory = isIndexPage
+                ? normalizePath(targetPath.replace(/\/index\.html$/, ''))
+                : '';
+
+            if (currentPath === targetPath ||
+                (isIndexPage && (currentPath === '/' || currentPath === indexDirectory))) {
                 link.classList.add('active');
             }
         });
