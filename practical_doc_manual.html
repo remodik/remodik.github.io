@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Руководство пользователя программного продукта</title>
+  <style>
+    :root {
+      --bg1: #0f172a;
+      --bg2: #111827;
+      --card: rgba(255,255,255,0.08);
+      --card-border: rgba(255,255,255,0.16);
+      --text: #e5eefb;
+      --muted: #b8c4d9;
+      --accent: #60a5fa;
+      --accent-2: #22d3ee;
+      --good: #86efac;
+      --warn: #fde68a;
+      --shadow: 0 20px 50px rgba(0,0,0,0.35);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,0.22), transparent 30%),
+        radial-gradient(circle at top right, rgba(34,211,238,0.18), transparent 25%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      line-height: 1.65;
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      padding: 56px 0 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 0.9fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .glass {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      padding: 32px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(96,165,250,0.16);
+      border: 1px solid rgba(96,165,250,0.35);
+      color: #dbeafe;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    h1, h2, h3 { line-height: 1.2; margin: 0 0 14px; }
+    h1 { font-size: clamp(30px, 4vw, 48px); }
+    h2 { font-size: clamp(24px, 3vw, 32px); }
+    h3 { font-size: 20px; }
+    p { margin: 0 0 14px; color: var(--muted); }
+
+    .lead {
+      font-size: 18px;
+      max-width: 780px;
+      color: #d7e3f7;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .stat {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 22px;
+      color: white;
+      margin-bottom: 6px;
+    }
+
+    .toc {
+      padding: 26px;
+      height: 100%;
+    }
+
+    .toc a {
+      display: block;
+      text-decoration: none;
+      color: var(--text);
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      border-radius: 14px;
+      transition: 0.2s ease;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid transparent;
+    }
+
+    .toc a:hover {
+      background: rgba(96,165,250,0.12);
+      border-color: rgba(96,165,250,0.24);
+      transform: translateX(4px);
+    }
+
+    main {
+      padding: 14px 0 50px;
+    }
+
+    section {
+      margin: 22px 0;
+      padding: 28px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      padding: 20px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    ul, ol {
+      margin: 10px 0 0 20px;
+      color: var(--muted);
+    }
+
+    li { margin: 8px 0; }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+      background: rgba(10,20,40,0.55);
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    th {
+      color: white;
+      background: rgba(96,165,250,0.14);
+    }
+
+    .note {
+      padding: 16px 18px;
+      border-left: 4px solid var(--accent-2);
+      background: rgba(34,211,238,0.08);
+      border-radius: 14px;
+      color: #dff8fd;
+      margin-top: 14px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      margin: 6px 8px 0 0;
+      background: rgba(134,239,172,0.12);
+      color: #dcfce7;
+      border: 1px solid rgba(134,239,172,0.3);
+    }
+
+    footer {
+      padding: 8px 0 36px;
+    }
+
+    .footer-box {
+      padding: 22px;
+      text-align: center;
+    }
+
+    .muted { color: var(--muted); }
+
+    @media (max-width: 980px) {
+      .hero-grid, .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 680px) {
+      .container { width: min(100% - 20px, 1180px); }
+      .hero { padding-top: 24px; }
+      .hero-card, .toc, section { padding: 20px; }
+      .stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="container hero-grid">
+      <div class="glass hero-card">
+        <div class="badge">Практическая работа 4.3 · Документация программного продукта</div>
+        <h1>Руководство пользователя программного продукта<br>«TaskFlow Manager»</h1>
+        <p class="lead">
+          Веб-страница подготовлена в качестве примера эксплуатационной документации для программного модуля.
+          Документ содержит сведения о назначении системы, установке, условиях применения, надежной эксплуатации,
+          входных и выходных данных, сообщениях пользователю, демонстрационной версии и сопутствующих документах.
+        </p>
+        <div class="stats">
+          <div class="stat">
+            <strong>Тип продукта</strong>
+            Система управления задачами и контролем исполнения поручений
+          </div>
+          <div class="stat">
+            <strong>Формат документа</strong>
+            Электронное руководство пользователя в виде HTML-страницы
+          </div>
+          <div class="stat">
+            <strong>Назначение</strong>
+            Автоматизация постановки, отслеживания и завершения задач
+          </div>
+          <div class="stat">
+            <strong>Категория</strong>
+            Эксплуатационная документация программных средств
+          </div>
+        </div>
+      </div>
+
+      <nav class="glass toc">
+        <h3>Содержание</h3>
+        <a href="#purpose">1. Назначение программы</a>
+        <a href="#conditions">2. Условия применения</a>
+        <a href="#install">3. Установка и запуск</a>
+        <a href="#task">4. Описание решаемой задачи</a>
+        <a href="#data">5. Входные и выходные данные</a>
+        <a href="#usage">6. Руководство пользователя</a>
+        <a href="#reliability">7. Надёжная работа продукта</a>
+        <a href="#messages">8. Сообщения пользователю</a>
+        <a href="#demo">9. Демонстрационная версия</a>
+        <a href="#examples">10. Примеры создаваемых документов</a>
+        <a href="#training">11. Обучающие материалы</a>
+        <a href="#references">12. Связанные документы</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="purpose" class="glass">
+      <h2>1. Назначение программы</h2>
+      <p>
+        Программный продукт <strong>TaskFlow Manager</strong> предназначен для ведения списка задач,
+        контроля сроков исполнения, распределения поручений между пользователями и формирования отчётов о выполнении.
+        Система применяется в учебных, административных и небольших коммерческих проектах, где требуется простая
+        и понятная организация рабочего процесса.
+      </p>
+      <div class="grid-3">
+        <div class="card">
+          <h3>Основные возможности</h3>
+          <ul>
+            <li>создание, редактирование и удаление задач;</li>
+            <li>назначение ответственных исполнителей;</li>
+            <li>установка сроков выполнения и приоритетов;</li>
+            <li>фильтрация и поиск задач по параметрам;</li>
+            <li>формирование кратких отчётов по состоянию задач.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Ключевые характеристики</h3>
+          <ul>
+            <li>интерфейс, доступный через браузер;</li>
+            <li>централизованное хранение данных;</li>
+            <li>простая навигация по разделам;</li>
+            <li>минимальные требования к оборудованию;</li>
+            <li>возможность локального развёртывания.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Ограничения</h3>
+          <ul>
+            <li>не рассчитана на высоконагруженные корпоративные инсталляции;</li>
+            <li>работа требует установленного веб-браузера;</li>
+            <li>часть функций зависит от наличия подключения к локальной сети или серверу.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="conditions" class="glass">
+      <h2>2. Условия применения</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Технические средства</h3>
+          <ul>
+            <li>процессор от 2 ядер;</li>
+            <li>оперативная память от 4 ГБ;</li>
+            <li>не менее 500 МБ свободного места на диске;</li>
+            <li>монитор с разрешением от 1366×768;</li>
+            <li>стабильное сетевое подключение при работе с серверной версией.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Программные средства</h3>
+          <ul>
+            <li>Windows 10/11, Linux или macOS;</li>
+            <li>современный браузер: Google Chrome, Microsoft Edge, Mozilla Firefox;</li>
+            <li>серверный модуль Python 3.11+ при локальном запуске;</li>
+            <li>SQLite или PostgreSQL для хранения данных.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="note">
+        Для корректной работы рекомендуется использовать актуальные версии браузера и не отключать JavaScript.
+      </div>
+    </section>
+
+    <section id="install" class="glass">
+      <h2>3. Установка и запуск</h2>
+      <ol>
+        <li>Скопировать каталог программы на локальный компьютер или сервер.</li>
+        <li>Проверить наличие интерпретатора Python 3.11+ и необходимых библиотек.</li>
+        <li>Установить зависимости командой: <strong>pip install -r requirements.txt</strong>.</li>
+        <li>Создать файл конфигурации и указать параметры подключения к базе данных.</li>
+        <li>Запустить сервер приложения командой: <strong>python app.py</strong> или <strong>uvicorn main:app --reload</strong>.</li>
+        <li>Открыть в браузере адрес локального или удалённого сервера.</li>
+      </ol>
+      <div class="grid-3" style="margin-top:16px;">
+        <div class="card"><strong>Шаг 1.</strong><br><span class="muted">Подготовка файлов программы</span></div>
+        <div class="card"><strong>Шаг 2.</strong><br><span class="muted">Настройка среды и зависимостей</span></div>
+        <div class="card"><strong>Шаг 3.</strong><br><span class="muted">Запуск и проверка доступности интерфейса</span></div>
+      </div>
+    </section>
+
+    <section id="task" class="glass">
+      <h2>4. Описание решаемой задачи</h2>
+      <p>
+        Система решает задачу организации и контроля исполнения поручений. Пользователь может формировать перечень задач,
+        присваивать им приоритет, срок выполнения и ответственного исполнителя. Руководитель или преподаватель получает
+        инструмент для контроля текущего состояния работ, просмотра просроченных задач и анализа результативности.
+      </p>
+      <p>
+        Метод решения задачи основан на централизованном хранении информации о заданиях и обработке действий пользователя
+        через графический веб-интерфейс. Изменения состояния задачи немедленно сохраняются в базе данных, а отчёты строятся
+        на основании актуальной информации.
+      </p>
+    </section>
+
+    <section id="data" class="glass">
+      <h2>5. Входные и выходные данные</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Тип данных</th>
+              <th>Наименование</th>
+              <th>Формат</th>
+              <th>Назначение</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Входные</td>
+              <td>Название задачи</td>
+              <td>Строка до 150 символов</td>
+              <td>Краткое описание задания</td>
+            </tr>
+            <tr>
+              <td>Входные</td>
+              <td>Описание задачи</td>
+              <td>Текст</td>
+              <td>Подробные сведения о поручении</td>
+            </tr>
+            <tr>
+              <td>Входные</td>
+              <td>Срок выполнения</td>
+              <td>Дата и время</td>
+              <td>Контроль дедлайна</td>
+            </tr>
+            <tr>
+              <td>Входные</td>
+              <td>Приоритет</td>
+              <td>Низкий / Средний / Высокий</td>
+              <td>Определение срочности</td>
+            </tr>
+            <tr>
+              <td>Выходные</td>
+              <td>Список задач</td>
+              <td>Табличный вид</td>
+              <td>Отображение всех задач по выбранным фильтрам</td>
+            </tr>
+            <tr>
+              <td>Выходные</td>
+              <td>Отчёт о выполнении</td>
+              <td>Сводная таблица</td>
+              <td>Анализ завершённых и просроченных задач</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="usage" class="glass">
+      <h2>6. Руководство пользователя</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Последовательность работы</h3>
+          <ol>
+            <li>Войти в систему под своей учётной записью.</li>
+            <li>Перейти в раздел «Задачи».</li>
+            <li>Нажать кнопку «Создать задачу».</li>
+            <li>Заполнить обязательные поля формы.</li>
+            <li>Сохранить данные и проверить отображение записи в списке.</li>
+            <li>При необходимости изменить статус задачи на «В работе» или «Выполнено».</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3>Основные элементы интерфейса</h3>
+          <ul>
+            <li>панель навигации по разделам;</li>
+            <li>таблица задач с фильтрами и поиском;</li>
+            <li>форма добавления и редактирования;</li>
+            <li>блок уведомлений о системных сообщениях;</li>
+            <li>страница отчётов и статистики.</li>
+          </ul>
+          <span class="tag">Создание задач</span>
+          <span class="tag">Фильтрация</span>
+          <span class="tag">Отчёты</span>
+          <span class="tag">Уведомления</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="reliability" class="glass">
+      <h2>7. Обеспечение надёжной работы продукта</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>Резервное копирование</h3>
+          <p>Рекомендуется выполнять регулярное резервное копирование базы данных не реже одного раза в сутки.</p>
+        </div>
+        <div class="card">
+          <h3>Контроль доступа</h3>
+          <p>Следует использовать индивидуальные учётные записи и не передавать пароли третьим лицам.</p>
+        </div>
+        <div class="card">
+          <h3>Обновление системы</h3>
+          <p>Перед установкой новой версии необходимо сохранить конфигурацию и резервную копию данных.</p>
+        </div>
+      </div>
+      <ul>
+        <li>не завершать работу программы аварийно во время записи данных;</li>
+        <li>контролировать доступность сетевого соединения;</li>
+        <li>использовать антивирусную защиту и обновлённую операционную систему;</li>
+        <li>проверять целостность базы данных после сбоев питания или перезапуска оборудования.</li>
+      </ul>
+    </section>
+
+    <section id="messages" class="glass">
+      <h2>8. Сообщения пользователю</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Сообщение</th>
+              <th>Причина</th>
+              <th>Действия пользователя</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>«Задача успешно создана»</td>
+              <td>Операция выполнена корректно</td>
+              <td>Продолжить работу</td>
+            </tr>
+            <tr>
+              <td>«Не заполнены обязательные поля»</td>
+              <td>Не введены необходимые данные</td>
+              <td>Заполнить поля формы и повторить сохранение</td>
+            </tr>
+            <tr>
+              <td>«Ошибка подключения к серверу»</td>
+              <td>Сетевой сбой или недоступность сервера</td>
+              <td>Проверить соединение и повторить запрос позже</td>
+            </tr>
+            <tr>
+              <td>«Доступ запрещён»</td>
+              <td>Недостаточно прав для операции</td>
+              <td>Обратиться к администратору системы</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="demo" class="glass">
+      <h2>9. Демонстрационная версия</h2>
+      <p>
+        Демонстрационная версия предназначена для ознакомления пользователя с основными функциями программы без риска
+        повреждения рабочих данных. В демонстрационном режиме доступны создание тестовых задач, изменение статусов и
+        просмотр примеров отчётов. Сохранение данных может быть ограничено или периодически сбрасываться.
+      </p>
+      <div class="note">
+        Демоверсия рекомендуется для первичного обучения персонала и проверки пригодности программного продукта к внедрению.
+      </div>
+    </section>
+
+    <section id="examples" class="glass">
+      <h2>10. Примеры документов, создаваемых программой</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>Карточка задачи</h3>
+          <p>Содержит название, описание, срок выполнения, приоритет и текущий статус.</p>
+        </div>
+        <div class="card">
+          <h3>Отчёт по исполнителю</h3>
+          <p>Показывает количество завершённых, активных и просроченных задач конкретного пользователя.</p>
+        </div>
+        <div class="card">
+          <h3>Сводный отчёт</h3>
+          <p>Формируется для анализа общей загруженности и контроля состояния проекта.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="training" class="glass">
+      <h2>11. Обучающие материалы</h2>
+      <ul>
+        <li>краткая инструкция по первому запуску программы;</li>
+        <li>пошаговое описание сценария создания первой задачи;</li>
+        <li>демонстрационный набор данных для тренировки;</li>
+        <li>справочный раздел с ответами на типовые вопросы;</li>
+        <li>учебная презентация или видеоинструкция по работе с интерфейсом.</li>
+      </ul>
+      <p>
+        Использование обучающих материалов снижает количество ошибок оператора и ускоряет внедрение программного продукта
+        в рабочий процесс организации.
+      </p>
+    </section>
+
+    <section id="references" class="glass">
+      <h2>12. Связанные документы</h2>
+      <p>
+        При разработке технической документации необходимо ссылаться на комплект сопроводительных материалов,
+        предусмотренных заданием.
+      </p>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Основные документы</h3>
+          <ul>
+            <li>Техническое задание;</li>
+            <li>Программа и методика испытаний;</li>
+            <li>Пояснительная записка;</li>
+            <li>Ведомость эксплуатационных документов;</li>
+            <li>Руководство программиста.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Назначение ссылок</h3>
+          <ul>
+            <li>подтверждение соответствия продукта требованиям;</li>
+            <li>описание логики функционирования системы;</li>
+            <li>фиксация результатов испытаний;</li>
+            <li>обеспечение сопровождения и эксплуатации;</li>
+            <li>упрощение внедрения программного средства.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="nav-header.js"></script>
+</body>
+</html>
