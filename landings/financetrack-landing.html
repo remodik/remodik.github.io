@@ -1,0 +1,2269 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>FinanceTrack — Умный финансовый трекер</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            :root {
+                --bg: #06080f;
+                --bg-card: rgba(12, 18, 35, 0.65);
+                --bg-glass: rgba(255, 255, 255, 0.03);
+                --cyan: #00e5ff;
+                --cyan-dim: rgba(0, 229, 255, 0.15);
+                --cyan-glow: 0 0 40px rgba(0, 229, 255, 0.25);
+                --blue: #3d5afe;
+                --purple: #7c4dff;
+                --gradient: linear-gradient(135deg, #00e5ff, #3d5afe, #7c4dff);
+                --text: #e8eaf6;
+                --text-dim: #8892b0;
+                --text-muted: #4a5578;
+                --radius: 16px;
+                --radius-sm: 10px;
+                --font: "Outfit", sans-serif;
+                --mono: "JetBrains Mono", monospace;
+            }
+            html {
+                scroll-behavior: smooth;
+                font-size: 16px;
+            }
+            body {
+                font-family: var(--font), serif;
+                background: var(--bg);
+                color: var(--text);
+                overflow-x: hidden;
+                line-height: 1.6;
+            }
+
+            ::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            ::-webkit-scrollbar-track {
+                background: var(--bg);
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: var(--cyan-dim);
+                border-radius: 3px;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 24px;
+            }
+
+            section {
+                padding: 120px 0;
+                position: relative;
+            }
+
+            .section-label {
+                font-family: var(--mono), serif;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 3px;
+                color: var(--cyan);
+                margin-bottom: 12px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .section-label::before {
+                content: "";
+                width: 24px;
+                height: 1px;
+                background: var(--cyan);
+            }
+
+            .section-title {
+                font-size: clamp(2rem, 5vw, 3.2rem);
+                font-weight: 800;
+                line-height: 1.15;
+                margin-bottom: 20px;
+            }
+
+            .section-title span {
+                background: var(--gradient);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .section-desc {
+                font-size: 1.1rem;
+                color: var(--text-dim);
+                max-width: 560px;
+                line-height: 1.7;
+            }
+
+            .orb {
+                position: absolute;
+                border-radius: 50%;
+                filter: blur(120px);
+                pointer-events: none;
+                opacity: 0.35;
+            }
+
+            .orb-cyan {
+                background: #00e5ff;
+            }
+
+            .orb-blue {
+                background: #3d5afe;
+            }
+
+            .orb-purple {
+                background: #7c4dff;
+            }
+
+            body::before {
+                content: "";
+                position: fixed;
+                inset: 0;
+                background-image:
+                    linear-gradient(
+                        rgba(0, 229, 255, 0.03) 1px,
+                        transparent 1px
+                    ),
+                    linear-gradient(
+                        90deg,
+                        rgba(0, 229, 255, 0.03) 1px,
+                        transparent 1px
+                    );
+                background-size: 60px 60px;
+                pointer-events: none;
+                z-index: 0;
+            }
+
+            .glass {
+                background: var(--bg-glass);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                border: 1px solid rgba(255, 255, 255, 0.06);
+                border-radius: var(--radius);
+            }
+
+            .btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 14px 32px;
+                border-radius: 50px;
+                font-family: var(--font), serif;
+                font-weight: 600;
+                font-size: 0.95rem;
+                cursor: pointer;
+                border: none;
+                transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+                position: relative;
+                overflow: hidden;
+                text-decoration: none;
+            }
+
+            .btn-primary {
+                background: var(--gradient);
+                color: #06080f;
+            }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--cyan-glow);
+            }
+
+            .btn-outline {
+                background: transparent;
+                color: var(--cyan);
+                border: 1px solid rgba(0, 229, 255, 0.3);
+            }
+
+            .btn-outline:hover {
+                background: var(--cyan-dim);
+                border-color: var(--cyan);
+            }
+
+            .reveal {
+                opacity: 0;
+                transform: translateY(40px);
+                transition:
+                    opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                    transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .reveal.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .reveal-delay-1 {
+                transition-delay: 0.1s;
+            }
+
+            .reveal-delay-2 {
+                transition-delay: 0.2s;
+            }
+
+            .reveal-delay-3 {
+                transition-delay: 0.3s;
+            }
+
+            .reveal-delay-4 {
+                transition-delay: 0.4s;
+            }
+
+            nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                padding: 16px 0;
+                transition: all 0.4s ease;
+            }
+
+            nav.scrolled {
+                background: rgba(6, 8, 15, 0.85);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .nav-inner {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .logo {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-weight: 800;
+                font-size: 1.3rem;
+                text-decoration: none;
+                color: var(--text);
+            }
+
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                background: var(--gradient);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1rem;
+                font-weight: 900;
+                color: #06080f;
+            }
+
+            .nav-links {
+                display: flex;
+                gap: 32px;
+                list-style: none;
+            }
+
+            .nav-links a {
+                color: var(--text-dim);
+                text-decoration: none;
+                font-size: 0.9rem;
+                font-weight: 500;
+                transition: color 0.3s;
+            }
+
+            .nav-links a:hover {
+                color: var(--cyan);
+            }
+
+            .nav-cta {
+                padding: 10px 24px;
+                font-size: 0.85rem;
+            }
+
+            .burger {
+                display: none;
+                flex-direction: column;
+                gap: 5px;
+                cursor: pointer;
+                background: none;
+                border: none;
+                padding: 8px;
+            }
+
+            .burger span {
+                width: 24px;
+                height: 2px;
+                background: var(--text);
+                border-radius: 2px;
+                transition: all 0.3s;
+            }
+
+            #hero {
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                padding-top: 100px;
+                position: relative;
+                overflow: hidden;
+            }
+            .hero-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 60px;
+                align-items: center;
+            }
+            .hero-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 6px 16px 6px 8px;
+                border-radius: 50px;
+                background: var(--cyan-dim);
+                border: 1px solid rgba(0, 229, 255, 0.2);
+                font-size: 0.8rem;
+                color: var(--cyan);
+                font-weight: 500;
+                margin-bottom: 24px;
+            }
+            .hero-badge-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--cyan);
+                animation: pulse 2s infinite;
+            }
+            @keyframes pulse {
+                0%,
+                100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.4;
+                }
+            }
+            .hero-title {
+                font-size: clamp(2.8rem, 6vw, 4.2rem);
+                font-weight: 900;
+                line-height: 1.08;
+                margin-bottom: 24px;
+                letter-spacing: -0.02em;
+            }
+            .hero-title .gradient {
+                background: var(--gradient);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .hero-desc {
+                font-size: 1.15rem;
+                color: var(--text-dim);
+                max-width: 480px;
+                margin-bottom: 36px;
+                line-height: 1.7;
+            }
+            .hero-buttons {
+                display: flex;
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+            .hero-stats {
+                display: flex;
+                gap: 40px;
+                margin-top: 48px;
+            }
+            .hero-stat-num {
+                font-size: 1.8rem;
+                font-weight: 800;
+            }
+            .hero-stat-num span {
+                color: var(--cyan);
+            }
+            .hero-stat-label {
+                font-size: 0.8rem;
+                color: var(--text-muted);
+                margin-top: 2px;
+            }
+
+            .hero-visual {
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .app-preview {
+                width: 100%;
+                max-width: 520px;
+                border-radius: 20px;
+                background: rgba(12, 18, 35, 0.8);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                padding: 24px;
+                position: relative;
+                overflow: hidden;
+                box-shadow:
+                    0 40px 80px rgba(0, 0, 0, 0.5),
+                    var(--cyan-glow);
+            }
+            .app-preview::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: conic-gradient(
+                    from 180deg,
+                    transparent,
+                    var(--cyan),
+                    transparent 30%
+                );
+                animation: rotate 8s linear infinite;
+                opacity: 0.08;
+            }
+            @keyframes rotate {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+            .app-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 20px;
+                position: relative;
+                z-index: 1;
+            }
+            .app-greeting {
+                font-size: 0.85rem;
+                color: var(--text-dim);
+            }
+            .app-greeting strong {
+                color: var(--text);
+                font-weight: 600;
+            }
+            .app-dots {
+                display: flex;
+                gap: 4px;
+            }
+            .app-dots span {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.1);
+            }
+            .app-dots span:first-child {
+                background: #ff5f57;
+            }
+            .app-dots span:nth-child(2) {
+                background: #ffbd2e;
+            }
+            .app-dots span:last-child {
+                background: #28c840;
+            }
+
+            .app-balance {
+                text-align: center;
+                padding: 28px 0;
+                position: relative;
+                z-index: 1;
+                background: rgba(0, 229, 255, 0.03);
+                border-radius: var(--radius-sm);
+                margin-bottom: 16px;
+                border: 1px solid rgba(0, 229, 255, 0.06);
+            }
+            .app-balance-label {
+                font-size: 0.75rem;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                margin-bottom: 4px;
+            }
+            .app-balance-amount {
+                font-size: 2.4rem;
+                font-weight: 800;
+                font-family: var(--mono);
+            }
+            .app-balance-amount .currency {
+                color: var(--cyan);
+            }
+            .app-balance-change {
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                color: #28c840;
+                font-size: 0.8rem;
+                font-weight: 600;
+                margin-top: 8px;
+            }
+
+            .app-chart {
+                position: relative;
+                z-index: 1;
+                margin-bottom: 16px;
+                height: 100px;
+            }
+            .app-chart svg {
+                width: 100%;
+                height: 100%;
+            }
+
+            .app-transactions {
+                position: relative;
+                z-index: 1;
+            }
+            .app-tx {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 12px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            }
+            .app-tx:last-child {
+                border: none;
+            }
+            .app-tx-left {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .app-tx-icon {
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.9rem;
+            }
+            .app-tx-icon.green {
+                background: rgba(40, 200, 64, 0.12);
+                color: #28c840;
+            }
+            .app-tx-icon.red {
+                background: rgba(255, 95, 87, 0.12);
+                color: #ff5f57;
+            }
+            .app-tx-icon.blue {
+                background: rgba(61, 90, 254, 0.12);
+                color: #3d5afe;
+            }
+            .app-tx-name {
+                font-size: 0.85rem;
+                font-weight: 500;
+            }
+            .app-tx-cat {
+                font-size: 0.7rem;
+                color: var(--text-muted);
+            }
+            .app-tx-amount {
+                font-family: var(--mono);
+                font-size: 0.85rem;
+                font-weight: 600;
+            }
+            .app-tx-amount.income {
+                color: #28c840;
+            }
+            .app-tx-amount.expense {
+                color: #ff5f57;
+            }
+
+            .float-card {
+                position: absolute;
+                padding: 14px 18px;
+                border-radius: var(--radius-sm);
+                background: rgba(12, 18, 35, 0.9);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+                z-index: 2;
+                animation: float 6s ease-in-out infinite;
+            }
+            @keyframes float {
+                0%,
+                100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-12px);
+                }
+            }
+            .float-ai {
+                top: -10px;
+                right: -30px;
+                animation-delay: -1s;
+            }
+            .float-ai .float-label {
+                font-size: 0.65rem;
+                color: var(--text-muted);
+                margin-bottom: 4px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            .float-ai .float-value {
+                font-size: 0.85rem;
+                color: #28c840;
+                font-weight: 600;
+            }
+            .float-savings {
+                bottom: 60px;
+                left: -40px;
+                animation-delay: -3s;
+            }
+            .float-savings .float-icon {
+                font-size: 1.2rem;
+                margin-bottom: 6px;
+            }
+            .float-savings .float-label {
+                font-size: 0.65rem;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            .float-savings .float-value {
+                font-size: 1rem;
+                font-weight: 700;
+                color: var(--cyan);
+                font-family: var(--mono);
+            }
+
+            .hero-orb-1 {
+                width: 400px;
+                height: 400px;
+                top: -100px;
+                right: -100px;
+            }
+            .hero-orb-2 {
+                width: 300px;
+                height: 300px;
+                bottom: -50px;
+                left: -100px;
+            }
+
+            #features {
+                overflow: hidden;
+            }
+            .features-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+                margin-top: 48px;
+            }
+            .feature-card {
+                padding: 36px 28px;
+                border-radius: var(--radius);
+                position: relative;
+                overflow: hidden;
+                background: var(--bg-glass);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                cursor: default;
+            }
+            .feature-card:hover {
+                border-color: rgba(0, 229, 255, 0.15);
+                transform: translateY(-4px);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            }
+            .feature-card::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: var(--gradient);
+                opacity: 0;
+                transition: opacity 0.4s;
+            }
+            .feature-card:hover::before {
+                opacity: 1;
+            }
+            .feature-icon {
+                width: 52px;
+                height: 52px;
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.4rem;
+                margin-bottom: 20px;
+            }
+            .feature-icon.cyan {
+                background: rgba(0, 229, 255, 0.1);
+                color: var(--cyan);
+            }
+            .feature-icon.blue {
+                background: rgba(61, 90, 254, 0.1);
+                color: var(--blue);
+            }
+            .feature-icon.purple {
+                background: rgba(124, 77, 255, 0.1);
+                color: var(--purple);
+            }
+            .feature-title {
+                font-size: 1.15rem;
+                font-weight: 700;
+                margin-bottom: 10px;
+            }
+            .feature-desc {
+                font-size: 0.9rem;
+                color: var(--text-dim);
+                line-height: 1.65;
+            }
+
+            #security {
+                overflow: hidden;
+            }
+            .security-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 60px;
+                align-items: center;
+                margin-top: 48px;
+            }
+            .security-visual {
+                position: relative;
+                display: flex;
+                justify-content: center;
+            }
+            .shield-container {
+                width: 280px;
+                height: 320px;
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .shield-ring {
+                position: absolute;
+                border-radius: 50%;
+                border: 1px solid rgba(0, 229, 255, 0.1);
+                animation: ring-pulse 4s ease-in-out infinite;
+            }
+            .shield-ring:nth-child(1) {
+                width: 200px;
+                height: 200px;
+                animation-delay: 0s;
+            }
+            .shield-ring:nth-child(2) {
+                width: 260px;
+                height: 260px;
+                animation-delay: 1s;
+            }
+            .shield-ring:nth-child(3) {
+                width: 320px;
+                height: 320px;
+                animation-delay: 2s;
+            }
+            @keyframes ring-pulse {
+                0%,
+                100% {
+                    opacity: 0.3;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 0.8;
+                    transform: scale(1.04);
+                }
+            }
+            .shield-icon {
+                font-size: 4rem;
+                position: relative;
+                z-index: 2;
+                filter: drop-shadow(0 0 30px rgba(0, 229, 255, 0.4));
+            }
+            .security-features {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+            .sec-item {
+                display: flex;
+                gap: 16px;
+                align-items: flex-start;
+            }
+            .sec-item-icon {
+                width: 44px;
+                height: 44px;
+                min-width: 44px;
+                border-radius: 12px;
+                background: var(--cyan-dim);
+                color: var(--cyan);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.1rem;
+            }
+            .sec-item-title {
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+            .sec-item-desc {
+                font-size: 0.85rem;
+                color: var(--text-dim);
+                line-height: 1.6;
+            }
+
+            #mobile {
+                overflow: hidden;
+            }
+            .mobile-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 60px;
+                align-items: center;
+                margin-top: 48px;
+            }
+            .phone-frame {
+                width: 280px;
+                height: 560px;
+                border-radius: 40px;
+                background: linear-gradient(145deg, #0c1223, #111b36);
+                border: 2px solid rgba(255, 255, 255, 0.08);
+                padding: 12px;
+                margin: 0 auto;
+                position: relative;
+                box-shadow:
+                    0 40px 80px rgba(0, 0, 0, 0.5),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            }
+            .phone-notch {
+                width: 120px;
+                height: 28px;
+                background: var(--bg);
+                border-radius: 0 0 20px 20px;
+                margin: 0 auto 16px;
+            }
+            .phone-screen {
+                width: 100%;
+                height: calc(100% - 44px);
+                border-radius: 28px;
+                overflow: hidden;
+                background: #080c18;
+                padding: 20px 16px;
+            }
+            .phone-status {
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.6rem;
+                color: var(--text-muted);
+                margin-bottom: 16px;
+            }
+            .phone-balance {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .phone-balance-label {
+                font-size: 0.6rem;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+            }
+            .phone-balance-amount {
+                font-size: 1.5rem;
+                font-weight: 800;
+                font-family: var(--mono);
+                margin-top: 4px;
+            }
+            .phone-balance-amount .cur {
+                color: var(--cyan);
+            }
+            .phone-actions {
+                display: flex;
+                gap: 12px;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
+            .phone-action {
+                width: 48px;
+                height: 48px;
+                border-radius: 14px;
+                background: rgba(0, 229, 255, 0.08);
+                border: 1px solid rgba(0, 229, 255, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1rem;
+            }
+            .phone-mini-chart {
+                height: 60px;
+                background: rgba(0, 229, 255, 0.03);
+                border-radius: 12px;
+                margin-bottom: 16px;
+                display: flex;
+                align-items: flex-end;
+                padding: 8px;
+                gap: 4px;
+            }
+            .phone-mini-chart .bar {
+                flex: 1;
+                background: var(--gradient);
+                border-radius: 3px 3px 0 0;
+                min-height: 6px;
+                opacity: 0.7;
+            }
+            .phone-mini-chart .bar:nth-child(1) {
+                height: 40%;
+            }
+            .phone-mini-chart .bar:nth-child(2) {
+                height: 60%;
+            }
+            .phone-mini-chart .bar:nth-child(3) {
+                height: 35%;
+            }
+            .phone-mini-chart .bar:nth-child(4) {
+                height: 80%;
+                opacity: 1;
+            }
+            .phone-mini-chart .bar:nth-child(5) {
+                height: 55%;
+            }
+            .phone-mini-chart .bar:nth-child(6) {
+                height: 70%;
+            }
+            .phone-mini-chart .bar:nth-child(7) {
+                height: 45%;
+            }
+            .phone-tx-mini {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .phone-tx {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 0.7rem;
+            }
+            .phone-tx-name {
+                color: var(--text-dim);
+            }
+            .phone-tx-val {
+                font-family: var(--mono);
+                font-weight: 600;
+            }
+            .phone-tx-val.g {
+                color: #28c840;
+            }
+            .phone-tx-val.r {
+                color: #ff5f57;
+            }
+
+            .mobile-features {
+                display: flex;
+                flex-direction: column;
+                gap: 24px;
+            }
+            .mobile-feat {
+                display: flex;
+                gap: 14px;
+                align-items: flex-start;
+            }
+            .mobile-feat-num {
+                font-family: var(--mono);
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: var(--cyan);
+                min-width: 28px;
+                height: 28px;
+                border-radius: 8px;
+                background: var(--cyan-dim);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .mobile-feat-title {
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+            .mobile-feat-desc {
+                font-size: 0.85rem;
+                color: var(--text-dim);
+                line-height: 1.6;
+            }
+
+            #pricing {
+                overflow: hidden;
+            }
+            .pricing-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+                margin-top: 48px;
+            }
+            .pricing-card {
+                padding: 36px 28px;
+                border-radius: var(--radius);
+                position: relative;
+                background: var(--bg-glass);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                transition: all 0.4s;
+            }
+            .pricing-card.popular {
+                border-color: rgba(0, 229, 255, 0.2);
+                background: rgba(0, 229, 255, 0.03);
+                transform: scale(1.03);
+            }
+            .pricing-card.popular .pricing-badge {
+                position: absolute;
+                top: -12px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 4px 16px;
+                border-radius: 50px;
+                background: var(--gradient);
+                font-size: 0.7rem;
+                font-weight: 700;
+                color: #06080f;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            .pricing-name {
+                font-size: 1rem;
+                font-weight: 600;
+                color: var(--text-dim);
+                margin-bottom: 16px;
+            }
+            .pricing-price {
+                margin-bottom: 20px;
+            }
+            .pricing-price .amount {
+                font-size: 2.8rem;
+                font-weight: 900;
+            }
+            .pricing-price .period {
+                color: var(--text-muted);
+                font-size: 0.85rem;
+            }
+            .pricing-divider {
+                height: 1px;
+                background: rgba(255, 255, 255, 0.06);
+                margin-bottom: 20px;
+            }
+            .pricing-features {
+                list-style: none;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                margin-bottom: 28px;
+            }
+            .pricing-features li {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 0.9rem;
+                color: var(--text-dim);
+            }
+            .pricing-features li::before {
+                content: "✓";
+                width: 20px;
+                height: 20px;
+                border-radius: 6px;
+                background: rgba(40, 200, 64, 0.1);
+                color: #28c840;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.7rem;
+                min-width: 20px;
+            }
+            .pricing-card .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            #testimonials {
+                overflow: hidden;
+            }
+            .testimonials-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+                margin-top: 48px;
+            }
+            .testimonial-card {
+                padding: 28px;
+                border-radius: var(--radius);
+                background: var(--bg-glass);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                transition: all 0.4s;
+            }
+            .testimonial-card:hover {
+                border-color: rgba(0, 229, 255, 0.1);
+            }
+            .testimonial-stars {
+                color: #ffbd2e;
+                font-size: 0.85rem;
+                margin-bottom: 16px;
+                letter-spacing: 2px;
+            }
+            .testimonial-text {
+                font-size: 0.9rem;
+                color: var(--text-dim);
+                line-height: 1.7;
+                margin-bottom: 20px;
+                font-style: italic;
+            }
+            .testimonial-author {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .testimonial-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 12px;
+                background: var(--gradient);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+                font-size: 0.85rem;
+                color: #06080f;
+            }
+            .testimonial-name {
+                font-weight: 600;
+                font-size: 0.85rem;
+            }
+            .testimonial-role {
+                font-size: 0.75rem;
+                color: var(--text-muted);
+            }
+
+            #faq {
+                overflow: hidden;
+            }
+            .faq-list {
+                max-width: 720px;
+                margin: 48px auto 0;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            .faq-item {
+                border-radius: var(--radius-sm);
+                background: var(--bg-glass);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                overflow: hidden;
+                transition: border-color 0.3s;
+            }
+            .faq-item.open {
+                border-color: rgba(0, 229, 255, 0.12);
+            }
+            .faq-question {
+                padding: 20px 24px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 0.95rem;
+                transition: color 0.3s;
+                user-select: none;
+            }
+            .faq-question:hover {
+                color: var(--cyan);
+            }
+            .faq-toggle {
+                width: 28px;
+                height: 28px;
+                border-radius: 8px;
+                background: rgba(255, 255, 255, 0.04);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.85rem;
+                transition: all 0.3s;
+                min-width: 28px;
+            }
+            .faq-item.open .faq-toggle {
+                background: var(--cyan-dim);
+                color: var(--cyan);
+                transform: rotate(45deg);
+            }
+            .faq-answer {
+                max-height: 0;
+                overflow: hidden;
+                transition:
+                    max-height 0.4s ease,
+                    padding 0.4s ease;
+            }
+            .faq-answer-inner {
+                padding: 0 24px 20px;
+                font-size: 0.9rem;
+                color: var(--text-dim);
+                line-height: 1.7;
+            }
+
+            #cta {
+                overflow: hidden;
+            }
+            .cta-box {
+                text-align: center;
+                padding: 80px 40px;
+                border-radius: 24px;
+                background: rgba(0, 229, 255, 0.03);
+                border: 1px solid rgba(0, 229, 255, 0.08);
+                position: relative;
+                overflow: hidden;
+            }
+            .cta-box::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 600px;
+                height: 600px;
+                background: radial-gradient(
+                    circle,
+                    rgba(0, 229, 255, 0.08),
+                    transparent 70%
+                );
+                pointer-events: none;
+            }
+            .cta-title {
+                font-size: clamp(2rem, 4vw, 2.8rem);
+                font-weight: 900;
+                margin-bottom: 16px;
+                position: relative;
+                z-index: 1;
+            }
+            .cta-desc {
+                font-size: 1.05rem;
+                color: var(--text-dim);
+                max-width: 480px;
+                margin: 0 auto 32px;
+                position: relative;
+                z-index: 1;
+            }
+            .cta-buttons {
+                display: flex;
+                gap: 16px;
+                justify-content: center;
+                flex-wrap: wrap;
+                position: relative;
+                z-index: 1;
+            }
+
+            footer {
+                padding: 60px 0 30px;
+                border-top: 1px solid rgba(255, 255, 255, 0.04);
+            }
+            .footer-grid {
+                display: grid;
+                grid-template-columns: 2fr 1fr 1fr 1fr;
+                gap: 40px;
+                margin-bottom: 40px;
+            }
+            .footer-brand .logo {
+                margin-bottom: 16px;
+            }
+            .footer-brand-desc {
+                font-size: 0.85rem;
+                color: var(--text-muted);
+                max-width: 280px;
+                line-height: 1.6;
+            }
+            .footer-col-title {
+                font-weight: 600;
+                font-size: 0.85rem;
+                margin-bottom: 16px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            .footer-links {
+                list-style: none;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .footer-links a {
+                color: var(--text-muted);
+                text-decoration: none;
+                font-size: 0.85rem;
+                transition: color 0.3s;
+            }
+            .footer-links a:hover {
+                color: var(--cyan);
+            }
+            .footer-bottom {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-top: 30px;
+                border-top: 1px solid rgba(255, 255, 255, 0.04);
+                font-size: 0.8rem;
+                color: var(--text-muted);
+            }
+            .footer-socials {
+                display: flex;
+                gap: 12px;
+            }
+            .footer-socials a {
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                background: rgba(255, 255, 255, 0.04);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--text-muted);
+                text-decoration: none;
+                font-size: 0.85rem;
+                transition: all 0.3s;
+            }
+            .footer-socials a:hover {
+                background: var(--cyan-dim);
+                color: var(--cyan);
+            }
+
+            @media (max-width: 1024px) {
+                .hero-grid {
+                    grid-template-columns: 1fr;
+                    text-align: center;
+                }
+                .hero-desc {
+                    margin: 0 auto 36px;
+                }
+                .hero-buttons {
+                    justify-content: center;
+                }
+                .hero-stats {
+                    justify-content: center;
+                }
+                .hero-visual {
+                    margin-top: 48px;
+                }
+                .features-grid,
+                .pricing-grid,
+                .testimonials-grid {
+                    grid-template-columns: 1fr 1fr;
+                }
+                .security-grid,
+                .mobile-grid {
+                    grid-template-columns: 1fr;
+                    text-align: center;
+                }
+                .security-visual {
+                    order: -1;
+                }
+                .mobile-features {
+                    margin-top: 40px;
+                }
+                .footer-grid {
+                    grid-template-columns: 1fr 1fr;
+                }
+            }
+            @media (max-width: 768px) {
+                section {
+                    padding: 80px 0;
+                }
+                .features-grid,
+                .pricing-grid,
+                .testimonials-grid {
+                    grid-template-columns: 1fr;
+                }
+                .pricing-card.popular {
+                    transform: none;
+                }
+                .nav-links {
+                    display: none;
+                }
+                .nav-cta {
+                    display: none;
+                }
+                .burger {
+                    display: flex;
+                }
+                .hero-stats {
+                    flex-direction: column;
+                    gap: 16px;
+                    align-items: center;
+                }
+                .float-card {
+                    display: none;
+                }
+                .footer-grid {
+                    grid-template-columns: 1fr;
+                }
+                .footer-bottom {
+                    flex-direction: column;
+                    gap: 16px;
+                    text-align: center;
+                }
+            }
+            @media (max-width: 480px) {
+                .hero-title {
+                    font-size: 2.2rem;
+                }
+                .phone-frame {
+                    width: 240px;
+                    height: 480px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <nav id="navbar">
+            <div class="container nav-inner">
+                <a href="#" class="logo">
+                    <div class="logo-icon">F</div>
+                    FinanceTrack
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#features">Функции</a></li>
+                    <li><a href="#security">Безопасность</a></li>
+                    <li><a href="#pricing">Тарифы</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+                <a href="#cta" class="btn btn-primary nav-cta"
+                    >Начать бесплатно</a
+                >
+                <button
+                    class="burger"
+                    onclick="
+                        document
+                            .querySelector('.nav-links')
+                            .classList.toggle('show')
+                    "
+                >
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </nav>
+
+        <section id="hero">
+            <div class="orb orb-cyan hero-orb-1"></div>
+            <div class="orb orb-blue hero-orb-2"></div>
+            <div class="container">
+                <div class="hero-grid">
+                    <div>
+                        <div class="hero-badge reveal">
+                            <span class="hero-badge-dot"></span>
+                            Новая версия 3.0
+                        </div>
+                        <h1 class="hero-title reveal reveal-delay-1">
+                            Ваши финансы<br />под
+                            <span class="gradient">полным контролем</span>
+                        </h1>
+                        <p class="hero-desc reveal reveal-delay-2">
+                            Умная платформа для отслеживания расходов,
+                            планирования бюджета и получения AI-рекомендаций для
+                            роста ваших сбережений.
+                        </p>
+                        <div class="hero-buttons reveal reveal-delay-3">
+                            <a href="#cta" class="btn btn-primary"
+                                >Попробовать бесплатно →</a
+                            >
+                            <a href="#features" class="btn btn-outline"
+                                >Узнать больше</a
+                            >
+                        </div>
+                        <div class="hero-stats reveal reveal-delay-4">
+                            <div>
+                                <div class="hero-stat-num">
+                                    250<span>K+</span>
+                                </div>
+                                <div class="hero-stat-label">Пользователей</div>
+                            </div>
+                            <div>
+                                <div class="hero-stat-num">
+                                    ₽4.2<span>B</span>
+                                </div>
+                                <div class="hero-stat-label">Отслежено</div>
+                            </div>
+                            <div>
+                                <div class="hero-stat-num">
+                                    4.9<span>★</span>
+                                </div>
+                                <div class="hero-stat-label">Рейтинг</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hero-visual reveal reveal-delay-2">
+                        <div class="app-preview">
+                            <div class="app-header">
+                                <div class="app-greeting">
+                                    Привет, <strong>Алексей</strong> 👋
+                                </div>
+                                <div class="app-dots">
+                                    <span></span><span></span><span></span>
+                                </div>
+                            </div>
+                            <div class="app-balance">
+                                <div class="app-balance-label">
+                                    Общий баланс
+                                </div>
+                                <div class="app-balance-amount">
+                                    <span class="currency">₽</span>847,230
+                                </div>
+                                <div class="app-balance-change">
+                                    ↑ 12.4% за месяц
+                                </div>
+                            </div>
+                            <div class="app-chart">
+                                <svg
+                                    viewBox="0 0 480 90"
+                                    fill="none"
+                                    preserveAspectRatio="none"
+                                >
+                                    <defs>
+                                        <linearGradient
+                                            id="cg"
+                                            x1="0"
+                                            y1="0"
+                                            x2="0"
+                                            y2="1"
+                                        >
+                                            <stop
+                                                offset="0%"
+                                                stop-color="#00e5ff"
+                                                stop-opacity="0.3"
+                                            />
+                                            <stop
+                                                offset="100%"
+                                                stop-color="#00e5ff"
+                                                stop-opacity="0"
+                                            />
+                                        </linearGradient>
+                                    </defs>
+                                    <path
+                                        d="M0 70 Q40 65 80 55 T160 40 T240 50 T320 25 T400 35 T480 15 V90 H0Z"
+                                        fill="url(#cg)"
+                                    />
+                                    <path
+                                        d="M0 70 Q40 65 80 55 T160 40 T240 50 T320 25 T400 35 T480 15"
+                                        stroke="#00e5ff"
+                                        stroke-width="2"
+                                        fill="none"
+                                    />
+                                </svg>
+                            </div>
+                            <div class="app-transactions">
+                                <div class="app-tx">
+                                    <div class="app-tx-left">
+                                        <div class="app-tx-icon green">💰</div>
+                                        <div>
+                                            <div class="app-tx-name">
+                                                Зарплата
+                                            </div>
+                                            <div class="app-tx-cat">Доход</div>
+                                        </div>
+                                    </div>
+                                    <div class="app-tx-amount income">
+                                        +₽180,000
+                                    </div>
+                                </div>
+                                <div class="app-tx">
+                                    <div class="app-tx-left">
+                                        <div class="app-tx-icon red">🛒</div>
+                                        <div>
+                                            <div class="app-tx-name">
+                                                Перекрёсток
+                                            </div>
+                                            <div class="app-tx-cat">
+                                                Продукты
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="app-tx-amount expense">
+                                        -₽4,850
+                                    </div>
+                                </div>
+                                <div class="app-tx">
+                                    <div class="app-tx-left">
+                                        <div class="app-tx-icon blue">📱</div>
+                                        <div>
+                                            <div class="app-tx-name">МТС</div>
+                                            <div class="app-tx-cat">Связь</div>
+                                        </div>
+                                    </div>
+                                    <div class="app-tx-amount expense">
+                                        -₽990
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="float-card float-ai">
+                            <div class="float-label">AI инсайт</div>
+                            <div class="float-value">
+                                Сэкономлено ₽23,400 🎯
+                            </div>
+                        </div>
+                        <div class="float-card float-savings">
+                            <div class="float-icon">📊</div>
+                            <div class="float-label">Экономия</div>
+                            <div class="float-value">+18.2%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features">
+            <div class="container">
+                <div class="reveal">
+                    <div class="section-label">Возможности</div>
+                    <h2 class="section-title">
+                        Всё для <span>умного управления</span> финансами
+                    </h2>
+                    <p class="section-desc">
+                        Мощные инструменты аналитики и искусственного интеллекта
+                        помогут вам принимать правильные финансовые решения
+                        каждый день.
+                    </p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card reveal reveal-delay-1">
+                        <div class="feature-icon cyan">📊</div>
+                        <div class="feature-title">Трекинг бюджета</div>
+                        <div class="feature-desc">
+                            Автоматическая категоризация расходов, лимиты по
+                            категориям и мгновенные уведомления при превышении
+                            бюджета.
+                        </div>
+                    </div>
+                    <div class="feature-card reveal reveal-delay-2">
+                        <div class="feature-icon blue">📈</div>
+                        <div class="feature-title">Продвинутая аналитика</div>
+                        <div class="feature-desc">
+                            Подробные графики и отчёты по всем вашим
+                            транзакциям. Отслеживайте тренды и понимайте свои
+                            финансовые паттерны.
+                        </div>
+                    </div>
+                    <div class="feature-card reveal reveal-delay-3">
+                        <div class="feature-icon purple">🧠</div>
+                        <div class="feature-title">AI-инсайты</div>
+                        <div class="feature-desc">
+                            Персонализированные рекомендации на основе ИИ:
+                            оптимизация расходов, прогнозирование и советы по
+                            накоплениям.
+                        </div>
+                    </div>
+                    <div class="feature-card reveal reveal-delay-1">
+                        <div class="feature-icon cyan">🔗</div>
+                        <div class="feature-title">Синхронизация банков</div>
+                        <div class="feature-desc">
+                            Подключите свои банковские счета и карты. Все
+                            транзакции автоматически импортируются и обновляются
+                            в реальном времени.
+                        </div>
+                    </div>
+                    <div class="feature-card reveal reveal-delay-2">
+                        <div class="feature-icon blue">🎯</div>
+                        <div class="feature-title">Финансовые цели</div>
+                        <div class="feature-desc">
+                            Устанавливайте цели — от отпуска до первого взноса
+                            за квартиру. Система отслеживает прогресс и
+                            мотивирует вас.
+                        </div>
+                    </div>
+                    <div class="feature-card reveal reveal-delay-3">
+                        <div class="feature-icon purple">👥</div>
+                        <div class="feature-title">Семейный доступ</div>
+                        <div class="feature-desc">
+                            Делитесь бюджетами с семьёй. Управляйте общими
+                            расходами и планируйте семейный бюджет вместе.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="security">
+            <div class="container">
+                <div class="security-grid">
+                    <div class="security-visual reveal">
+                        <div class="shield-container">
+                            <div class="shield-ring"></div>
+                            <div class="shield-ring"></div>
+                            <div class="shield-ring"></div>
+                            <div class="shield-icon">🛡️</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="reveal">
+                            <div class="section-label">Безопасность</div>
+                            <h2 class="section-title">
+                                Ваши данные под <span>надёжной защитой</span>
+                            </h2>
+                            <p class="section-desc" style="margin-bottom: 32px">
+                                Мы используем банковский уровень шифрования и
+                                строжайшие стандарты безопасности.
+                            </p>
+                        </div>
+                        <div class="security-features">
+                            <div class="sec-item reveal reveal-delay-1">
+                                <div class="sec-item-icon">🔐</div>
+                                <div>
+                                    <div class="sec-item-title">
+                                        AES-256 шифрование
+                                    </div>
+                                    <div class="sec-item-desc">
+                                        Все данные зашифрованы в покое и при
+                                        передаче стандартом, который используют
+                                        крупнейшие банки мира.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sec-item reveal reveal-delay-2">
+                                <div class="sec-item-icon">🔑</div>
+                                <div>
+                                    <div class="sec-item-title">
+                                        Двухфакторная аутентификация
+                                    </div>
+                                    <div class="sec-item-desc">
+                                        Biometric ID, SMS-коды и аппаратные
+                                        ключи для максимальной защиты вашего
+                                        аккаунта.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sec-item reveal reveal-delay-3">
+                                <div class="sec-item-icon">📋</div>
+                                <div>
+                                    <div class="sec-item-title">
+                                        Сертификация SOC 2 Type II
+                                    </div>
+                                    <div class="sec-item-desc">
+                                        Ежегодный аудит независимыми экспертами
+                                        подтверждает высочайший уровень защиты
+                                        данных.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sec-item reveal reveal-delay-4">
+                                <div class="sec-item-icon">🚫</div>
+                                <div>
+                                    <div class="sec-item-title">
+                                        Без продажи данных
+                                    </div>
+                                    <div class="sec-item-desc">
+                                        Мы никогда не продаём и не передаём ваши
+                                        финансовые данные третьим лицам.
+                                        Приватность — наш приоритет.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mobile">
+            <div class="container">
+                <div class="mobile-grid">
+                    <div class="reveal">
+                        <div class="phone-frame">
+                            <div class="phone-notch"></div>
+                            <div class="phone-screen">
+                                <div class="phone-status">
+                                    <span>9:41</span>
+                                    <span>●●●● 5G</span>
+                                </div>
+                                <div class="phone-balance">
+                                    <div class="phone-balance-label">
+                                        Баланс
+                                    </div>
+                                    <div class="phone-balance-amount">
+                                        <span class="cur">₽</span>847,230
+                                    </div>
+                                </div>
+                                <div class="phone-actions">
+                                    <div class="phone-action">↑</div>
+                                    <div class="phone-action">↓</div>
+                                    <div class="phone-action">⟳</div>
+                                    <div class="phone-action">⋯</div>
+                                </div>
+                                <div class="phone-mini-chart">
+                                    <div class="bar"></div>
+                                    <div class="bar"></div>
+                                    <div class="bar"></div>
+                                    <div class="bar"></div>
+                                    <div class="bar"></div>
+                                    <div class="bar"></div>
+                                    <div class="bar"></div>
+                                </div>
+                                <div class="phone-tx-mini">
+                                    <div class="phone-tx">
+                                        <span class="phone-tx-name"
+                                            >💰 Зарплата</span
+                                        ><span class="phone-tx-val g"
+                                            >+₽180K</span
+                                        >
+                                    </div>
+                                    <div class="phone-tx">
+                                        <span class="phone-tx-name"
+                                            >🛒 Продукты</span
+                                        ><span class="phone-tx-val r"
+                                            >-₽4,850</span
+                                        >
+                                    </div>
+                                    <div class="phone-tx">
+                                        <span class="phone-tx-name"
+                                            >📱 Связь</span
+                                        ><span class="phone-tx-val r"
+                                            >-₽990</span
+                                        >
+                                    </div>
+                                    <div class="phone-tx">
+                                        <span class="phone-tx-name"
+                                            >🎯 Кэшбэк</span
+                                        ><span class="phone-tx-val g"
+                                            >+₽2,340</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="reveal">
+                            <div class="section-label">
+                                Мобильное приложение
+                            </div>
+                            <h2 class="section-title">
+                                Финансы <span>в кармане</span>
+                            </h2>
+                            <p class="section-desc" style="margin-bottom: 32px">
+                                Полный контроль над бюджетом прямо с вашего
+                                смартфона. iOS и Android.
+                            </p>
+                        </div>
+                        <div class="mobile-features">
+                            <div class="mobile-feat reveal reveal-delay-1">
+                                <div class="mobile-feat-num">01</div>
+                                <div>
+                                    <div class="mobile-feat-title">
+                                        Push-уведомления
+                                    </div>
+                                    <div class="mobile-feat-desc">
+                                        Мгновенные оповещения о каждой
+                                        транзакции и превышении лимитов.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mobile-feat reveal reveal-delay-2">
+                                <div class="mobile-feat-num">02</div>
+                                <div>
+                                    <div class="mobile-feat-title">
+                                        Сканер чеков
+                                    </div>
+                                    <div class="mobile-feat-desc">
+                                        Сфотографируйте чек — ИИ автоматически
+                                        распознает и категоризирует покупки.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mobile-feat reveal reveal-delay-3">
+                                <div class="mobile-feat-num">03</div>
+                                <div>
+                                    <div class="mobile-feat-title">
+                                        Виджеты и Apple Watch
+                                    </div>
+                                    <div class="mobile-feat-desc">
+                                        Баланс и статистика всегда на виду — на
+                                        экране телефона и часах.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mobile-feat reveal reveal-delay-4">
+                                <div class="mobile-feat-num">04</div>
+                                <div>
+                                    <div class="mobile-feat-title">
+                                        Оффлайн-режим
+                                    </div>
+                                    <div class="mobile-feat-desc">
+                                        Добавляйте транзакции без интернета —
+                                        данные синхронизируются автоматически.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pricing">
+            <div class="container">
+                <div class="reveal" style="text-align: center">
+                    <div class="section-label" style="justify-content: center">
+                        Тарифы
+                    </div>
+                    <h2 class="section-title">
+                        Выберите свой <span>план</span>
+                    </h2>
+                    <p class="section-desc" style="margin: 0 auto">
+                        Начните бесплатно. Обновите, когда будете готовы к
+                        большему.
+                    </p>
+                </div>
+                <div class="pricing-grid">
+                    <div class="pricing-card reveal reveal-delay-1">
+                        <div class="pricing-name">Старт</div>
+                        <div class="pricing-price">
+                            <span class="amount">₽0</span>
+                            <span class="period">/ навсегда</span>
+                        </div>
+                        <div class="pricing-divider"></div>
+                        <ul class="pricing-features">
+                            <li>1 банковский счёт</li>
+                            <li>Базовая аналитика</li>
+                            <li>Категории расходов</li>
+                            <li>Месячный отчёт</li>
+                        </ul>
+                        <a href="#" class="btn btn-outline">Начать бесплатно</a>
+                    </div>
+                    <div class="pricing-card popular reveal reveal-delay-2">
+                        <div class="pricing-badge">Популярный</div>
+                        <div class="pricing-name">Про</div>
+                        <div class="pricing-price">
+                            <span class="amount">₽399</span>
+                            <span class="period">/ месяц</span>
+                        </div>
+                        <div class="pricing-divider"></div>
+                        <ul class="pricing-features">
+                            <li>До 10 счетов и карт</li>
+                            <li>AI-инсайты и прогнозы</li>
+                            <li>Финансовые цели</li>
+                            <li>Сканер чеков</li>
+                            <li>Приоритетная поддержка</li>
+                        </ul>
+                        <a href="#" class="btn btn-primary"
+                            >Попробовать 14 дней</a
+                        >
+                    </div>
+                    <div class="pricing-card reveal reveal-delay-3">
+                        <div class="pricing-name">Семейный</div>
+                        <div class="pricing-price">
+                            <span class="amount">₽699</span>
+                            <span class="period">/ месяц</span>
+                        </div>
+                        <div class="pricing-divider"></div>
+                        <ul class="pricing-features">
+                            <li>Безлимит счетов</li>
+                            <li>До 5 участников</li>
+                            <li>Общие бюджеты</li>
+                            <li>Расширенная аналитика</li>
+                            <li>Персональный советник</li>
+                        </ul>
+                        <a href="#" class="btn btn-outline">Выбрать план</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonials">
+            <div class="container">
+                <div class="reveal" style="text-align: center">
+                    <div class="section-label" style="justify-content: center">
+                        Отзывы
+                    </div>
+                    <h2 class="section-title">
+                        Нам доверяют <span>тысячи</span> пользователей
+                    </h2>
+                </div>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card reveal reveal-delay-1">
+                        <div class="testimonial-stars">★★★★★</div>
+                        <div class="testimonial-text">
+                            «За три месяца я сэкономил больше, чем за весь
+                            прошлый год. AI-рекомендации реально работают —
+                            подсказали, где я теряю деньги.»
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">АМ</div>
+                            <div>
+                                <div class="testimonial-name">
+                                    Алексей Морозов
+                                </div>
+                                <div class="testimonial-role">
+                                    Разработчик, Москва
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card reveal reveal-delay-2">
+                        <div class="testimonial-stars">★★★★★</div>
+                        <div class="testimonial-text">
+                            «Наконец-то нормальное приложение для семейного
+                            бюджета! Муж тоже подключился, теперь вместе
+                            планируем расходы. Очень удобно.»
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">ЕК</div>
+                            <div>
+                                <div class="testimonial-name">
+                                    Елена Козлова
+                                </div>
+                                <div class="testimonial-role">
+                                    Маркетолог, СПб
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card reveal reveal-delay-3">
+                        <div class="testimonial-stars">★★★★★</div>
+                        <div class="testimonial-text">
+                            «Сканер чеков — это магия. Просто фоткаю, и всё
+                            автоматически разносится по категориям. Экономлю
+                            кучу времени на учёте.»
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">ДН</div>
+                            <div>
+                                <div class="testimonial-name">
+                                    Дмитрий Новиков
+                                </div>
+                                <div class="testimonial-role">
+                                    Предприниматель, Казань
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq">
+            <div class="container">
+                <div class="reveal" style="text-align: center">
+                    <div class="section-label" style="justify-content: center">
+                        FAQ
+                    </div>
+                    <h2 class="section-title">Частые <span>вопросы</span></h2>
+                </div>
+                <div class="faq-list">
+                    <div class="faq-item reveal reveal-delay-1">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            Как подключить банковский счёт?
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                Перейдите в настройки → «Счета» → «Добавить
+                                счёт». Мы поддерживаем все крупные российские
+                                банки: Сбер, Тинькофф, Альфа, ВТБ и другие.
+                                Подключение занимает менее 2 минут через
+                                безопасный Open Banking API.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="faq-item reveal reveal-delay-2">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            Безопасно ли предоставлять доступ к счетам?
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                Абсолютно. Мы используем шифрование AES-256, не
+                                храним логины и пароли от банков. Данные
+                                передаются через сертифицированных агрегаторов.
+                                Мы прошли аудит SOC 2 Type II и соответствуем
+                                требованиям 152-ФЗ о персональных данных.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="faq-item reveal reveal-delay-3">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            Как работают AI-инсайты?
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                Наш ИИ анализирует ваши паттерны расходов и
+                                доходов, сравнивает с анонимизированными данными
+                                похожих профилей и формирует персональные
+                                рекомендации: где можно сэкономить, как
+                                оптимизировать подписки, когда лучше совершать
+                                крупные покупки.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="faq-item reveal reveal-delay-4">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            Можно ли использовать бесплатно?
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                Да! Тариф «Старт» полностью бесплатный и не
+                                имеет ограничений по времени. Вы получаете
+                                базовый трекинг, одно подключение банка и
+                                месячные отчёты. Про-функции доступны с
+                                14-дневным пробным периодом.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="faq-item reveal">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            Есть ли приложение для iOS и Android?
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                Да, нативные приложения доступны в App Store и
+                                Google Play. Они поддерживают Face ID / Touch
+                                ID, виджеты для домашнего экрана, Apple Watch,
+                                уведомления и оффлайн-режим.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cta">
+            <div class="container">
+                <div class="cta-box reveal">
+                    <h2 class="cta-title">
+                        Начните управлять<br />финансами
+                        <span
+                            class="gradient"
+                            style="
+                                background: var(--gradient);
+                                -webkit-background-clip: text;
+                                -webkit-text-fill-color: transparent;
+                            "
+                            >уже сегодня</span
+                        >
+                    </h2>
+                    <p class="cta-desc">
+                        Присоединяйтесь к 250,000+ пользователей, которые уже
+                        экономят с FinanceTrack. Регистрация бесплатна.
+                    </p>
+                    <div class="cta-buttons">
+                        <a href="#" class="btn btn-primary"
+                            >Создать аккаунт бесплатно →</a
+                        >
+                        <a href="#" class="btn btn-outline">Посмотреть демо</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <a href="#" class="logo">
+                            <div class="logo-icon">F</div>
+                            FinanceTrack
+                        </a>
+                        <p class="footer-brand-desc">
+                            Умная платформа для отслеживания финансов и
+                            планирования бюджета с помощью искусственного
+                            интеллекта.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="footer-col-title">Продукт</div>
+                        <ul class="footer-links">
+                            <li><a href="#">Функции</a></li>
+                            <li><a href="#">Тарифы</a></li>
+                            <li><a href="#">Интеграции</a></li>
+                            <li><a href="#">API</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="footer-col-title">Компания</div>
+                        <ul class="footer-links">
+                            <li><a href="#">О нас</a></li>
+                            <li><a href="#">Блог</a></li>
+                            <li><a href="#">Карьера</a></li>
+                            <li><a href="#">Пресса</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="footer-col-title">Поддержка</div>
+                        <ul class="footer-links">
+                            <li><a href="#">Справочный центр</a></li>
+                            <li><a href="#">Связаться с нами</a></li>
+                            <li><a href="#">Конфиденциальность</a></li>
+                            <li><a href="#">Условия</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <span>© 2026 FinanceTrack. Все права защищены.</span>
+                    <div class="footer-socials">
+                        <a href="#" title="Telegram">✈</a>
+                        <a href="#" title="VK">V</a>
+                        <a href="#" title="YouTube">▶</a>
+                        <a href="#" title="GitHub">⌂</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            const nav = document.getElementById("navbar");
+            window.addEventListener("scroll", () => {
+                nav.classList.toggle("scrolled", window.scrollY > 40);
+            });
+
+            const reveals = document.querySelectorAll(".reveal");
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((e) => {
+                        if (e.isIntersecting) {
+                            e.target.classList.add("visible");
+                            observer.unobserve(e.target);
+                        }
+                    });
+                },
+                { threshold: 0.1, rootMargin: "0px 0px -40px 0px" },
+            );
+            reveals.forEach((el) => observer.observe(el));
+
+            function toggleFaq(el) {
+                const item = el.parentElement;
+                const answer = item.querySelector(".faq-answer");
+                const isOpen = item.classList.contains("open");
+
+                document.querySelectorAll(".faq-item").forEach((i) => {
+                    i.classList.remove("open");
+                    i.querySelector(".faq-answer").style.maxHeight = null;
+                });
+
+                if (!isOpen) {
+                    item.classList.add("open");
+                    answer.style.maxHeight = answer.scrollHeight + "px";
+                }
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((a) => {
+                a.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const target = document.querySelector(
+                        a.getAttribute("href"),
+                    );
+                    if (target)
+                        target.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                        });
+                });
+            });
+        </script>
+    </body>
+</html>

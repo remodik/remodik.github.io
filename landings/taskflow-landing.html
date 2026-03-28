@@ -1,0 +1,3275 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>TaskFlow — AI-платформа для управления задачами</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            :root {
+                --primary: #6366f1;
+                --primary-dark: #4f46e5;
+                --secondary: #8b5cf6;
+                --gradient: linear-gradient(
+                    135deg,
+                    #6366f1 0%,
+                    #8b5cf6 50%,
+                    #a855f7 100%
+                );
+                --gradient-soft: linear-gradient(
+                    135deg,
+                    rgba(99, 102, 241, 0.1) 0%,
+                    rgba(139, 92, 246, 0.1) 100%
+                );
+                --text-primary: #1e293b;
+                --text-secondary: #64748b;
+                --bg-light: #f8fafc;
+                --white: #ffffff;
+                --border: #e2e8f0;
+                --shadow:
+                    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                    0 2px 4px -2px rgba(0, 0, 0, 0.1);
+                --shadow-lg:
+                    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+                --shadow-xl:
+                    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            }
+
+            body {
+                font-family:
+                    "Inter",
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    sans-serif;
+                color: var(--text-primary);
+                line-height: 1.6;
+                background: var(--white);
+                overflow-x: hidden;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 24px;
+            }
+
+            header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                background: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(20px);
+                border-bottom: 1px solid var(--border);
+                transition: all 0.3s ease;
+            }
+
+            nav {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                height: 72px;
+            }
+
+            .logo {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: var(--text-primary);
+                text-decoration: none;
+            }
+
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+                background: var(--gradient);
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .logo-icon svg {
+                width: 24px;
+                height: 24px;
+                fill: white;
+            }
+
+            .nav-links {
+                display: flex;
+                align-items: center;
+                gap: 32px;
+                list-style: none;
+            }
+
+            .nav-links a {
+                text-decoration: none;
+                color: var(--text-secondary);
+                font-weight: 500;
+                font-size: 0.95rem;
+                transition: color 0.3s ease;
+            }
+
+            .nav-links a:hover {
+                color: var(--primary);
+            }
+
+            .nav-buttons {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .btn {
+                padding: 12px 24px;
+                border-radius: 10px;
+                font-weight: 600;
+                font-size: 0.95rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                border: none;
+            }
+
+            .btn-outline {
+                background: transparent;
+                color: var(--text-primary);
+                border: 2px solid var(--border);
+            }
+
+            .btn-outline:hover {
+                border-color: var(--primary);
+                color: var(--primary);
+            }
+
+            .btn-primary {
+                background: var(--gradient);
+                color: white;
+                box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+            }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+            }
+
+            .btn-large {
+                padding: 16px 32px;
+                font-size: 1.1rem;
+                border-radius: 12px;
+            }
+
+            .mobile-menu-btn {
+                display: none;
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 8px;
+            }
+
+            .mobile-menu-btn svg {
+                width: 28px;
+                height: 28px;
+                stroke: var(--text-primary);
+            }
+
+            .hero {
+                padding: 160px 0 100px;
+                background: linear-gradient(
+                    180deg,
+                    var(--bg-light) 0%,
+                    var(--white) 100%
+                );
+                position: relative;
+                overflow: hidden;
+            }
+
+            .hero::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                right: -20%;
+                width: 800px;
+                height: 800px;
+                background: radial-gradient(
+                    circle,
+                    rgba(99, 102, 241, 0.15) 0%,
+                    transparent 70%
+                );
+                border-radius: 50%;
+            }
+
+            .hero::after {
+                content: "";
+                position: absolute;
+                bottom: -30%;
+                left: -10%;
+                width: 600px;
+                height: 600px;
+                background: radial-gradient(
+                    circle,
+                    rgba(139, 92, 246, 0.1) 0%,
+                    transparent 70%
+                );
+                border-radius: 50%;
+            }
+
+            .hero-content {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 60px;
+                align-items: center;
+                position: relative;
+                z-index: 1;
+            }
+
+            .hero-text {
+                max-width: 600px;
+            }
+
+            .hero-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: var(--gradient-soft);
+                border: 1px solid rgba(99, 102, 241, 0.2);
+                padding: 8px 16px;
+                border-radius: 50px;
+                font-size: 0.875rem;
+                font-weight: 600;
+                color: var(--primary);
+                margin-bottom: 24px;
+            }
+
+            .hero-badge svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            .hero h1 {
+                font-size: 3.5rem;
+                font-weight: 800;
+                line-height: 1.1;
+                margin-bottom: 24px;
+                color: var(--text-primary);
+            }
+
+            .hero h1 span {
+                background: var(--gradient);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .hero-subtitle {
+                font-size: 1.25rem;
+                color: var(--text-secondary);
+                margin-bottom: 32px;
+                line-height: 1.7;
+            }
+
+            .hero-buttons {
+                display: flex;
+                gap: 16px;
+                margin-bottom: 40px;
+            }
+
+            .hero-stats {
+                display: flex;
+                gap: 40px;
+            }
+
+            .stat {
+                text-align: left;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+                font-weight: 800;
+                background: var(--gradient);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .stat-label {
+                font-size: 0.875rem;
+                color: var(--text-secondary);
+            }
+
+            .hero-image {
+                position: relative;
+            }
+
+            .dashboard-preview {
+                background: var(--white);
+                border-radius: 20px;
+                box-shadow: var(--shadow-xl);
+                overflow: hidden;
+                border: 1px solid var(--border);
+                transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+                transition: transform 0.5s ease;
+            }
+
+            .dashboard-preview:hover {
+                transform: perspective(1000px) rotateY(0) rotateX(0);
+            }
+
+            .dashboard-header {
+                background: var(--bg-light);
+                padding: 12px 20px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .dashboard-dot {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+            }
+
+            .dashboard-dot.red {
+                background: #ef4444;
+            }
+            .dashboard-dot.yellow {
+                background: #f59e0b;
+            }
+            .dashboard-dot.green {
+                background: #22c55e;
+            }
+
+            .dashboard-body {
+                padding: 24px;
+            }
+
+            .dashboard-nav {
+                display: flex;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+
+            .dashboard-nav-item {
+                padding: 8px 16px;
+                background: var(--bg-light);
+                border-radius: 8px;
+                font-size: 0.8rem;
+                font-weight: 500;
+                color: var(--text-secondary);
+            }
+
+            .dashboard-nav-item.active {
+                background: var(--gradient);
+                color: white;
+            }
+
+            .task-list {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .task-item {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 14px 16px;
+                background: var(--bg-light);
+                border-radius: 10px;
+                transition: all 0.3s ease;
+            }
+
+            .task-item:hover {
+                transform: translateX(4px);
+                box-shadow: var(--shadow);
+            }
+
+            .task-checkbox {
+                width: 20px;
+                height: 20px;
+                border: 2px solid var(--primary);
+                border-radius: 6px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .task-checkbox.checked {
+                background: var(--gradient);
+                border: none;
+            }
+
+            .task-checkbox.checked svg {
+                width: 12px;
+                height: 12px;
+                stroke: white;
+            }
+
+            .task-content {
+                flex: 1;
+            }
+
+            .task-title {
+                font-size: 0.875rem;
+                font-weight: 500;
+                margin-bottom: 2px;
+            }
+
+            .task-meta {
+                font-size: 0.75rem;
+                color: var(--text-secondary);
+            }
+
+            .task-priority {
+                padding: 4px 10px;
+                border-radius: 50px;
+                font-size: 0.7rem;
+                font-weight: 600;
+            }
+
+            .task-priority.high {
+                background: #fee2e2;
+                color: #dc2626;
+            }
+            .task-priority.medium {
+                background: #fef3c7;
+                color: #d97706;
+            }
+            .task-priority.low {
+                background: #dcfce7;
+                color: #16a34a;
+            }
+
+            .floating-card {
+                position: absolute;
+                background: white;
+                border-radius: 12px;
+                padding: 16px;
+                box-shadow: var(--shadow-lg);
+                animation: float 3s ease-in-out infinite;
+            }
+
+            .floating-card-1 {
+                top: 20%;
+                right: -30px;
+                animation-delay: 0s;
+            }
+
+            .floating-card-2 {
+                bottom: 20%;
+                left: -40px;
+                animation-delay: 1.5s;
+            }
+
+            @keyframes float {
+                0%,
+                100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-10px);
+                }
+            }
+
+            .floating-card-icon {
+                width: 40px;
+                height: 40px;
+                background: var(--gradient-soft);
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 8px;
+            }
+
+            .floating-card-icon svg {
+                width: 20px;
+                height: 20px;
+                stroke: var(--primary);
+            }
+
+            .floating-card-text {
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: var(--text-primary);
+            }
+
+            .floating-card-subtext {
+                font-size: 0.65rem;
+                color: var(--text-secondary);
+            }
+
+            .features {
+                padding: 120px 0;
+                background: var(--white);
+            }
+
+            .section-header {
+                text-align: center;
+                max-width: 700px;
+                margin: 0 auto 60px;
+            }
+
+            .section-badge {
+                display: inline-block;
+                background: var(--gradient-soft);
+                color: var(--primary);
+                padding: 8px 16px;
+                border-radius: 50px;
+                font-size: 0.875rem;
+                font-weight: 600;
+                margin-bottom: 16px;
+            }
+
+            .section-title {
+                font-size: 2.75rem;
+                font-weight: 800;
+                margin-bottom: 16px;
+                color: var(--text-primary);
+            }
+
+            .section-subtitle {
+                font-size: 1.125rem;
+                color: var(--text-secondary);
+            }
+
+            .features-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 24px;
+            }
+
+            .feature-card {
+                background: var(--white);
+                border: 1px solid var(--border);
+                border-radius: 20px;
+                padding: 32px;
+                transition: all 0.4s ease;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .feature-card::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: var(--gradient);
+                transform: scaleX(0);
+                transition: transform 0.4s ease;
+            }
+
+            .feature-card:hover {
+                transform: translateY(-8px);
+                box-shadow: var(--shadow-xl);
+                border-color: transparent;
+            }
+
+            .feature-card:hover::before {
+                transform: scaleX(1);
+            }
+
+            .feature-icon {
+                width: 56px;
+                height: 56px;
+                background: var(--gradient-soft);
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 20px;
+                transition: all 0.4s ease;
+            }
+
+            .feature-card:hover .feature-icon {
+                background: var(--gradient);
+            }
+
+            .feature-icon svg {
+                width: 28px;
+                height: 28px;
+                stroke: var(--primary);
+                transition: stroke 0.4s ease;
+            }
+
+            .feature-card:hover .feature-icon svg {
+                stroke: white;
+            }
+
+            .feature-title {
+                font-size: 1.25rem;
+                font-weight: 700;
+                margin-bottom: 12px;
+                color: var(--text-primary);
+            }
+
+            .feature-desc {
+                font-size: 0.95rem;
+                color: var(--text-secondary);
+                line-height: 1.6;
+            }
+
+            .dashboard-section {
+                padding: 120px 0;
+                background: var(--bg-light);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .dashboard-section::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100%;
+                height: 100%;
+                background: radial-gradient(
+                    ellipse at center top,
+                    rgba(99, 102, 241, 0.08) 0%,
+                    transparent 60%
+                );
+            }
+
+            .dashboard-content {
+                display: grid;
+                grid-template-columns: 1fr 1.2fr;
+                gap: 80px;
+                align-items: center;
+                position: relative;
+                z-index: 1;
+            }
+
+            .dashboard-text h2 {
+                font-size: 2.5rem;
+                font-weight: 800;
+                margin-bottom: 24px;
+            }
+
+            .dashboard-text p {
+                font-size: 1.125rem;
+                color: var(--text-secondary);
+                margin-bottom: 32px;
+            }
+
+            .dashboard-features {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .dashboard-feature {
+                display: flex;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .dashboard-feature-icon {
+                width: 48px;
+                height: 48px;
+                background: var(--gradient);
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+
+            .dashboard-feature-icon svg {
+                width: 24px;
+                height: 24px;
+                stroke: white;
+            }
+
+            .dashboard-feature-content h4 {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+
+            .dashboard-feature-content p {
+                font-size: 0.95rem;
+                color: var(--text-secondary);
+                margin: 0;
+            }
+
+            .dashboard-mockup {
+                background: white;
+                border-radius: 24px;
+                box-shadow: var(--shadow-xl);
+                padding: 24px;
+                border: 1px solid var(--border);
+            }
+
+            .mockup-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 24px;
+            }
+
+            .mockup-title {
+                font-size: 1.25rem;
+                font-weight: 700;
+            }
+
+            .mockup-tabs {
+                display: flex;
+                gap: 8px;
+            }
+
+            .mockup-tab {
+                padding: 8px 16px;
+                background: var(--bg-light);
+                border-radius: 8px;
+                font-size: 0.875rem;
+                font-weight: 500;
+                color: var(--text-secondary);
+            }
+
+            .mockup-tab.active {
+                background: var(--gradient);
+                color: white;
+            }
+
+            .mockup-chart {
+                background: var(--bg-light);
+                border-radius: 16px;
+                padding: 24px;
+                margin-bottom: 20px;
+            }
+
+            .chart-header {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 20px;
+            }
+
+            .chart-label {
+                font-size: 0.875rem;
+                color: var(--text-secondary);
+            }
+
+            .chart-value {
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: var(--primary);
+            }
+
+            .chart-bars {
+                display: flex;
+                align-items: flex-end;
+                gap: 8px;
+                height: 100px;
+            }
+
+            .chart-bar {
+                flex: 1;
+                background: var(--gradient);
+                border-radius: 6px 6px 0 0;
+                transition: all 0.3s ease;
+                opacity: 0.7;
+            }
+
+            .chart-bar:hover {
+                opacity: 1;
+                transform: scaleY(1.1);
+                transform-origin: bottom;
+            }
+
+            .mockup-stats {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px;
+            }
+
+            .mockup-stat {
+                background: var(--bg-light);
+                border-radius: 12px;
+                padding: 16px;
+                text-align: center;
+            }
+
+            .mockup-stat-value {
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: var(--primary);
+            }
+
+            .mockup-stat-label {
+                font-size: 0.8rem;
+                color: var(--text-secondary);
+            }
+
+            .benefits {
+                padding: 120px 0;
+                background: var(--white);
+            }
+
+            .benefits-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 32px;
+            }
+
+            .benefit-card {
+                text-align: center;
+                padding: 40px 32px;
+                border-radius: 20px;
+                background: var(--bg-light);
+                transition: all 0.4s ease;
+            }
+
+            .benefit-card:hover {
+                background: var(--white);
+                box-shadow: var(--shadow-xl);
+                transform: translateY(-8px);
+            }
+
+            .benefit-icon {
+                width: 80px;
+                height: 80px;
+                background: var(--gradient);
+                border-radius: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 24px;
+            }
+
+            .benefit-icon svg {
+                width: 40px;
+                height: 40px;
+                stroke: white;
+            }
+
+            .benefit-title {
+                font-size: 1.375rem;
+                font-weight: 700;
+                margin-bottom: 12px;
+            }
+
+            .benefit-desc {
+                font-size: 1rem;
+                color: var(--text-secondary);
+                line-height: 1.7;
+            }
+
+            .integrations {
+                padding: 120px 0;
+                background: var(--bg-light);
+            }
+
+            .integrations-wrapper {
+                background: var(--white);
+                border-radius: 32px;
+                padding: 60px;
+                box-shadow: var(--shadow);
+            }
+
+            .integrations-grid {
+                display: grid;
+                grid-template-columns: repeat(6, 1fr);
+                gap: 24px;
+                margin-top: 48px;
+            }
+
+            .integration-card {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 32px 20px;
+                background: var(--bg-light);
+                border-radius: 16px;
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+
+            .integration-card:hover {
+                transform: translateY(-8px);
+                box-shadow: var(--shadow-lg);
+                background: var(--white);
+            }
+
+            .integration-logo {
+                width: 56px;
+                height: 56px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 16px;
+                border-radius: 12px;
+            }
+
+            .integration-logo svg {
+                width: 40px;
+                height: 40px;
+            }
+
+            .integration-name {
+                font-weight: 600;
+                font-size: 0.95rem;
+                color: var(--text-primary);
+            }
+
+            .pricing {
+                padding: 120px 0;
+                background: var(--white);
+            }
+
+            .pricing-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 32px;
+                margin-top: 60px;
+            }
+
+            .pricing-card {
+                background: var(--white);
+                border: 2px solid var(--border);
+                border-radius: 24px;
+                padding: 40px;
+                position: relative;
+                transition: all 0.4s ease;
+            }
+
+            .pricing-card:hover {
+                border-color: var(--primary);
+                transform: translateY(-8px);
+                box-shadow: var(--shadow-xl);
+            }
+
+            .pricing-card.popular {
+                border-color: var(--primary);
+                background: linear-gradient(
+                    180deg,
+                    rgba(99, 102, 241, 0.03) 0%,
+                    var(--white) 100%
+                );
+            }
+
+            .popular-badge {
+                position: absolute;
+                top: -14px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--gradient);
+                color: white;
+                padding: 8px 24px;
+                border-radius: 50px;
+                font-size: 0.8rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .pricing-header {
+                text-align: center;
+                margin-bottom: 32px;
+            }
+
+            .pricing-name {
+                font-size: 1.25rem;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+
+            .pricing-desc {
+                font-size: 0.95rem;
+                color: var(--text-secondary);
+                margin-bottom: 24px;
+            }
+
+            .pricing-price {
+                display: flex;
+                align-items: baseline;
+                justify-content: center;
+                gap: 4px;
+            }
+
+            .pricing-currency {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: var(--text-primary);
+            }
+
+            .pricing-amount {
+                font-size: 3.5rem;
+                font-weight: 800;
+                background: var(--gradient);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .pricing-period {
+                font-size: 1rem;
+                color: var(--text-secondary);
+            }
+
+            .pricing-features {
+                list-style: none;
+                margin-bottom: 32px;
+            }
+
+            .pricing-features li {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px 0;
+                border-bottom: 1px solid var(--border);
+                font-size: 0.95rem;
+                color: var(--text-secondary);
+            }
+
+            .pricing-features li:last-child {
+                border-bottom: none;
+            }
+
+            .pricing-features li svg {
+                width: 20px;
+                height: 20px;
+                stroke: var(--primary);
+                flex-shrink: 0;
+            }
+
+            .pricing-btn {
+                width: 100%;
+            }
+
+            .testimonials {
+                padding: 120px 0;
+                background: var(--bg-light);
+            }
+
+            .testimonials-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 32px;
+                margin-top: 60px;
+            }
+
+            .testimonial-card {
+                background: var(--white);
+                border-radius: 24px;
+                padding: 40px;
+                box-shadow: var(--shadow);
+                transition: all 0.4s ease;
+            }
+
+            .testimonial-card:hover {
+                transform: translateY(-8px);
+                box-shadow: var(--shadow-xl);
+            }
+
+            .testimonial-stars {
+                display: flex;
+                gap: 4px;
+                margin-bottom: 20px;
+            }
+
+            .testimonial-stars svg {
+                width: 20px;
+                height: 20px;
+                fill: #fbbf24;
+            }
+
+            .testimonial-text {
+                font-size: 1.05rem;
+                color: var(--text-secondary);
+                line-height: 1.8;
+                margin-bottom: 24px;
+                font-style: italic;
+            }
+
+            .testimonial-author {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .testimonial-avatar {
+                width: 52px;
+                height: 52px;
+                border-radius: 50%;
+                background: var(--gradient);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: 700;
+                font-size: 1.25rem;
+            }
+
+            .testimonial-info h4 {
+                font-weight: 700;
+                font-size: 1rem;
+                margin-bottom: 2px;
+            }
+
+            .testimonial-info p {
+                font-size: 0.875rem;
+                color: var(--text-secondary);
+            }
+
+            .cta {
+                padding: 120px 0;
+                background: var(--gradient);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .cta::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                right: -20%;
+                width: 600px;
+                height: 600px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+            }
+
+            .cta::after {
+                content: "";
+                position: absolute;
+                bottom: -30%;
+                left: -10%;
+                width: 400px;
+                height: 400px;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 50%;
+            }
+
+            .cta-content {
+                text-align: center;
+                position: relative;
+                z-index: 1;
+                max-width: 700px;
+                margin: 0 auto;
+            }
+
+            .cta h2 {
+                font-size: 3rem;
+                font-weight: 800;
+                color: white;
+                margin-bottom: 20px;
+            }
+
+            .cta p {
+                font-size: 1.25rem;
+                color: rgba(255, 255, 255, 0.9);
+                margin-bottom: 40px;
+            }
+
+            .cta-buttons {
+                display: flex;
+                justify-content: center;
+                gap: 16px;
+            }
+
+            .btn-white {
+                background: white;
+                color: var(--primary);
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+            }
+
+            .btn-white:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            }
+
+            .btn-ghost {
+                background: rgba(255, 255, 255, 0.15);
+                color: white;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+            }
+
+            .btn-ghost:hover {
+                background: rgba(255, 255, 255, 0.25);
+                border-color: rgba(255, 255, 255, 0.5);
+            }
+
+            footer {
+                background: var(--text-primary);
+                color: white;
+                padding: 80px 0 40px;
+            }
+
+            .footer-content {
+                display: grid;
+                grid-template-columns: 2fr repeat(4, 1fr);
+                gap: 48px;
+                margin-bottom: 60px;
+            }
+
+            .footer-brand .logo {
+                color: white;
+                margin-bottom: 20px;
+            }
+
+            .footer-brand p {
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 0.95rem;
+                line-height: 1.7;
+                max-width: 300px;
+            }
+
+            .footer-social {
+                display: flex;
+                gap: 12px;
+                margin-top: 24px;
+            }
+
+            .footer-social a {
+                width: 40px;
+                height: 40px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+            }
+
+            .footer-social a:hover {
+                background: var(--primary);
+                transform: translateY(-2px);
+            }
+
+            .footer-social svg {
+                width: 20px;
+                height: 20px;
+                fill: white;
+            }
+
+            .footer-column h4 {
+                font-size: 1rem;
+                font-weight: 700;
+                margin-bottom: 20px;
+            }
+
+            .footer-column ul {
+                list-style: none;
+            }
+
+            .footer-column li {
+                margin-bottom: 12px;
+            }
+
+            .footer-column a {
+                color: rgba(255, 255, 255, 0.6);
+                text-decoration: none;
+                font-size: 0.95rem;
+                transition: color 0.3s ease;
+            }
+
+            .footer-column a:hover {
+                color: white;
+            }
+
+            .footer-bottom {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-top: 40px;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .footer-bottom p {
+                color: rgba(255, 255, 255, 0.5);
+                font-size: 0.875rem;
+            }
+
+            .footer-bottom-links {
+                display: flex;
+                gap: 32px;
+            }
+
+            .footer-bottom-links a {
+                color: rgba(255, 255, 255, 0.5);
+                text-decoration: none;
+                font-size: 0.875rem;
+                transition: color 0.3s ease;
+            }
+
+            .footer-bottom-links a:hover {
+                color: white;
+            }
+
+            @media (max-width: 1024px) {
+                .hero-content {
+                    grid-template-columns: 1fr;
+                    text-align: center;
+                }
+
+                .hero-text {
+                    max-width: 100%;
+                }
+
+                .hero h1 {
+                    font-size: 2.75rem;
+                }
+
+                .hero-buttons {
+                    justify-content: center;
+                }
+
+                .hero-stats {
+                    justify-content: center;
+                }
+
+                .hero-image {
+                    display: none;
+                }
+
+                .features-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .dashboard-content {
+                    grid-template-columns: 1fr;
+                }
+
+                .dashboard-text {
+                    text-align: center;
+                }
+
+                .benefits-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .integrations-grid {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+
+                .pricing-grid {
+                    grid-template-columns: 1fr;
+                    max-width: 450px;
+                    margin: 60px auto 0;
+                }
+
+                .testimonials-grid {
+                    grid-template-columns: 1fr;
+                    max-width: 600px;
+                    margin: 60px auto 0;
+                }
+
+                .footer-content {
+                    grid-template-columns: 1fr 1fr;
+                }
+
+                .footer-brand {
+                    grid-column: span 2;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .nav-links {
+                    display: none;
+                }
+
+                .nav-buttons {
+                    display: none;
+                }
+
+                .mobile-menu-btn {
+                    display: block;
+                }
+
+                .hero {
+                    padding: 120px 0 80px;
+                }
+
+                .hero h1 {
+                    font-size: 2.25rem;
+                }
+
+                .hero-subtitle {
+                    font-size: 1.1rem;
+                }
+
+                .hero-buttons {
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .hero-stats {
+                    flex-direction: column;
+                    gap: 20px;
+                }
+
+                .stat {
+                    text-align: center;
+                }
+
+                .section-title {
+                    font-size: 2rem;
+                }
+
+                .features-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .benefits-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .integrations-wrapper {
+                    padding: 40px 24px;
+                }
+
+                .integrations-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .cta h2 {
+                    font-size: 2rem;
+                }
+
+                .cta-buttons {
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .footer-content {
+                    grid-template-columns: 1fr;
+                    text-align: center;
+                }
+
+                .footer-brand {
+                    grid-column: span 1;
+                }
+
+                .footer-brand p {
+                    max-width: 100%;
+                }
+
+                .footer-social {
+                    justify-content: center;
+                }
+
+                .footer-bottom {
+                    flex-direction: column;
+                    gap: 20px;
+                    text-align: center;
+                }
+
+                .footer-bottom-links {
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    gap: 16px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <nav class="container">
+                <a href="#" class="logo">
+                    <div class="logo-icon">
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                fill="none"
+                            />
+                        </svg>
+                    </div>
+                    TaskFlow
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#features">Возможности</a></li>
+                    <li><a href="#benefits">Преимущества</a></li>
+                    <li><a href="#integrations">Интеграции</a></li>
+                    <li><a href="#pricing">Цены</a></li>
+                </ul>
+                <div class="nav-buttons">
+                    <a href="#" class="btn btn-outline">Войти</a>
+                    <a href="#" class="btn btn-primary">Начать бесплатно</a>
+                </div>
+                <button class="mobile-menu-btn">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"
+                        />
+                    </svg>
+                </button>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <div class="hero-badge">
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            AI-платформа нового поколения
+                        </div>
+                        <h1>Управляйте проектами <span>умнее с AI</span></h1>
+                        <p class="hero-subtitle">
+                            TaskFlow — интеллектуальная платформа для управления
+                            задачами и проектами, которая использует AI для
+                            автоматизации рутины и повышения продуктивности
+                            вашей команды.
+                        </p>
+                        <div class="hero-buttons">
+                            <a href="#" class="btn btn-primary btn-large">
+                                Попробовать бесплатно
+                                <svg
+                                    width="20"
+                                    height="20"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </a>
+                            <a href="#" class="btn btn-outline btn-large"
+                                >Смотреть демо</a
+                            >
+                        </div>
+                        <div class="hero-stats">
+                            <div class="stat">
+                                <div class="stat-number">10K+</div>
+                                <div class="stat-label">Активных команд</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">2M+</div>
+                                <div class="stat-label">Задач выполнено</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">98%</div>
+                                <div class="stat-label">Довольных клиентов</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <div class="dashboard-preview">
+                            <div class="dashboard-header">
+                                <div class="dashboard-dot red"></div>
+                                <div class="dashboard-dot yellow"></div>
+                                <div class="dashboard-dot green"></div>
+                            </div>
+                            <div class="dashboard-body">
+                                <div class="dashboard-nav">
+                                    <div class="dashboard-nav-item active">
+                                        Все задачи
+                                    </div>
+                                    <div class="dashboard-nav-item">
+                                        В работе
+                                    </div>
+                                    <div class="dashboard-nav-item">Готово</div>
+                                </div>
+                                <div class="task-list">
+                                    <div class="task-item">
+                                        <div class="task-checkbox checked">
+                                            <svg
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="3"
+                                                    d="M5 13l4 4L19 7"
+                                                />
+                                            </svg>
+                                        </div>
+                                        <div class="task-content">
+                                            <div class="task-title">
+                                                Обновить дизайн главной страницы
+                                            </div>
+                                            <div class="task-meta">
+                                                Дизайн · Сегодня
+                                            </div>
+                                        </div>
+                                        <div class="task-priority low">
+                                            Готово
+                                        </div>
+                                    </div>
+                                    <div class="task-item">
+                                        <div class="task-checkbox"></div>
+                                        <div class="task-content">
+                                            <div class="task-title">
+                                                Интеграция платежной системы
+                                            </div>
+                                            <div class="task-meta">
+                                                Разработка · Завтра
+                                            </div>
+                                        </div>
+                                        <div class="task-priority high">
+                                            Срочно
+                                        </div>
+                                    </div>
+                                    <div class="task-item">
+                                        <div class="task-checkbox"></div>
+                                        <div class="task-content">
+                                            <div class="task-title">
+                                                Провести A/B тестирование
+                                            </div>
+                                            <div class="task-meta">
+                                                Маркетинг · На неделе
+                                            </div>
+                                        </div>
+                                        <div class="task-priority medium">
+                                            Средний
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="floating-card floating-card-1">
+                            <div class="floating-card-icon">
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                                    />
+                                </svg>
+                            </div>
+                            <div class="floating-card-text">
+                                +45% эффективности
+                            </div>
+                            <div class="floating-card-subtext">
+                                за последний месяц
+                            </div>
+                        </div>
+                        <div class="floating-card floating-card-2">
+                            <div class="floating-card-icon">
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    />
+                                </svg>
+                            </div>
+                            <div class="floating-card-text">
+                                8 часов сэкономлено
+                            </div>
+                            <div class="floating-card-subtext">
+                                на этой неделе
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features" id="features">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-badge">Возможности</span>
+                    <h2 class="section-title">
+                        Всё для эффективной работы команды
+                    </h2>
+                    <p class="section-subtitle">
+                        Мощные инструменты на базе искусственного интеллекта для
+                        управления проектами любой сложности
+                    </p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                                />
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">AI-автоматизация</h3>
+                        <p class="feature-desc">
+                            Интеллектуальное распределение задач, автоматические
+                            напоминания и умные приоритеты
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                                />
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Командная работа</h3>
+                        <p class="feature-desc">
+                            Совместное редактирование, комментарии в реальном
+                            времени и прозрачная коммуникация
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                                />
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Аналитика и отчёты</h3>
+                        <p class="feature-desc">
+                            Детальные дашборды, прогнозы выполнения и insights
+                            для принятия решений
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                                />
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Безопасность</h3>
+                        <p class="feature-desc">
+                            Шифрование данных, двухфакторная аутентификация и
+                            полный контроль доступа
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="dashboard-section">
+            <div class="container">
+                <div class="dashboard-content">
+                    <div class="dashboard-text">
+                        <span class="section-badge">Продукт</span>
+                        <h2>
+                            Интуитивный интерфейс для максимальной
+                            продуктивности
+                        </h2>
+                        <p>
+                            Наш дашборд разработан с учётом лучших практик
+                            UX/UI, чтобы вы могли сосредоточиться на работе, а
+                            не на изучении инструмента.
+                        </p>
+                        <div class="dashboard-features">
+                            <div class="dashboard-feature">
+                                <div class="dashboard-feature-icon">
+                                    <svg
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"
+                                        />
+                                    </svg>
+                                </div>
+                                <div class="dashboard-feature-content">
+                                    <h4>Kanban-доски</h4>
+                                    <p>
+                                        Визуализируйте рабочий процесс с помощью
+                                        гибких досок
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="dashboard-feature">
+                                <div class="dashboard-feature-icon">
+                                    <svg
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                        />
+                                    </svg>
+                                </div>
+                                <div class="dashboard-feature-content">
+                                    <h4>Диаграмма Ганта</h4>
+                                    <p>
+                                        Планируйте проекты с учётом зависимостей
+                                        и сроков
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="dashboard-feature">
+                                <div class="dashboard-feature-icon">
+                                    <svg
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
+                                        />
+                                    </svg>
+                                </div>
+                                <div class="dashboard-feature-content">
+                                    <h4>Метрики в реальном времени</h4>
+                                    <p>
+                                        Отслеживайте прогресс и
+                                        производительность команды
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-mockup">
+                        <div class="mockup-header">
+                            <div class="mockup-title">Обзор проекта</div>
+                            <div class="mockup-tabs">
+                                <div class="mockup-tab active">Неделя</div>
+                                <div class="mockup-tab">Месяц</div>
+                                <div class="mockup-tab">Год</div>
+                            </div>
+                        </div>
+                        <div class="mockup-chart">
+                            <div class="chart-header">
+                                <div>
+                                    <div class="chart-label">
+                                        Выполнено задач
+                                    </div>
+                                    <div class="chart-value">156</div>
+                                </div>
+                                <div>
+                                    <div class="chart-label">Рост</div>
+                                    <div class="chart-value">+23%</div>
+                                </div>
+                            </div>
+                            <div class="chart-bars">
+                                <div
+                                    class="chart-bar"
+                                    style="height: 45%"
+                                ></div>
+                                <div
+                                    class="chart-bar"
+                                    style="height: 65%"
+                                ></div>
+                                <div
+                                    class="chart-bar"
+                                    style="height: 55%"
+                                ></div>
+                                <div
+                                    class="chart-bar"
+                                    style="height: 80%"
+                                ></div>
+                                <div
+                                    class="chart-bar"
+                                    style="height: 70%"
+                                ></div>
+                                <div
+                                    class="chart-bar"
+                                    style="height: 90%"
+                                ></div>
+                                <div
+                                    class="chart-bar"
+                                    style="height: 100%"
+                                ></div>
+                            </div>
+                        </div>
+                        <div class="mockup-stats">
+                            <div class="mockup-stat">
+                                <div class="mockup-stat-value">24</div>
+                                <div class="mockup-stat-label">Активных</div>
+                            </div>
+                            <div class="mockup-stat">
+                                <div class="mockup-stat-value">8</div>
+                                <div class="mockup-stat-label">В ревью</div>
+                            </div>
+                            <div class="mockup-stat">
+                                <div class="mockup-stat-value">156</div>
+                                <div class="mockup-stat-label">Завершено</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="benefits" id="benefits">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-badge">Преимущества</span>
+                    <h2 class="section-title">
+                        Почему команды выбирают TaskFlow
+                    </h2>
+                    <p class="section-subtitle">
+                        Реальные результаты для бизнеса любого масштаба
+                    </p>
+                </div>
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <svg
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                                />
+                            </svg>
+                        </div>
+                        <h3 class="benefit-title">Ускорение на 40%</h3>
+                        <p class="benefit-desc">
+                            Средний рост скорости выполнения проектов благодаря
+                            AI-оптимизации рабочих процессов
+                        </p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <svg
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                            </svg>
+                        </div>
+                        <h3 class="benefit-title">Экономия бюджета</h3>
+                        <p class="benefit-desc">
+                            Сокращение затрат на управление проектами до 35% за
+                            счёт автоматизации рутинных задач
+                        </p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <svg
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                            </svg>
+                        </div>
+                        <h3 class="benefit-title">Счастливая команда</h3>
+                        <p class="benefit-desc">
+                            91% сотрудников отмечают снижение стресса и
+                            повышение удовлетворённости работой
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="integrations" id="integrations">
+            <div class="container">
+                <div class="integrations-wrapper">
+                    <div class="section-header">
+                        <span class="section-badge">Интеграции</span>
+                        <h2 class="section-title">
+                            Работает с вашими любимыми инструментами
+                        </h2>
+                        <p class="section-subtitle">
+                            Подключите TaskFlow к сервисам, которые вы уже
+                            используете
+                        </p>
+                    </div>
+                    <div class="integrations-grid">
+                        <div class="integration-card">
+                            <div class="integration-logo">
+                                <svg viewBox="0 0 24 24" fill="#E01E5A">
+                                    <path
+                                        d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"
+                                    />
+                                </svg>
+                            </div>
+                            <span class="integration-name">Slack</span>
+                        </div>
+                        <div class="integration-card">
+                            <div class="integration-logo">
+                                <svg viewBox="0 0 24 24" fill="#000000">
+                                    <path
+                                        d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.326L17.86 1.968c-.42-.326-.981-.7-2.055-.607L3.01 2.295c-.466.046-.56.28-.374.466zm.793 3.08v13.904c0 .747.373 1.027 1.214.98l14.523-.84c.841-.046.935-.56.935-1.167V6.354c0-.606-.233-.933-.748-.887l-15.177.887c-.56.047-.747.327-.747.933zm14.337.745c.093.42 0 .84-.42.888l-.7.14v10.264c-.608.327-1.168.514-1.635.514-.748 0-.935-.234-1.495-.933l-4.577-7.186v6.952l1.45.327s0 .84-1.168.84l-3.222.186c-.093-.186 0-.653.327-.746l.84-.233V9.854L7.822 9.76c-.094-.42.14-1.026.793-1.073l3.456-.233 4.764 7.279v-6.44l-1.215-.139c-.093-.514.28-.887.747-.933zM1.936 1.035l13.31-.98c1.634-.14 2.055-.047 3.082.7l4.249 2.986c.7.513.934.653.934 1.213v16.378c0 1.026-.373 1.634-1.68 1.726l-15.458.934c-.98.047-1.448-.093-1.962-.747l-3.129-4.06c-.56-.747-.793-1.306-.793-1.96V2.667c0-.839.374-1.54 1.447-1.632z"
+                                    />
+                                </svg>
+                            </div>
+                            <span class="integration-name">Notion</span>
+                        </div>
+                        <div class="integration-card">
+                            <div class="integration-logo">
+                                <svg viewBox="0 0 24 24">
+                                    <path
+                                        fill="#4285F4"
+                                        d="M12 11v8.5c0 .3-.2.5-.5.5h-1c-.3 0-.5-.2-.5-.5V11H7.2c-.4 0-.5-.3-.3-.6l4.5-6c.2-.2.5-.2.6 0l4.5 6c.2.3.1.6-.3.6H12z"
+                                    />
+                                    <path
+                                        fill="#FBBC05"
+                                        d="M6 15.5v-4c0-.3.2-.5.5-.5h4v4c0 .3-.2.5-.5.5H6.5c-.3 0-.5-.2-.5-.5z"
+                                    />
+                                    <path
+                                        fill="#34A853"
+                                        d="M14 15.5v-4c0-.3.2-.5.5-.5H17c.3 0 .5.2.5.5v3.5c0 .3-.2.5-.5.5h-2.5c-.3 0-.5-.2-.5-.5z"
+                                    />
+                                    <path
+                                        fill="#EA4335"
+                                        d="M6 19.5v-3c0-.3.2-.5.5-.5H9c.3 0 .5.2.5.5v3c0 .3-.2.5-.5.5H6.5c-.3 0-.5-.2-.5-.5z"
+                                    />
+                                </svg>
+                            </div>
+                            <span class="integration-name">Google Drive</span>
+                        </div>
+                        <div class="integration-card">
+                            <div class="integration-logo">
+                                <svg viewBox="0 0 24 24" fill="#0052CC">
+                                    <path
+                                        d="M11.571 11.513H0a5.218 5.218 0 0 0 5.232 5.215h2.13v2.057A5.215 5.215 0 0 0 12.575 24V12.518a1.005 1.005 0 0 0-1.005-1.005zm5.723-5.756H5.736a5.215 5.215 0 0 0 5.215 5.214h2.129v2.058a5.218 5.218 0 0 0 5.215 5.214V6.758a1.001 1.001 0 0 0-1.001-1.001zM23.013 0H11.455a5.215 5.215 0 0 0 5.215 5.215h2.129v2.057A5.215 5.215 0 0 0 24 12.483V1.005A1.005 1.005 0 0 0 23.013 0z"
+                                    />
+                                </svg>
+                            </div>
+                            <span class="integration-name">Jira</span>
+                        </div>
+                        <div class="integration-card">
+                            <div class="integration-logo">
+                                <svg viewBox="0 0 24 24" fill="#181717">
+                                    <path
+                                        d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+                                    />
+                                </svg>
+                            </div>
+                            <span class="integration-name">GitHub</span>
+                        </div>
+                        <div class="integration-card">
+                            <div class="integration-logo">
+                                <svg viewBox="0 0 24 24" fill="#2684FF">
+                                    <path
+                                        d="M.778 1.211a.768.768 0 00-.768.892l3.263 19.81c.084.5.515.868 1.022.873H19.95a.772.772 0 00.77-.646l3.27-20.03a.768.768 0 00-.768-.893zM14.52 15.53H9.522L8.17 8.466h7.561z"
+                                    />
+                                </svg>
+                            </div>
+                            <span class="integration-name">Bitbucket</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="pricing" id="pricing">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-badge">Тарифы</span>
+                    <h2 class="section-title">
+                        Выберите план для вашей команды
+                    </h2>
+                    <p class="section-subtitle">
+                        Гибкие тарифы для команд любого размера. Начните
+                        бесплатно!
+                    </p>
+                </div>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3 class="pricing-name">Starter</h3>
+                            <p class="pricing-desc">
+                                Идеально для небольших команд
+                            </p>
+                            <div class="pricing-price">
+                                <span class="pricing-currency">$</span>
+                                <span class="pricing-amount">0</span>
+                                <span class="pricing-period">/месяц</span>
+                            </div>
+                        </div>
+                        <ul class="pricing-features">
+                            <li>
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                До 5 участников
+                            </li>
+                            <li>
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                3 проекта
+                            </li>
+                            <li>
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                Базовая аналитика
+                            </li>
+                            <li>
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                Email-поддержка
+                            </li>
+                        </ul>
+                        <a href="#" class="btn btn-outline pricing-btn"
+                            >Начать бесплатно</a
+                        >
+                    </div>
+                    <div class="pricing-card popular">
+                        <div class="popular-badge">Популярный</div>
+                        <div class="pricing-header">
+                            <h3 class="pricing-name">Professional</h3>
+                            <p class="pricing-desc">Для растущих команд</p>
+                            <div class="pricing-price">
+                                <span class="pricing-currency">$</span>
+                                <span class="pricing-amount">29</span>
+                                <span class="pricing-period">/месяц</span>
+                            </div>
+                        </div>
+                        <ul class="pricing-features">
+                            <li>
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                До 25 участников
+                            </li>
+                            <li>
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                Неограниченно проектов
+                            </li>
+                            <li>
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                AI-автоматизация
+                            </li>
+                            <li>
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                Расширенная аналитика
+                            </li>
+                            <li>
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                Приоритетная поддержка
+                            </li>
+                        </ul>
+                        <a href="#" class="btn btn-primary pricing-btn"
+                            >Попробовать 14 дней</a
+                        >
+                    </div>
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3 class="pricing-name">Enterprise</h3>
+                            <p class="pricing-desc">Для крупных организаций</p>
+                            <div class="pricing-price">
+                                <span class="pricing-currency">$</span>
+                                <span class="pricing-amount">99</span>
+                                <span class="pricing-period">/месяц</span>
+                            </div>
+                        </div>
+                        <ul class="pricing-features">
+                            <li>
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                Неограниченно участников
+                            </li>
+                            <li>
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                SSO & SAML
+                            </li>
+                            <li>
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                Персональный менеджер
+                            </li>
+                            <li>
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                SLA 99.99%
+                            </li>
+                            <li>
+                                <svg
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                Кастомные интеграции
+                            </li>
+                        </ul>
+                        <a href="#" class="btn btn-outline pricing-btn"
+                            >Связаться с нами</a
+                        >
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonials">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-badge">Отзывы</span>
+                    <h2 class="section-title">Что говорят наши клиенты</h2>
+                    <p class="section-subtitle">
+                        Присоединяйтесь к тысячам довольных команд
+                    </p>
+                </div>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                                />
+                            </svg>
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                                />
+                            </svg>
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                                />
+                            </svg>
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                                />
+                            </svg>
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                                />
+                            </svg>
+                        </div>
+                        <p class="testimonial-text">
+                            "TaskFlow полностью изменил наш подход к управлению
+                            проектами. AI-функции экономят нам часы работы
+                            каждую неделю."
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">АК</div>
+                            <div class="testimonial-info">
+                                <h4>Алексей Козлов</h4>
+                                <p>CTO, TechStart</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                                />
+                            </svg>
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                                />
+                            </svg>
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                                />
+                            </svg>
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                                />
+                            </svg>
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                                />
+                            </svg>
+                        </div>
+                        <p class="testimonial-text">
+                            "Интуитивный интерфейс и мощные интеграции сделали
+                            TaskFlow незаменимым инструментом для нашей
+                            распределённой команды."
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">МП</div>
+                            <div class="testimonial-info">
+                                <h4>Мария Петрова</h4>
+                                <p>Product Manager, DigitalWave</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                                />
+                            </svg>
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                                />
+                            </svg>
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                                />
+                            </svg>
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                                />
+                            </svg>
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                                />
+                            </svg>
+                        </div>
+                        <p class="testimonial-text">
+                            "После перехода на TaskFlow наша продуктивность
+                            выросла на 45%. Лучший инструмент для управления
+                            задачами, который мы пробовали."
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">ДС</div>
+                            <div class="testimonial-info">
+                                <h4>Дмитрий Сидоров</h4>
+                                <p>CEO, InnovateLab</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Готовы повысить продуктивность команды?</h2>
+                    <p>
+                        Присоединяйтесь к 10,000+ команд, которые уже используют
+                        TaskFlow для достижения своих целей
+                    </p>
+                    <div class="cta-buttons">
+                        <a href="#" class="btn btn-white btn-large"
+                            >Начать бесплатно</a
+                        >
+                        <a href="#" class="btn btn-ghost btn-large"
+                            >Запланировать демо</a
+                        >
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-brand">
+                        <a href="#" class="logo">
+                            <div class="logo-icon">
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        fill="none"
+                                    />
+                                </svg>
+                            </div>
+                            TaskFlow
+                        </a>
+                        <p>
+                            AI-платформа для управления задачами и проектами.
+                            Повышайте продуктивность команды с помощью
+                            интеллектуальной автоматизации.
+                        </p>
+                        <div class="footer-social">
+                            <a href="#">
+                                <svg viewBox="0 0 24 24">
+                                    <path
+                                        d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+                                    />
+                                </svg>
+                            </a>
+                            <a href="#">
+                                <svg viewBox="0 0 24 24">
+                                    <path
+                                        d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2zM4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"
+                                    />
+                                </svg>
+                            </a>
+                            <a href="#">
+                                <svg viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"
+                                    />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Продукт</h4>
+                        <ul>
+                            <li><a href="#">Возможности</a></li>
+                            <li><a href="#">Интеграции</a></li>
+                            <li><a href="#">Цены</a></li>
+                            <li><a href="#">Обновления</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Ресурсы</h4>
+                        <ul>
+                            <li><a href="#">Документация</a></li>
+                            <li><a href="#">Блог</a></li>
+                            <li><a href="#">Руководства</a></li>
+                            <li><a href="#">API</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Компания</h4>
+                        <ul>
+                            <li><a href="#">О нас</a></li>
+                            <li><a href="#">Карьера</a></li>
+                            <li><a href="#">Пресса</a></li>
+                            <li><a href="#">Контакты</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Поддержка</h4>
+                        <ul>
+                            <li><a href="#">Центр помощи</a></li>
+                            <li><a href="#">Сообщество</a></li>
+                            <li><a href="#">Статус</a></li>
+                            <li><a href="#">Безопасность</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 TaskFlow. Все права защищены.</p>
+                    <div class="footer-bottom-links">
+                        <a href="#">Политика конфиденциальности</a>
+                        <a href="#">Условия использования</a>
+                        <a href="#">Cookie</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            const header = document.querySelector("header");
+            window.addEventListener("scroll", () => {
+                if (window.scrollY > 50) {
+                    header.style.boxShadow = "0 4px 20px rgba(0, 0, 0, 0.1)";
+                } else {
+                    header.style.boxShadow = "none";
+                }
+            });
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+                anchor.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(
+                        this.getAttribute("href"),
+                    );
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                        });
+                    }
+                });
+            });
+
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px",
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = "1";
+                        entry.target.style.transform = "translateY(0)";
+                    }
+                });
+            }, observerOptions);
+
+            document
+                .querySelectorAll(
+                    ".feature-card, .benefit-card, .pricing-card, .testimonial-card, .integration-card",
+                )
+                .forEach((el) => {
+                    el.style.opacity = "0";
+                    el.style.transform = "translateY(30px)";
+                    el.style.transition =
+                        "opacity 0.6s ease, transform 0.6s ease";
+                    observer.observe(el);
+                });
+        </script>
+
+        <script>
+            (function () {
+                "use strict";
+
+                if (window.self === window.top) {
+                    return;
+                }
+
+                if (window.__iframeHighlightInitialized) {
+                    return;
+                }
+                window.__iframeHighlightInitialized = true;
+                console.log("Iframe 高亮脚本已加载");
+
+                var overlay = document.createElement("div");
+                overlay.id = "iframe-highlight-overlay";
+                overlay.style.cssText =
+                    "\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100vw;\n    height: 100vh;\n    pointer-events: none;\n    z-index: 999999;\n    overflow: hidden;\n  ";
+
+                var highlightBox = document.createElement("div");
+                highlightBox.id = "iframe-highlight-box";
+                highlightBox.style.cssText =
+                    "\n    position: absolute;\n    border: 2px dashed #007AFF;\n    background: rgba(0, 122, 255, 0.08);\n    pointer-events: none;\n    display: none;\n    transition: all 0.1s ease;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);\n    border-radius: 2px;\n  ";
+
+                var selectedBox = document.createElement("div");
+                selectedBox.id = "iframe-selected-box";
+                selectedBox.style.cssText =
+                    "\n    position: absolute;\n    border: 2px solid #007AFF;\n    pointer-events: none;\n    display: none;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 107, 53, 0.4);\n    border-radius: 2px;\n    z-index: 1000000;\n  ";
+
+                var tagLabel = document.createElement("div");
+                tagLabel.id = "iframe-tag-label";
+                tagLabel.style.cssText =
+                    "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 2px 6px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 2px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000001;\n    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);\n    font-weight: 500;\n  ";
+
+                var selectedLabel = document.createElement("div");
+                selectedLabel.id = "iframe-selected-label";
+                selectedLabel.style.cssText =
+                    "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 3px 8px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 3px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000002;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);\n    font-weight: 600;\n  ";
+                overlay.appendChild(highlightBox);
+                overlay.appendChild(selectedBox);
+                overlay.appendChild(tagLabel);
+                overlay.appendChild(selectedLabel);
+                document.body.appendChild(overlay);
+
+                var selectedElement = null;
+                var highlightEnabled = false;
+
+                function updateSelectedHighlight(element) {
+                    console.log(
+                        "updateSelectedHighlight called with:",
+                        element,
+                    );
+                    if (!element) {
+                        selectedBox.style.display = "none";
+                        selectedLabel.style.display = "none";
+                        selectedElement = null;
+                        console.log("Cleared selected highlight");
+                        return;
+                    }
+                    selectedElement = element;
+                    var rect = element.getBoundingClientRect();
+                    console.log("Selected element rect: ", rect);
+
+                    selectedBox.style.display = "block";
+                    selectedBox.style.left = "".concat(rect.left - 2, "px");
+                    selectedBox.style.top = "".concat(rect.top - 2, "px");
+                    selectedBox.style.width = "".concat(rect.width + 4, "px");
+                    selectedBox.style.height = "".concat(rect.height + 4, "px");
+
+                    selectedLabel.style.display = "block";
+                    selectedLabel.textContent = "\u2713 <".concat(
+                        element.tagName.toLowerCase(),
+                        ">",
+                    );
+
+                    var labelTop = rect.top - 28;
+                    var labelLeft = rect.left;
+
+                    if (labelTop < 5) {
+                        labelTop = rect.bottom + 5;
+                    }
+
+                    var labelWidth = selectedLabel.offsetWidth || 100;
+                    if (labelLeft + labelWidth > window.innerWidth - 10) {
+                        labelLeft = window.innerWidth - labelWidth - 10;
+                    }
+                    selectedLabel.style.left = "".concat(
+                        Math.max(5, labelLeft),
+                        "px",
+                    );
+                    selectedLabel.style.top = "".concat(labelTop, "px");
+                    console.log("Selected highlight positioned at:", {
+                        left: selectedBox.style.left,
+                        top: selectedBox.style.top,
+                        width: selectedBox.style.width,
+                        height: selectedBox.style.height,
+                    });
+                }
+                function getElementSelector(element) {
+                    if (!(element instanceof Element))
+                        throw new Error("Argument must be a DOM element");
+                    var segments = [];
+                    var current = element;
+                    while (current !== document.documentElement) {
+                        var selector = "";
+                        if (
+                            current.id &&
+                            document.querySelectorAll("#".concat(current.id))
+                                .length === 1
+                        ) {
+                            segments.unshift("#".concat(current.id));
+                            break;
+                        }
+
+                        var classes = Array.from(current.classList).filter(
+                            function (c) {
+                                return !c.startsWith("js-");
+                            },
+                        );
+                        var className =
+                            classes.length > 0 ? ".".concat(classes[0]) : "";
+
+                        var tag = current.tagName.toLowerCase();
+                        if (!className) {
+                            var siblings = Array.from(
+                                current.parentNode.children,
+                            );
+                            var index =
+                                siblings.findIndex(function (el) {
+                                    return el === current;
+                                }) + 1;
+                            selector = ""
+                                .concat(tag, ":nth-child(")
+                                .concat(index, ")");
+                        } else {
+                            selector = className;
+                        }
+                        segments.unshift(selector);
+                        current = current.parentElement;
+                    }
+
+                    if (current === document.documentElement) {
+                        segments.unshift("html");
+                    }
+                    return segments.join(" > ");
+                }
+
+                function getElementText(element) {
+                    var _element$textContent;
+                    if (element.tagName === "INPUT") {
+                        return element.value || element.placeholder || "";
+                    }
+                    if (element.tagName === "TEXTAREA") {
+                        return element.value || element.placeholder || "";
+                    }
+                    var text =
+                        ((_element$textContent = element.textContent) ===
+                            null || _element$textContent === void 0
+                            ? void 0
+                            : _element$textContent.trim()) || "";
+                    return text.length > 50
+                        ? text.substring(0, 50) + "..."
+                        : text;
+                }
+
+                function getElementAttributes(element) {
+                    var attrs = {};
+                    for (var i = 0; i < element.attributes.length; i++) {
+                        var attr = element.attributes[i];
+                        attrs[attr.name] = attr.value;
+                    }
+                    return attrs;
+                }
+
+                function handleMouseOver(e) {
+                    if (!highlightEnabled) return;
+                    var target = e.target;
+                    if (
+                        !target ||
+                        target === overlay ||
+                        target === highlightBox ||
+                        target === tagLabel ||
+                        target === selectedBox ||
+                        target === selectedLabel
+                    ) {
+                        return;
+                    }
+
+                    if (
+                        target === document.documentElement ||
+                        target === document.body
+                    ) {
+                        return;
+                    }
+
+                    if (target === selectedElement) {
+                        highlightBox.style.display = "none";
+                        tagLabel.style.display = "none";
+                        return;
+                    }
+                    var rect = target.getBoundingClientRect();
+                    var selector = getElementSelector(target);
+                    var text = getElementText(target);
+                    var attributes = getElementAttributes(target);
+
+                    highlightBox.style.display = "block";
+                    highlightBox.style.left = "".concat(rect.left - 2, "px");
+                    highlightBox.style.top = "".concat(rect.top - 2, "px");
+                    highlightBox.style.width = "".concat(rect.width + 4, "px");
+                    highlightBox.style.height = "".concat(
+                        rect.height + 4,
+                        "px",
+                    );
+
+                    tagLabel.style.display = "block";
+                    tagLabel.textContent = "<".concat(
+                        target.tagName.toLowerCase(),
+                        ">",
+                    );
+
+                    var labelTop = rect.top - 22;
+                    var labelLeft = rect.left;
+
+                    if (labelTop < 0) {
+                        labelTop = rect.bottom + 5;
+                    }
+
+                    if (labelLeft + tagLabel.offsetWidth > window.innerWidth) {
+                        labelLeft =
+                            window.innerWidth - tagLabel.offsetWidth - 5;
+                    }
+                    tagLabel.style.left = "".concat(
+                        Math.max(0, labelLeft),
+                        "px",
+                    );
+                    tagLabel.style.top = "".concat(labelTop, "px");
+
+                    var elementInfo = {
+                        tagName: target.tagName.toLowerCase(),
+                        rect: {
+                            left: rect.left,
+                            top: rect.top,
+                            right: rect.right,
+                            bottom: rect.bottom,
+                            width: rect.width,
+                            height: rect.height,
+                            x: rect.x,
+                            y: rect.y,
+                        },
+                        selector: selector,
+                        text: text,
+                        attributes: attributes,
+                        url: window.location.href,
+                        path: window.location.pathname,
+                        timestamp: Date.now(),
+                    };
+                    try {
+                        window.parent.postMessage(
+                            {
+                                type: "iframe-element-hover",
+                                data: elementInfo,
+                                source: "iframe-highlight-injector",
+                            },
+                            "*",
+                        );
+                    } catch (error) {
+                        console.warn(
+                            "Не удается отправить сообщение в родительское окно: ",
+                            error,
+                        );
+                    }
+                }
+
+                function handleMouseOut(e) {
+                    if (!highlightEnabled) return;
+                    var relatedTarget = e.relatedTarget;
+
+                    if (
+                        relatedTarget &&
+                        (relatedTarget === highlightBox ||
+                            relatedTarget === tagLabel ||
+                            relatedTarget === overlay ||
+                            relatedTarget === selectedBox ||
+                            relatedTarget === selectedLabel)
+                    ) {
+                        return;
+                    }
+                    highlightBox.style.display = "none";
+                    tagLabel.style.display = "none";
+                    try {
+                        window.parent.postMessage(
+                            {
+                                type: "iframe-element-hover",
+                                data: null,
+                                source: "iframe-highlight-injector",
+                            },
+                            "*",
+                        );
+                    } catch (error) {
+                        console.warn(
+                            "Не удается отправить сообщение в родительское окно: ",
+                            error,
+                        );
+                    }
+                }
+
+                function handleClick(e) {
+                    var target = e.target;
+                    if (
+                        !target ||
+                        target === overlay ||
+                        target === highlightBox ||
+                        target === tagLabel ||
+                        target === selectedBox ||
+                        target === selectedLabel
+                    ) {
+                        return;
+                    }
+
+                    if (
+                        target === document.documentElement ||
+                        target === document.body
+                    ) {
+                        return;
+                    }
+
+                    var isInteractiveElement = [
+                        "input",
+                        "textarea",
+                        "select",
+                        "button",
+                        "a",
+                    ].includes(target.tagName.toLowerCase());
+
+                    if (highlightEnabled) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    var rect = target.getBoundingClientRect();
+                    var selector = getElementSelector(target);
+                    var text = getElementText(target);
+                    var attributes = getElementAttributes(target);
+                    console.log("Element clicked:", {
+                        tagName: target.tagName,
+                        selector: selector,
+                        rect: rect,
+                    });
+
+                    updateSelectedHighlight(target);
+
+                    highlightBox.style.display = "none";
+                    tagLabel.style.display = "none";
+                    var elementInfo = {
+                        tagName: target.tagName.toLowerCase(),
+                        rect: {
+                            left: rect.left,
+                            top: rect.top,
+                            right: rect.right,
+                            bottom: rect.bottom,
+                            width: rect.width,
+                            height: rect.height,
+                            x: rect.x,
+                            y: rect.y,
+                        },
+                        selector: selector,
+                        text: text,
+                        attributes: attributes,
+                        url: window.location.href,
+                        path: window.location.pathname,
+                        timestamp: Date.now(),
+                    };
+                    try {
+                        window.parent.postMessage(
+                            {
+                                type: "iframe-element-click",
+                                data: elementInfo,
+                                source: "iframe-highlight-injector",
+                            },
+                            "*",
+                        );
+                    } catch (error) {
+                        console.warn(
+                            "Не удается отправить сообщение в родительское окно: ",
+                            error,
+                        );
+                    }
+                }
+
+                function handleParentMessage(event) {
+                    console.log("Received message from parent:", event.data);
+                    if (event.data.type === "iframe-highlight-toggle") {
+                        var enabled = event.data.enabled;
+                        console.log("Highlight toggle:", enabled);
+                        if (enabled) {
+                            enableHighlight();
+                        } else {
+                            disableHighlight();
+                        }
+                    } else if (event.data.type === "enable-iframe-highlight") {
+                        console.log("Enable iframe highlight");
+                        enableHighlight();
+                    } else if (event.data.type === "disable-iframe-highlight") {
+                        console.log("Disable iframe highlight");
+                        disableHighlight();
+                    } else if (event.data.type === "toggle-iframe-highlight") {
+                        var _enabled =
+                            event.data.enabled !== undefined
+                                ? event.data.enabled
+                                : !highlightEnabled;
+                        console.log("Toggle iframe highlight to:", _enabled);
+                        if (_enabled) {
+                            enableHighlight();
+                        } else {
+                            disableHighlight();
+                        }
+                    } else if (event.data.type === "update-selected-element") {
+                        var selector = event.data.selector;
+                        console.log(
+                            "Update selected element with selector:",
+                            selector,
+                        );
+                        if (selector) {
+                            try {
+                                var element = document.querySelector(selector);
+                                console.log(
+                                    "Found element by selector:",
+                                    element,
+                                );
+                                updateSelectedHighlight(element);
+                            } catch (error) {
+                                console.warn(
+                                    "Failed to select element:",
+                                    error,
+                                );
+                                updateSelectedHighlight(null);
+                            }
+                        } else {
+                            updateSelectedHighlight(null);
+                        }
+                    } else if (event.data.type === "clear-selected-element") {
+                        console.log("Clear selected element");
+                        updateSelectedHighlight(null);
+                    }
+                }
+
+                function enableHighlight() {
+                    console.log("Enabling highlight");
+                    document.addEventListener(
+                        "mouseover",
+                        handleMouseOver,
+                        true,
+                    );
+                    document.addEventListener("mouseout", handleMouseOut, true);
+                    document.addEventListener("click", handleClick, true);
+                    highlightEnabled = true;
+                    overlay.style.display = "block";
+                }
+
+                function disableHighlight() {
+                    console.log("Disabling highlight");
+                    highlightEnabled = false;
+                    highlightBox.style.display = "none";
+                    tagLabel.style.display = "none";
+                }
+
+                function fullyDisableHighlight() {
+                    console.log("Fully disabling highlight");
+                    highlightEnabled = false;
+                    document.removeEventListener(
+                        "mouseover",
+                        handleMouseOver,
+                        true,
+                    );
+                    document.removeEventListener(
+                        "mouseout",
+                        handleMouseOut,
+                        true,
+                    );
+                    document.removeEventListener("click", handleClick, true);
+                    overlay.style.display = "none";
+                    highlightBox.style.display = "none";
+                    tagLabel.style.display = "none";
+                    selectedBox.style.display = "none";
+                    selectedLabel.style.display = "none";
+                }
+
+                enableHighlight();
+                window.addEventListener("message", handleParentMessage);
+
+                window.__iframeHighlightControl = {
+                    enable: enableHighlight,
+                    disable: disableHighlight,
+                    fullyDisable: fullyDisableHighlight,
+                    isEnabled: function isEnabled() {
+                        return highlightEnabled;
+                    },
+                    getSelectedElement: function getSelectedElement() {
+                        return selectedElement;
+                    },
+                    updateSelected: updateSelectedHighlight,
+                    sendToggleMessage: function sendToggleMessage(enabled) {
+                        window.parent.postMessage(
+                            {
+                                type: "iframe-highlight-status",
+                                enabled: enabled || highlightEnabled,
+                                source: "iframe-highlight-injector",
+                            },
+                            "*",
+                        );
+                    },
+                };
+
+                try {
+                    window.parent.postMessage(
+                        {
+                            type: "iframe-highlight-ready",
+                            data: {
+                                url: window.location.href,
+                                userAgent: navigator.userAgent,
+                                timestamp: Date.now(),
+                            },
+                            source: "iframe-highlight-injector",
+                        },
+                        "*",
+                    );
+                } catch (error) {
+                    console.warn(
+                        "Не удается отправить готовое сообщение в родительское окно: ",
+                        error,
+                    );
+                }
+
+                window.__iframeHighlightCleanup = function () {
+                    fullyDisableHighlight();
+                    window.removeEventListener("message", handleParentMessage);
+                    if (overlay.parentElement) {
+                        overlay.parentElement.removeChild(overlay);
+                    }
+                    delete window.__iframeHighlightInitialized;
+                    delete window.__iframeHighlightCleanup;
+                };
+            })();
+        </script>
+    </body>
+</html>

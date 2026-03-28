@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星降りの刻 // CELESTIAL REQUIEM</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;700&family=Noto+Serif+JP:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --pink: #ff6b9d;
+            --purple: #9d4edd;
+            --blue: #4cc9f0;
+            --gold: #ffd700;
+            --dark: #0d0d1a;
+            --darker: #06060d;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--darker);
+            color: #fff;
+            font-family: 'Noto Sans JP', sans-serif;
+            overflow-x: hidden;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .gradient-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                    radial-gradient(ellipse at 20% 80%, rgba(157, 78, 221, 0.15) 0%, transparent 50%),
+                    radial-gradient(ellipse at 80% 20%, rgba(255, 107, 157, 0.1) 0%, transparent 50%),
+                    radial-gradient(ellipse at 50% 50%, rgba(76, 201, 240, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .magic-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--gold), 0 0 20px var(--gold);
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .content > * {
+            pointer-events: auto;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 25px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: linear-gradient(180deg, rgba(6, 6, 13, 0.9) 0%, transparent 100%);
+        }
+
+        .logo {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--pink), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            position: relative;
+        }
+
+        .logo-icon::before {
+            content: '✦';
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--gold), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: sparkle 3s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                opacity: 0.7;
+                transform: scale(1.2) rotate(180deg);
+            }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--pink), var(--purple));
+            transform: translateX(-50%);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+            text-shadow: 0 0 20px var(--pink);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, var(--pink), var(--purple));
+            border: none;
+            border-radius: 30px;
+            color: #fff;
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .hero-jp {
+            font-family: 'Noto Serif JP', serif;
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.5em;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeDown 1s ease-out 0.5s forwards;
+        }
+
+        @keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(3rem, 12vw, 9rem);
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .hero-title .main {
+            display: block;
+            background: linear-gradient(180deg, #fff 0%, var(--pink) 50%, var(--purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 30px rgba(255, 107, 157, 0.5));
+            opacity: 0;
+            animation: titleReveal 1.5s ease-out 0.8s forwards;
+        }
+
+        .hero-title .sub {
+            display: block;
+            font-size: 0.2em;
+            font-weight: 400;
+            letter-spacing: 0.4em;
+            color: rgba(255, 255, 255, 0.5);
+            -webkit-text-fill-color: initial;
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeDown 1s ease-out 1.5s forwards;
+        }
+
+        @keyframes titleReveal {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+                filter: blur(20px) drop-shadow(0 0 30px rgba(255, 107, 157, 0.5));
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0) drop-shadow(0 0 30px rgba(255, 107, 157, 0.5));
+            }
+        }
+
+        .hero-description {
+            max-width: 600px;
+            font-size: 1.1rem;
+            line-height: 2;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 50px;
+            opacity: 0;
+            animation: fadeDown 1s ease-out 1.8s forwards;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            opacity: 0;
+            animation: fadeDown 1s ease-out 2.1s forwards;
+        }
+
+        .btn {
+            padding: 18px 50px;
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 0.95rem;
+            letter-spacing: 0.15em;
+            text-decoration: none;
+            border-radius: 50px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--pink), var(--purple));
+            color: #fff;
+            border: none;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow:
+                    0 20px 40px rgba(255, 107, 157, 0.4),
+                    0 0 60px rgba(157, 78, 221, 0.3);
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--pink);
+            background: rgba(255, 107, 157, 0.1);
+            box-shadow: 0 0 30px rgba(255, 107, 157, 0.2);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            opacity: 0;
+            animation: fadeDown 1s ease-out 2.5s forwards;
+        }
+
+        .scroll-indicator span {
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(180deg, var(--pink), transparent);
+            position: relative;
+        }
+
+        .scroll-line::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -2px;
+            width: 5px;
+            height: 10px;
+            background: var(--pink);
+            border-radius: 3px;
+            animation: scrollDown 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollDown {
+            0%, 100% {
+                top: 0;
+                opacity: 1;
+            }
+
+            50% {
+                top: 50px;
+                opacity: 0.3;
+            }
+        }
+
+        .section {
+            min-height: 100vh;
+            padding: 150px 10%;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease-out;
+        }
+
+        .section-header.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-jp {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 0.9rem;
+            color: var(--pink);
+            letter-spacing: 0.3em;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 600;
+            background: linear-gradient(135deg, #fff, var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .character-card {
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.05) 0%, rgba(157, 78, 221, 0.05) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.6s ease-out;
+        }
+
+        .character-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .character-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 107, 157, 0.1) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .character-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 107, 157, 0.3);
+            box-shadow:
+                    0 30px 60px rgba(0, 0, 0, 0.3),
+                    0 0 40px rgba(255, 107, 157, 0.1);
+        }
+
+        .character-card:hover::before {
+            opacity: 1;
+        }
+
+        .character-avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--pink), var(--purple));
+            padding: 3px;
+            position: relative;
+        }
+
+        .character-avatar::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            background: var(--dark);
+            border-radius: 50%;
+        }
+
+        .character-avatar::after {
+            content: '';
+            position: absolute;
+            inset: 10px;
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.3), rgba(157, 78, 221, 0.3));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .character-element {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .character-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        .character-name-jp {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 15px;
+        }
+
+        .character-role {
+            font-size: 0.8rem;
+            color: var(--pink);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .character-desc {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.8;
+        }
+
+        .features-section {
+            display: flex;
+            align-items: center;
+            gap: 80px;
+            flex-wrap: wrap;
+        }
+
+        .features-visual {
+            flex: 1;
+            min-width: 300px;
+            aspect-ratio: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .magic-circle {
+            width: 80%;
+            aspect-ratio: 1;
+            border: 2px solid rgba(255, 107, 157, 0.2);
+            border-radius: 50%;
+            position: relative;
+            animation: rotateCircle 30s linear infinite;
+        }
+
+        .magic-circle::before {
+            content: '';
+            position: absolute;
+            inset: 20px;
+            border: 1px solid rgba(157, 78, 221, 0.3);
+            border-radius: 50%;
+            animation: rotateCircle 20s linear infinite reverse;
+        }
+
+        .magic-circle::after {
+            content: '';
+            position: absolute;
+            inset: 40px;
+            border: 1px solid rgba(76, 201, 240, 0.2);
+            border-radius: 50%;
+            animation: rotateCircle 15s linear infinite;
+        }
+
+        @keyframes rotateCircle {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .magic-rune {
+            position: absolute;
+            font-size: 1.5rem;
+            color: var(--pink);
+            text-shadow: 0 0 20px var(--pink);
+        }
+
+        .magic-rune:nth-child(1) {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .magic-rune:nth-child(2) {
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+        }
+
+        .magic-rune:nth-child(3) {
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .magic-rune:nth-child(4) {
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
+
+        .magic-center {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, var(--pink), var(--purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow:
+                    0 0 60px var(--pink),
+                    0 0 100px var(--purple);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 60px var(--pink), 0 0 100px var(--purple);
+            }
+
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 80px var(--pink), 0 0 120px var(--purple);
+            }
+        }
+
+        .features-list {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .feature-item {
+            padding: 30px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.6s ease-out;
+        }
+
+        .feature-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .feature-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .feature-title::before {
+            content: '✦';
+            color: var(--pink);
+        }
+
+        .feature-text {
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.8;
+            padding-left: 30px;
+        }
+
+        .stats-section {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            padding: 100px 10%;
+            flex-wrap: wrap;
+            background: linear-gradient(180deg, transparent, rgba(255, 107, 157, 0.03), transparent);
+        }
+
+        .stat {
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.8s ease-out;
+        }
+
+        .stat.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .stat-value {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(180deg, #fff, var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.15em;
+            margin-top: 10px;
+        }
+
+        .stat-label-jp {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 0.75rem;
+            color: var(--pink);
+            opacity: 0.7;
+        }
+
+        .preregister {
+            text-align: center;
+            padding: 150px 10%;
+            position: relative;
+        }
+
+        .preregister-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff, var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .preregister-subtitle {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 50px;
+        }
+
+        .milestone-bar {
+            max-width: 600px;
+            margin: 0 auto 60px;
+        }
+
+        .milestone-progress {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .milestone-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--pink), var(--purple), var(--blue));
+            border-radius: 4px;
+            transition: width 2s ease-out;
+        }
+
+        .milestone-fill.animate {
+            width: 75%;
+        }
+
+        .milestone-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .milestone-current {
+            color: var(--pink);
+        }
+
+        footer {
+            padding: 80px 10%;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        footer p {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.85rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--pink);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            border-color: var(--pink);
+            color: var(--pink);
+            box-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
+        }
+
+        .loader {
+            position: fixed;
+            inset: 0;
+            background: var(--darker);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1s, visibility 1s;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-circle {
+            width: 80px;
+            height: 80px;
+            border: 3px solid rgba(255, 107, 157, 0.1);
+            border-top-color: var(--pink);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 30px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-text {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.3em;
+        }
+
+        .loader-jp {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 0.8rem;
+            color: var(--pink);
+            margin-top: 10px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+<div class="loader" id="loader">
+    <div class="loader-circle"></div>
+    <div class="loader-text">LOADING</div>
+    <div class="loader-jp">運命の刻を待つ...</div>
+</div>
+
+<div id="canvas-container"></div>
+<div class="gradient-overlay"></div>
+
+<div class="magic-particles" id="magicParticles"></div>
+
+<nav class="nav">
+    <div class="logo">
+        <span class="logo-icon"></span>
+        星降りの刻
+    </div>
+    <ul class="nav-links">
+        <li><a href="#story">Story</a></li>
+        <li><a href="#characters">Characters</a></li>
+        <li><a href="#world">World</a></li>
+        <li><a href="#news">News</a></li>
+    </ul>
+    <button class="nav-cta">事前登録</button>
+</nav>
+
+<div class="content">
+    <section class="hero">
+        <div class="hero-jp">運命は星とともに降り注ぐ</div>
+        <h1 class="hero-title">
+            <span class="main">CELESTIAL</span>
+            <span class="sub">Requiem of the Fallen Stars</span>
+        </h1>
+        <p class="hero-description">
+            神々に見捨てられた世界で、星の力を継ぐ者たちが立ち上がる。
+            あなたの選択が、この世界の運命を変える。
+        </p>
+        <div class="hero-buttons">
+            <a href="#" class="btn btn-primary">今すぐプレイ</a>
+            <a href="#" class="btn btn-secondary">トレーラーを見る</a>
+        </div>
+        <div class="scroll-indicator">
+            <span>SCROLL</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <section class="section" id="characters">
+        <div class="section-header">
+            <div class="section-jp">登場人物</div>
+            <h2 class="section-title">Characters</h2>
+        </div>
+        <div class="characters-grid">
+            <div class="character-card">
+                <div class="character-element">🔥</div>
+                <div class="character-avatar"></div>
+                <h3 class="character-name">Hikari</h3>
+                <div class="character-name-jp">陽光 ヒカリ</div>
+                <div class="character-role">Celestial Knight</div>
+                <p class="character-desc">
+                    失われた星神の力を宿す少女。その剣は闇を切り裂き、希望の光をもたらす。
+                </p>
+            </div>
+            <div class="character-card">
+                <div class="character-element">❄️</div>
+                <div class="character-avatar"></div>
+                <h3 class="character-name">Yuki</h3>
+                <div class="character-name-jp">雪城 ユキ</div>
+                <div class="character-role">Frost Mage</div>
+                <p class="character-desc">
+                    北の古代王国の末裔。氷の魔法を極めし者として、仲間を守り続ける。
+                </p>
+            </div>
+            <div class="character-card">
+                <div class="character-element">⚡</div>
+                <div class="character-avatar"></div>
+                <h3 class="character-name">Raiden</h3>
+                <div class="character-name-jp">雷電 ライデン</div>
+                <div class="character-role">Storm Bringer</div>
+                <p class="character-desc">
+                    雷神の血を引く戦士。その一撃は稲妻のごとく敵を打ち砕く。
+                </p>
+            </div>
+            <div class="character-card">
+                <div class="character-element">🌸</div>
+                <div class="character-avatar"></div>
+                <h3 class="character-name">Sakura</h3>
+                <div class="character-name-jp">桜庭 サクラ</div>
+                <div class="character-role">Divine Healer</div>
+                <p class="character-desc">
+                    神聖な桜の力を操る巫女。その祈りは傷を癒し、魂を浄化する。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="world">
+        <div class="section-header">
+            <div class="section-jp">世界観</div>
+            <h2 class="section-title">Features</h2>
+        </div>
+        <div class="features-section">
+            <div class="features-visual">
+                <div class="magic-circle">
+                    <span class="magic-rune">✦</span>
+                    <span class="magic-rune">◇</span>
+                    <span class="magic-rune">✦</span>
+                    <span class="magic-rune">◇</span>
+                </div>
+                <div class="magic-center">✧</div>
+            </div>
+            <div class="features-list">
+                <div class="feature-item">
+                    <h3 class="feature-title">Open World Exploration</h3>
+                    <p class="feature-text">
+                        広大な幻想世界を自由に冒険。空を飛び、海を渡り、
+                        未知なる秘境を発見しよう。
+                    </p>
+                </div>
+                <div class="feature-item">
+                    <h3 class="feature-title">Elemental Combat</h3>
+                    <p class="feature-text">
+                        7つの元素を組み合わせたダイナミックな戦闘システム。
+                        連携技で敵を圧倒せよ。
+                    </p>
+                </div>
+                <div class="feature-item">
+                    <h3 class="feature-title">Branching Story</h3>
+                    <p class="feature-text">
+                        あなたの選択が物語を紡ぐ。複数のエンディングと
+                        キャラクターの運命を見届けよう。
+                    </p>
+                </div>
+                <div class="feature-item">
+                    <h3 class="feature-title">Cross-Platform Co-op</h3>
+                    <p class="feature-text">
+                        フレンドと共に挑む協力プレイ。プラットフォームを
+                        超えて冒険を共有しよう。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="stat">
+            <div class="stat-value" id="playerStat">0</div>
+            <div class="stat-label">PRE-REGISTERED</div>
+            <div class="stat-label-jp">事前登録者数</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="worldStat">0</div>
+            <div class="stat-label">EXPLORABLE REGIONS</div>
+            <div class="stat-label-jp">探索可能地域</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="charStat">0</div>
+            <div class="stat-label">PLAYABLE CHARACTERS</div>
+            <div class="stat-label-jp">プレイアブルキャラ</div>
+        </div>
+    </section>
+
+    <section class="preregister">
+        <h2 class="preregister-title">Pre-Register Now</h2>
+        <p class="preregister-subtitle">事前登録でスペシャル報酬をゲット</p>
+        <div class="milestone-bar">
+            <div class="milestone-progress">
+                <div class="milestone-fill" id="milestoneFill"></div>
+            </div>
+            <div class="milestone-labels">
+                <span>0</span>
+                <span class="milestone-current">3.75M / 5M</span>
+                <span>5M</span>
+            </div>
+        </div>
+        <a href="#" class="btn btn-primary">事前登録する</a>
+    </section>
+</div>
+
+<footer>
+    <p>© 2025 CELESTIAL REQUIEM // All Rights Reserved</p>
+    <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Support</a>
+    </div>
+    <div class="social-links">
+        <a href="#">𝕏</a>
+        <a href="#">◆</a>
+        <a href="#">▶</a>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+    function createMagicParticles() {
+        const container = document.getElementById('magicParticles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+
+            const colors = ['#ffd700', '#ff6b9d', '#9d4edd', '#4cc9f0'];
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            particle.style.boxShadow = `0 0 10px ${particle.style.background}`;
+
+            container.appendChild(particle);
+        }
+    }
+    createMagicParticles();
+
+    let scene, camera, renderer;
+    let sakuraParticles, stars, magicOrbs;
+    let mouseX = 0, mouseY = 0;
+    let time = 0;
+
+    function init() {
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 30;
+
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        createSakura();
+
+        createStars();
+
+        createMagicOrbs();
+
+        window.addEventListener('resize', onResize);
+        document.addEventListener('mousemove', onMouseMove);
+
+        setupScrollAnimations();
+
+        setTimeout(() => {
+            document.getElementById('loader').classList.add('hidden');
+            document.getElementById('milestoneFill').classList.add('animate');
+        }, 2000);
+
+        animate();
+    }
+
+    function createSakura() {
+        const petalCount = 100;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(petalCount * 3);
+        const rotations = new Float32Array(petalCount);
+        const speeds = [];
+        const offsets = [];
+
+        for (let i = 0; i < petalCount; i++) {
+            positions[i * 3] = (Math.random() - 0.5) * 60;
+            positions[i * 3 + 1] = Math.random() * 40 + 20;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 30;
+
+            rotations[i] = Math.random() * Math.PI * 2;
+            speeds.push(Math.random() * 0.02 + 0.01);
+            offsets.push(Math.random() * Math.PI * 2);
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.userData = { speeds, offsets, rotations };
+
+        const petalShape = new THREE.Shape();
+        petalShape.moveTo(0, 0);
+        petalShape.quadraticCurveTo(0.15, 0.1, 0.1, 0.3);
+        petalShape.quadraticCurveTo(0, 0.35, -0.1, 0.3);
+        petalShape.quadraticCurveTo(-0.15, 0.1, 0, 0);
+
+        const petalGeometry = new THREE.ShapeGeometry(petalShape);
+        const petalMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffb7c5,
+            transparent: true,
+            opacity: 0.8,
+            side: THREE.DoubleSide
+        });
+
+        sakuraParticles = new THREE.Group();
+
+        for (let i = 0; i < petalCount; i++) {
+            const petal = new THREE.Mesh(petalGeometry, petalMaterial.clone());
+            petal.position.set(
+                positions[i * 3],
+                positions[i * 3 + 1],
+                positions[i * 3 + 2]
+            );
+            petal.rotation.z = rotations[i];
+            petal.userData = {
+                speed: speeds[i],
+                offset: offsets[i],
+                rotationSpeed: (Math.random() - 0.5) * 0.05
+            };
+            sakuraParticles.add(petal);
+        }
+
+        scene.add(sakuraParticles);
+    }
+
+    function createStars() {
+        const starCount = 500;
+        const positions = new Float32Array(starCount * 3);
+        const colors = new Float32Array(starCount * 3);
+        const sizes = new Float32Array(starCount);
+
+        for (let i = 0; i < starCount; i++) {
+            positions[i * 3] = (Math.random() - 0.5) * 100;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 100;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 50 - 20;
+
+            const colorChoice = Math.random();
+            if (colorChoice < 0.3) {
+                colors[i * 3] = 1;
+                colors[i * 3 + 1] = 0.42;
+                colors[i * 3 + 2] = 0.62;
+            } else if (colorChoice < 0.6) {
+                colors[i * 3] = 0.62;
+                colors[i * 3 + 1] = 0.31;
+                colors[i * 3 + 2] = 0.87;
+            } else {
+                colors[i * 3] = 1;
+                colors[i * 3 + 1] = 1;
+                colors[i * 3 + 2] = 1;
+            }
+
+            sizes[i] = Math.random() * 2 + 0.5;
+        }
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+        const material = new THREE.PointsMaterial({
+            size: 0.3,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        stars = new THREE.Points(geometry, material);
+        scene.add(stars);
+    }
+
+    function createMagicOrbs() {
+        magicOrbs = new THREE.Group();
+
+        const orbColors = [0xff6b9d, 0x9d4edd, 0x4cc9f0, 0xffd700];
+
+        for (let i = 0; i < 8; i++) {
+            const geometry = new THREE.SphereGeometry(0.3, 32, 32);
+            const material = new THREE.MeshBasicMaterial({
+                color: orbColors[i % orbColors.length],
+                transparent: true,
+                opacity: 0.6
+            });
+
+            const orb = new THREE.Mesh(geometry, material);
+
+            const angle = (i / 8) * Math.PI * 2;
+            const radius = 15;
+            orb.position.set(
+                Math.cos(angle) * radius,
+                Math.sin(angle) * 5,
+                Math.sin(angle) * radius - 10
+            );
+
+            orb.userData = {
+                angle,
+                radius,
+                speed: 0.001 + Math.random() * 0.002,
+                yOffset: Math.random() * Math.PI * 2
+            };
+
+            magicOrbs.add(orb);
+        }
+
+        scene.add(magicOrbs);
+    }
+
+    function setupScrollAnimations() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.section-header, .character-card, .feature-item, .stat').forEach(el => {
+            observer.observe(el);
+        });
+
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateStats();
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.stats-section').forEach(el => {
+            statsObserver.observe(el);
+        });
+    }
+
+    function animateStats() {
+        animateNumber('playerStat', 3750000, 'K', 1000);
+        animateNumber('worldStat', 12, '', 1);
+        animateNumber('charStat', 48, '', 1);
+    }
+
+    function animateNumber(id, target, suffix, divider) {
+        const el = document.getElementById(id);
+        const duration = 2000;
+        const start = performance.now();
+
+        function update(currentTime) {
+            const elapsed = currentTime - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+
+            let value = Math.floor(eased * target);
+            if (suffix === 'K') {
+                value = (value / 1000).toFixed(0) + 'K';
+            }
+            el.textContent = value;
+
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            } else if (suffix === 'K') {
+                el.textContent = '3.75M';
+            }
+        }
+
+        requestAnimationFrame(update);
+    }
+
+    function onResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function onMouseMove(e) {
+        mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        time += 0.01;
+
+        if (sakuraParticles) {
+            sakuraParticles.children.forEach((petal, i) => {
+                const data = petal.userData;
+
+                petal.position.y -= data.speed * 2;
+
+                petal.position.x += Math.sin(time + data.offset) * 0.02;
+
+                petal.rotation.z += data.rotationSpeed;
+                petal.rotation.x += data.rotationSpeed * 0.5;
+
+                if (petal.position.y < -20) {
+                    petal.position.y = 30;
+                    petal.position.x = (Math.random() - 0.5) * 60;
+                }
+            });
+        }
+
+        if (stars) {
+            stars.rotation.y = time * 0.02;
+
+            const sizes = stars.geometry.attributes.size;
+            for (let i = 0; i < sizes.count; i++) {
+                sizes.array[i] = 0.3 + Math.sin(time * 3 + i) * 0.15;
+            }
+            sizes.needsUpdate = true;
+        }
+
+        if (magicOrbs) {
+            magicOrbs.children.forEach((orb, i) => {
+                const data = orb.userData;
+                data.angle += data.speed;
+
+                orb.position.x = Math.cos(data.angle) * data.radius;
+                orb.position.z = Math.sin(data.angle) * data.radius - 10;
+                orb.position.y = Math.sin(time * 2 + data.yOffset) * 3;
+
+                const scale = 1 + Math.sin(time * 3 + i) * 0.3;
+                orb.scale.setScalar(scale);
+            });
+        }
+
+        camera.position.x += (mouseX * 3 - camera.position.x) * 0.02;
+        camera.position.y += (mouseY * 2 - camera.position.y) * 0.02;
+        camera.lookAt(0, 0, 0);
+
+        renderer.render(scene, camera);
+    }
+
+    init();
+</script>
+</body>
+</html>

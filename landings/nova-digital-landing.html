@@ -1,0 +1,3474 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Nova Digital — Цифровое Маркетинговое Агентство</title>
+        <meta
+            name="description"
+            content="Nova Digital — комплексный цифровой маркетинг для роста вашего бизнеса. SEO, контекстная реклама, веб-разработка и аналитика."
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                --color-bg: #f8fafc;
+                --color-surface: #ffffff;
+                --color-primary: #7c3aed;
+                --color-primary-dark: #6d28d9;
+                --color-primary-light: #a78bfa;
+                --color-secondary: #f97316;
+                --color-secondary-dark: #ea580c;
+                --color-text-dark: #1e293b;
+                --color-text-medium: #475569;
+                --color-text-light: #64748b;
+                --color-border: #e2e8f0;
+                --color-success: #10b981;
+
+                --font-heading: "Manrope", sans-serif;
+                --font-body: "Inter", sans-serif;
+
+                --section-padding: 100px;
+                --container-width: 1280px;
+                --border-radius: 16px;
+                --border-radius-lg: 24px;
+
+                --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+                --shadow-md:
+                    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                --shadow-lg:
+                    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                --shadow-xl:
+                    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+                --shadow-primary: 0 10px 25px -5px rgba(124, 58, 237, 0.3);
+                --shadow-secondary: 0 10px 25px -5px rgba(249, 115, 22, 0.3);
+
+                --transition-fast: 0.15s ease;
+                --transition-base: 0.3s ease;
+                --transition-slow: 0.5s ease;
+            }
+
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html {
+                scroll-behavior: smooth;
+                font-size: 16px;
+            }
+
+            body {
+                font-family: var(--font-body);
+                background-color: var(--color-bg);
+                color: var(--color-text-medium);
+                line-height: 1.6;
+                overflow-x: hidden;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                font-family: var(--font-heading);
+                color: var(--color-text-dark);
+                line-height: 1.2;
+                font-weight: 700;
+            }
+
+            a {
+                text-decoration: none;
+                color: inherit;
+                transition: var(--transition-base);
+            }
+
+            ul {
+                list-style: none;
+            }
+
+            img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            button,
+            input,
+            textarea,
+            select {
+                font-family: inherit;
+                font-size: inherit;
+                border: none;
+                outline: none;
+                background: none;
+            }
+
+            button {
+                cursor: pointer;
+            }
+
+            .container {
+                max-width: var(--container-width);
+                margin: 0 auto;
+                padding: 0 24px;
+            }
+
+            section {
+                padding: var(--section-padding) 0;
+            }
+
+            .section-header {
+                text-align: center;
+                max-width: 700px;
+                margin: 0 auto 60px;
+            }
+
+            .section-tag {
+                display: inline-block;
+                font-family: var(--font-heading);
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--color-primary);
+                background: linear-gradient(
+                    135deg,
+                    rgba(124, 58, 237, 0.1),
+                    rgba(124, 58, 237, 0.05)
+                );
+                padding: 8px 16px;
+                border-radius: 50px;
+                margin-bottom: 16px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+            .section-title {
+                font-size: 48px;
+                font-weight: 800;
+                margin-bottom: 16px;
+                color: var(--color-text-dark);
+            }
+
+            .section-subtitle {
+                font-size: 18px;
+                color: var(--color-text-light);
+                line-height: 1.7;
+            }
+
+            .btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 16px 32px;
+                font-family: var(--font-heading);
+                font-size: 16px;
+                font-weight: 600;
+                border-radius: 12px;
+                transition: var(--transition-base);
+                cursor: pointer;
+                border: 2px solid transparent;
+            }
+
+            .btn-primary {
+                background: var(--color-primary);
+                color: white;
+                box-shadow: var(--shadow-primary);
+            }
+
+            .btn-primary:hover {
+                background: var(--color-primary-dark);
+                transform: translateY(-2px);
+                box-shadow: 0 15px 30px -5px rgba(124, 58, 237, 0.4);
+            }
+
+            .btn-secondary {
+                background: var(--color-secondary);
+                color: white;
+                box-shadow: var(--shadow-secondary);
+            }
+
+            .btn-secondary:hover {
+                background: var(--color-secondary-dark);
+                transform: translateY(-2px);
+                box-shadow: 0 15px 30px -5px rgba(249, 115, 22, 0.4);
+            }
+
+            .btn-outline {
+                background: transparent;
+                color: var(--color-primary);
+                border-color: var(--color-primary);
+            }
+
+            .btn-outline:hover {
+                background: var(--color-primary);
+                color: white;
+            }
+
+            .btn-large {
+                padding: 20px 40px;
+                font-size: 18px;
+            }
+
+            .btn-full {
+                width: 100%;
+            }
+
+            .header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                background: rgba(248, 250, 252, 0.9);
+                backdrop-filter: blur(20px);
+                border-bottom: 1px solid var(--color-border);
+                transition: var(--transition-base);
+            }
+
+            .header.scrolled {
+                padding: 12px 0;
+                box-shadow: var(--shadow-md);
+            }
+
+            .nav {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 20px 0;
+            }
+
+            .logo {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-family: var(--font-heading);
+                font-weight: 800;
+                font-size: 24px;
+                color: var(--color-text-dark);
+            }
+
+            .logo-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                background: linear-gradient(
+                    135deg,
+                    var(--color-primary),
+                    var(--color-secondary)
+                );
+                color: white;
+                border-radius: 10px;
+                font-size: 20px;
+            }
+
+            .nav-menu {
+                display: flex;
+                align-items: center;
+                gap: 40px;
+            }
+
+            .nav-link {
+                font-family: var(--font-heading);
+                font-weight: 500;
+                font-size: 15px;
+                color: var(--color-text-medium);
+                position: relative;
+                padding: 8px 0;
+            }
+
+            .nav-link::after {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: var(--color-primary);
+                transition: var(--transition-base);
+            }
+
+            .nav-link:hover {
+                color: var(--color-primary);
+            }
+
+            .nav-link:hover::after {
+                width: 100%;
+            }
+
+            .nav-cta {
+                padding: 12px 24px;
+                font-size: 14px;
+            }
+
+            .hamburger {
+                display: none;
+                flex-direction: column;
+                gap: 5px;
+                padding: 8px;
+                cursor: pointer;
+            }
+
+            .hamburger span {
+                width: 24px;
+                height: 2px;
+                background: var(--color-text-dark);
+                transition: var(--transition-base);
+            }
+
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -5px);
+            }
+
+            .hero {
+                position: relative;
+                padding: 180px 0 120px;
+                overflow: hidden;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+            }
+
+            .hero-bg {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 60%;
+                height: 100%;
+                background: linear-gradient(
+                    135deg,
+                    rgba(124, 58, 237, 0.05) 0%,
+                    rgba(249, 115, 22, 0.03) 100%
+                );
+                border-radius: 0 0 0 50%;
+                z-index: -1;
+            }
+
+            .hero-content {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 80px;
+                align-items: center;
+            }
+
+            .hero-text {
+                max-width: 600px;
+            }
+
+            .hero-title {
+                font-size: 56px;
+                font-weight: 800;
+                margin-bottom: 24px;
+                line-height: 1.15;
+                letter-spacing: -1px;
+            }
+
+            .hero-title .highlight {
+                background: linear-gradient(
+                    135deg,
+                    var(--color-primary),
+                    var(--color-secondary)
+                );
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .hero-subtitle {
+                font-size: 20px;
+                color: var(--color-text-light);
+                margin-bottom: 40px;
+                line-height: 1.7;
+            }
+
+            .hero-buttons {
+                display: flex;
+                gap: 16px;
+                margin-bottom: 48px;
+            }
+
+            .hero-stats {
+                display: flex;
+                gap: 48px;
+            }
+
+            .stat-item {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .stat-number {
+                font-family: var(--font-heading);
+                font-size: 36px;
+                font-weight: 800;
+                color: var(--color-text-dark);
+            }
+
+            .stat-label {
+                font-size: 14px;
+                color: var(--color-text-light);
+            }
+
+            .hero-visual {
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .hero-card {
+                background: var(--color-surface);
+                border-radius: var(--border-radius-lg);
+                box-shadow: var(--shadow-xl);
+                padding: 24px;
+                width: 100%;
+                max-width: 400px;
+                position: relative;
+                z-index: 2;
+            }
+
+            .hero-card-header {
+                margin-bottom: 24px;
+            }
+
+            .hero-card-dots {
+                display: flex;
+                gap: 8px;
+            }
+
+            .hero-card-dots span {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background: var(--color-border);
+            }
+
+            .hero-card-dots span:first-child {
+                background: #ef4444;
+            }
+
+            .hero-card-dots span:nth-child(2) {
+                background: #f59e0b;
+            }
+
+            .hero-card-dots span:nth-child(3) {
+                background: #10b981;
+            }
+
+            .chart-placeholder {
+                display: flex;
+                align-items: flex-end;
+                justify-content: space-between;
+                height: 150px;
+                padding: 20px 0;
+                border-bottom: 2px solid var(--color-border);
+                margin-bottom: 20px;
+            }
+
+            .chart-bar {
+                width: 40px;
+                height: var(--height);
+                background: linear-gradient(
+                    180deg,
+                    var(--color-primary-light),
+                    var(--color-primary)
+                );
+                border-radius: 8px 8px 0 0;
+                animation: growBar 1s ease forwards;
+                animation-delay: var(--delay);
+                transform-origin: bottom;
+            }
+
+            .chart-bar.active {
+                background: linear-gradient(
+                    180deg,
+                    var(--color-secondary),
+                    #fb923c
+                );
+            }
+
+            @keyframes growBar {
+                from {
+                    transform: scaleY(0);
+                }
+                to {
+                    transform: scaleY(1);
+                }
+            }
+
+            .growth-indicator {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 12px 16px;
+                background: rgba(16, 185, 129, 0.1);
+                border-radius: 8px;
+            }
+
+            .growth-icon {
+                color: var(--color-success);
+                font-size: 20px;
+            }
+
+            .growth-text {
+                font-family: var(--font-heading);
+                font-weight: 600;
+                color: var(--color-success);
+            }
+
+            .floating-element {
+                position: absolute;
+                width: 60px;
+                height: 60px;
+                background: var(--color-surface);
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: var(--shadow-lg);
+                animation: float 3s ease-in-out infinite;
+            }
+
+            .floating-element svg {
+                width: 28px;
+                height: 28px;
+                color: var(--color-primary);
+            }
+
+            .floating-element.element-1 {
+                top: 10%;
+                right: -10%;
+                animation-delay: 0s;
+            }
+
+            .floating-element.element-2 {
+                bottom: 20%;
+                left: -5%;
+                animation-delay: 1.5s;
+            }
+
+            @keyframes float {
+                0%,
+                100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-15px);
+                }
+            }
+
+            .services {
+                background: var(--color-surface);
+            }
+
+            .services-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 24px;
+            }
+
+            .service-card {
+                background: var(--color-bg);
+                border-radius: var(--border-radius-lg);
+                padding: 32px;
+                transition: var(--transition-base);
+                border: 1px solid var(--color-border);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .service-card::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(
+                    90deg,
+                    var(--color-primary),
+                    var(--color-secondary)
+                );
+                transform: scaleX(0);
+                transition: var(--transition-base);
+            }
+
+            .service-card:hover {
+                transform: translateY(-8px);
+                box-shadow: var(--shadow-xl);
+                border-color: var(--color-primary-light);
+            }
+
+            .service-card:hover::before {
+                transform: scaleX(1);
+            }
+
+            .service-icon {
+                width: 60px;
+                height: 60px;
+                background: linear-gradient(
+                    135deg,
+                    var(--color-primary),
+                    var(--color-primary-light)
+                );
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 24px;
+            }
+
+            .service-icon svg {
+                width: 28px;
+                height: 28px;
+                color: white;
+            }
+
+            .service-title {
+                font-size: 22px;
+                font-weight: 700;
+                margin-bottom: 12px;
+            }
+
+            .service-description {
+                font-size: 15px;
+                color: var(--color-text-light);
+                margin-bottom: 20px;
+                line-height: 1.6;
+            }
+
+            .service-list {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .service-list li {
+                font-size: 14px;
+                color: var(--color-text-medium);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .service-list li::before {
+                content: "";
+                width: 6px;
+                height: 6px;
+                background: var(--color-primary);
+                border-radius: 50%;
+                flex-shrink: 0;
+            }
+
+            .results {
+                background: var(--color-bg);
+            }
+
+            .results-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 24px;
+                margin-bottom: 60px;
+            }
+
+            .result-card {
+                background: var(--color-surface);
+                border-radius: var(--border-radius-lg);
+                padding: 32px;
+                text-align: center;
+                box-shadow: var(--shadow-md);
+                transition: var(--transition-base);
+            }
+
+            .result-card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--shadow-xl);
+            }
+
+            .result-icon {
+                width: 56px;
+                height: 56px;
+                background: linear-gradient(
+                    135deg,
+                    rgba(124, 58, 237, 0.1),
+                    rgba(124, 58, 237, 0.05)
+                );
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 20px;
+            }
+
+            .result-icon svg {
+                width: 28px;
+                height: 28px;
+                color: var(--color-primary);
+            }
+
+            .result-number {
+                font-family: var(--font-heading);
+                font-size: 48px;
+                font-weight: 800;
+                background: linear-gradient(
+                    135deg,
+                    var(--color-primary),
+                    var(--color-secondary)
+                );
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                margin-bottom: 8px;
+            }
+
+            .result-label {
+                font-family: var(--font-heading);
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--color-text-dark);
+                margin-bottom: 8px;
+            }
+
+            .result-description {
+                font-size: 14px;
+                color: var(--color-text-light);
+            }
+
+            .case-studies {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+            }
+
+            .case-card {
+                background: var(--color-surface);
+                border-radius: var(--border-radius-lg);
+                overflow: hidden;
+                box-shadow: var(--shadow-md);
+                transition: var(--transition-base);
+            }
+
+            .case-card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--shadow-xl);
+            }
+
+            .case-image {
+                height: 180px;
+                background: linear-gradient(
+                    135deg,
+                    var(--color-primary),
+                    #9333ea
+                );
+                position: relative;
+                display: flex;
+                align-items: flex-end;
+                padding: 20px;
+            }
+
+            .case-image.case-2 {
+                background: linear-gradient(135deg, #06b6d4, #0891b2);
+            }
+
+            .case-image.case-3 {
+                background: linear-gradient(
+                    135deg,
+                    var(--color-secondary),
+                    #fb923c
+                );
+            }
+
+            .case-overlay {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+            }
+
+            .case-category {
+                font-family: var(--font-heading);
+                font-size: 12px;
+                font-weight: 600;
+                color: white;
+                background: rgba(255, 255, 255, 0.2);
+                padding: 6px 12px;
+                border-radius: 50px;
+                backdrop-filter: blur(10px);
+            }
+
+            .case-content {
+                padding: 24px;
+            }
+
+            .case-title {
+                font-size: 20px;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+
+            .case-description {
+                font-size: 14px;
+                color: var(--color-text-light);
+                margin-bottom: 20px;
+            }
+
+            .case-metrics {
+                display: flex;
+                gap: 24px;
+            }
+
+            .case-metric {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .metric-value {
+                font-family: var(--font-heading);
+                font-size: 24px;
+                font-weight: 800;
+                color: var(--color-primary);
+            }
+
+            .metric-label {
+                font-size: 12px;
+                color: var(--color-text-light);
+            }
+
+            .process {
+                background: var(--color-surface);
+            }
+
+            .process-steps {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 24px;
+                position: relative;
+            }
+
+            .process-steps::before {
+                content: "";
+                position: absolute;
+                top: 50px;
+                left: 12.5%;
+                right: 12.5%;
+                height: 2px;
+                background: var(--color-border);
+                z-index: 0;
+            }
+
+            .process-step {
+                position: relative;
+                z-index: 1;
+                text-align: center;
+            }
+
+            .step-number {
+                width: 100px;
+                height: 100px;
+                background: var(--color-surface);
+                border: 3px solid var(--color-primary);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 24px;
+                font-family: var(--font-heading);
+                font-size: 32px;
+                font-weight: 800;
+                color: var(--color-primary);
+                box-shadow: var(--shadow-lg);
+                transition: var(--transition-base);
+            }
+
+            .process-step:hover .step-number {
+                background: var(--color-primary);
+                color: white;
+                transform: scale(1.1);
+            }
+
+            .step-content {
+                padding: 0 16px;
+            }
+
+            .step-title {
+                font-size: 20px;
+                font-weight: 700;
+                margin-bottom: 12px;
+            }
+
+            .step-description {
+                font-size: 15px;
+                color: var(--color-text-light);
+                line-height: 1.6;
+            }
+
+            .step-arrow {
+                position: absolute;
+                right: -30px;
+                top: 35px;
+                opacity: 0.3;
+            }
+
+            .step-arrow svg {
+                width: 24px;
+                height: 24px;
+                color: var(--color-text-medium);
+            }
+
+            .process-step:last-child .step-arrow {
+                display: none;
+            }
+
+            .testimonials {
+                background: var(--color-bg);
+            }
+
+            .testimonials-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+            }
+
+            .testimonial-card {
+                background: var(--color-surface);
+                border-radius: var(--border-radius-lg);
+                padding: 32px;
+                box-shadow: var(--shadow-md);
+                transition: var(--transition-base);
+            }
+
+            .testimonial-card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--shadow-xl);
+            }
+
+            .testimonial-rating {
+                color: #f59e0b;
+                font-size: 18px;
+                margin-bottom: 20px;
+                letter-spacing: 4px;
+            }
+
+            .testimonial-text {
+                font-size: 16px;
+                color: var(--color-text-medium);
+                line-height: 1.7;
+                margin-bottom: 24px;
+                font-style: italic;
+            }
+
+            .testimonial-author {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .author-avatar {
+                width: 52px;
+                height: 52px;
+                background: linear-gradient(
+                    135deg,
+                    var(--color-primary),
+                    var(--color-secondary)
+                );
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: var(--font-heading);
+                font-weight: 700;
+                color: white;
+                font-size: 16px;
+            }
+
+            .author-name {
+                font-family: var(--font-heading);
+                font-weight: 600;
+                color: var(--color-text-dark);
+                margin-bottom: 4px;
+            }
+
+            .author-position {
+                font-size: 14px;
+                color: var(--color-text-light);
+            }
+
+            .team {
+                background: var(--color-surface);
+            }
+
+            .team-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 24px;
+            }
+
+            .team-card {
+                background: var(--color-bg);
+                border-radius: var(--border-radius-lg);
+                padding: 32px;
+                text-align: center;
+                transition: var(--transition-base);
+                border: 1px solid var(--color-border);
+            }
+
+            .team-card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--shadow-xl);
+                border-color: var(--color-primary-light);
+            }
+
+            .team-photo {
+                margin-bottom: 20px;
+            }
+
+            .team-avatar {
+                width: 100px;
+                height: 100px;
+                background: linear-gradient(
+                    135deg,
+                    var(--color-primary),
+                    var(--color-primary-light)
+                );
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto;
+                font-family: var(--font-heading);
+                font-weight: 800;
+                color: white;
+                font-size: 28px;
+                box-shadow: var(--shadow-lg);
+            }
+
+            .team-card:nth-child(2) .team-avatar {
+                background: linear-gradient(135deg, #06b6d4, #0891b2);
+            }
+
+            .team-card:nth-child(3) .team-avatar {
+                background: linear-gradient(
+                    135deg,
+                    var(--color-secondary),
+                    #fb923c
+                );
+            }
+
+            .team-card:nth-child(4) .team-avatar {
+                background: linear-gradient(135deg, #ec4899, #f472b6);
+            }
+
+            .team-name {
+                font-size: 20px;
+                font-weight: 700;
+                margin-bottom: 4px;
+            }
+
+            .team-role {
+                font-size: 14px;
+                color: var(--color-primary);
+                font-weight: 500;
+                margin-bottom: 12px;
+            }
+
+            .team-bio {
+                font-size: 14px;
+                color: var(--color-text-light);
+                line-height: 1.5;
+                margin-bottom: 16px;
+            }
+
+            .team-social {
+                display: flex;
+                justify-content: center;
+                gap: 12px;
+            }
+
+            .social-link {
+                width: 36px;
+                height: 36px;
+                background: var(--color-surface);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--color-text-medium);
+                border: 1px solid var(--color-border);
+                transition: var(--transition-base);
+            }
+
+            .social-link:hover {
+                background: var(--color-primary);
+                color: white;
+                border-color: var(--color-primary);
+            }
+
+            .contact {
+                background: var(--color-bg);
+            }
+
+            .contact-wrapper {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 80px;
+                align-items: start;
+            }
+
+            .contact-title {
+                font-size: 42px;
+                font-weight: 800;
+                margin-bottom: 16px;
+            }
+
+            .contact-subtitle {
+                font-size: 18px;
+                color: var(--color-text-light);
+                margin-bottom: 40px;
+                line-height: 1.7;
+            }
+
+            .contact-details {
+                display: flex;
+                flex-direction: column;
+                gap: 24px;
+            }
+
+            .contact-item {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .contact-icon {
+                width: 52px;
+                height: 52px;
+                background: linear-gradient(
+                    135deg,
+                    var(--color-primary),
+                    var(--color-primary-light)
+                );
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+
+            .contact-icon svg {
+                width: 24px;
+                height: 24px;
+                color: white;
+            }
+
+            .contact-label {
+                font-size: 13px;
+                color: var(--color-text-light);
+                margin-bottom: 2px;
+                display: block;
+            }
+
+            .contact-value {
+                font-family: var(--font-heading);
+                font-weight: 600;
+                color: var(--color-text-dark);
+            }
+
+            .contact-form-wrapper {
+                background: var(--color-surface);
+                border-radius: var(--border-radius-lg);
+                padding: 40px;
+                box-shadow: var(--shadow-xl);
+            }
+
+            .contact-form {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .form-label {
+                font-family: var(--font-heading);
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--color-text-dark);
+            }
+
+            .form-input,
+            .form-select,
+            .form-textarea {
+                width: 100%;
+                padding: 14px 18px;
+                background: var(--color-bg);
+                border: 2px solid var(--color-border);
+                border-radius: 10px;
+                font-size: 15px;
+                color: var(--color-text-dark);
+                transition: var(--transition-base);
+            }
+
+            .form-input:focus,
+            .form-select:focus,
+            .form-textarea:focus {
+                border-color: var(--color-primary);
+                box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+            }
+
+            .form-input::placeholder,
+            .form-textarea::placeholder {
+                color: var(--color-text-light);
+            }
+
+            .form-select {
+                cursor: pointer;
+                appearance: none;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 12px center;
+                background-size: 18px;
+            }
+
+            .form-textarea {
+                resize: vertical;
+                min-height: 100px;
+            }
+
+            .form-note {
+                font-size: 13px;
+                color: var(--color-text-light);
+                text-align: center;
+            }
+
+            .cta {
+                background: linear-gradient(
+                    135deg,
+                    var(--color-primary),
+                    #9333ea
+                );
+                padding: 80px 0;
+                text-align: center;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .cta::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+                opacity: 0.5;
+            }
+
+            .cta-content {
+                position: relative;
+                z-index: 1;
+            }
+
+            .cta-title {
+                font-size: 48px;
+                font-weight: 800;
+                color: white;
+                margin-bottom: 16px;
+            }
+
+            .cta-subtitle {
+                font-size: 20px;
+                color: rgba(255, 255, 255, 0.9);
+                margin-bottom: 32px;
+            }
+
+            .cta .btn-secondary {
+                background: white;
+                color: var(--color-primary);
+            }
+
+            .cta .btn-secondary:hover {
+                background: var(--color-bg);
+                transform: translateY(-2px);
+            }
+
+            .footer {
+                background: var(--color-text-dark);
+                color: white;
+                padding: 80px 0 30px;
+            }
+
+            .footer-top {
+                display: grid;
+                grid-template-columns: 1.5fr 2fr;
+                gap: 80px;
+                margin-bottom: 60px;
+                padding-bottom: 40px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .footer-brand .logo {
+                color: white;
+                margin-bottom: 20px;
+            }
+
+            .footer-brand .logo-icon {
+                background: linear-gradient(
+                    135deg,
+                    var(--color-secondary),
+                    var(--color-primary)
+                );
+            }
+
+            .footer-description {
+                font-size: 15px;
+                color: rgba(255, 255, 255, 0.6);
+                line-height: 1.7;
+                max-width: 300px;
+            }
+
+            .footer-links {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 40px;
+            }
+
+            .footer-title {
+                font-family: var(--font-heading);
+                font-size: 16px;
+                font-weight: 700;
+                color: white;
+                margin-bottom: 20px;
+            }
+
+            .footer-list {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .footer-list a {
+                font-size: 14px;
+                color: rgba(255, 255, 255, 0.6);
+                transition: var(--transition-base);
+            }
+
+            .footer-list a:hover {
+                color: white;
+            }
+
+            .footer-list li {
+                font-size: 14px;
+                color: rgba(255, 255, 255, 0.6);
+            }
+
+            .footer-bottom {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .footer-copyright {
+                font-size: 14px;
+                color: rgba(255, 255, 255, 0.5);
+            }
+
+            .footer-social {
+                display: flex;
+                gap: 12px;
+            }
+
+            .footer-social-link {
+                width: 40px;
+                height: 40px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: var(--transition-base);
+            }
+
+            .footer-social-link svg {
+                width: 20px;
+                height: 20px;
+                color: white;
+            }
+
+            .footer-social-link:hover {
+                background: var(--color-primary);
+            }
+
+            .modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 2000;
+                opacity: 0;
+                visibility: hidden;
+                transition: var(--transition-base);
+            }
+
+            .modal.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .modal-content {
+                background: var(--color-surface);
+                border-radius: var(--border-radius-lg);
+                padding: 48px;
+                text-align: center;
+                max-width: 420px;
+                transform: scale(0.9);
+                transition: var(--transition-base);
+            }
+
+            .modal.active .modal-content {
+                transform: scale(1);
+            }
+
+            .modal-icon {
+                width: 80px;
+                height: 80px;
+                background: linear-gradient(
+                    135deg,
+                    rgba(16, 185, 129, 0.1),
+                    rgba(16, 185, 129, 0.05)
+                );
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 24px;
+            }
+
+            .modal-icon svg {
+                width: 40px;
+                height: 40px;
+                color: var(--color-success);
+            }
+
+            .modal-title {
+                font-size: 28px;
+                font-weight: 700;
+                margin-bottom: 12px;
+            }
+
+            .modal-text {
+                font-size: 16px;
+                color: var(--color-text-light);
+                margin-bottom: 24px;
+            }
+
+            .fade-in {
+                opacity: 0;
+                transform: translateY(30px);
+                transition:
+                    opacity 0.6s ease,
+                    transform 0.6s ease;
+            }
+
+            .fade-in.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .fade-in-left {
+                opacity: 0;
+                transform: translateX(-30px);
+                transition:
+                    opacity 0.6s ease,
+                    transform 0.6s ease;
+            }
+
+            .fade-in-left.visible {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            .fade-in-right {
+                opacity: 0;
+                transform: translateX(30px);
+                transition:
+                    opacity 0.6s ease,
+                    transform 0.6s ease;
+            }
+
+            .fade-in-right.visible {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            @media (max-width: 1200px) {
+                .section-title {
+                    font-size: 40px;
+                }
+
+                .hero-title {
+                    font-size: 48px;
+                }
+
+                .services-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .results-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .process-steps {
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 40px;
+                }
+
+                .process-steps::before {
+                    display: none;
+                }
+
+                .process-step .step-arrow {
+                    display: none;
+                }
+
+                .team-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+
+            @media (max-width: 992px) {
+                :root {
+                    --section-padding: 80px;
+                }
+
+                .hero-content {
+                    grid-template-columns: 1fr;
+                    text-align: center;
+                }
+
+                .hero-text {
+                    max-width: 100%;
+                }
+
+                .hero-buttons {
+                    justify-content: center;
+                }
+
+                .hero-stats {
+                    justify-content: center;
+                }
+
+                .hero-visual {
+                    display: none;
+                }
+
+                .case-studies {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .testimonials-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .contact-wrapper {
+                    grid-template-columns: 1fr;
+                    gap: 40px;
+                }
+
+                .footer-top {
+                    grid-template-columns: 1fr;
+                    gap: 40px;
+                }
+
+                .footer-links {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+            }
+
+            @media (max-width: 768px) {
+                :root {
+                    --section-padding: 60px;
+                }
+
+                .section-title {
+                    font-size: 32px;
+                }
+
+                .hero-title {
+                    font-size: 36px;
+                }
+
+                .hero-subtitle {
+                    font-size: 18px;
+                }
+
+                .hero-buttons {
+                    flex-direction: column;
+                }
+
+                .hero-stats {
+                    flex-direction: column;
+                    gap: 24px;
+                }
+
+                .nav-menu {
+                    position: fixed;
+                    top: 80px;
+                    left: 0;
+                    right: 0;
+                    background: var(--color-surface);
+                    flex-direction: column;
+                    padding: 24px;
+                    gap: 20px;
+                    box-shadow: var(--shadow-xl);
+                    transform: translateY(-150%);
+                    transition: var(--transition-base);
+                }
+
+                .nav-menu.active {
+                    transform: translateY(0);
+                }
+
+                .hamburger {
+                    display: flex;
+                }
+
+                .nav-cta {
+                    display: none;
+                }
+
+                .services-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .results-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .case-studies {
+                    grid-template-columns: 1fr;
+                }
+
+                .process-steps {
+                    grid-template-columns: 1fr;
+                }
+
+                .testimonials-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .team-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .footer-links {
+                    grid-template-columns: 1fr;
+                    gap: 32px;
+                }
+
+                .footer-bottom {
+                    flex-direction: column;
+                    gap: 20px;
+                    text-align: center;
+                }
+
+                .cta-title {
+                    font-size: 32px;
+                }
+
+                .contact-form-wrapper {
+                    padding: 24px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .container {
+                    padding: 0 16px;
+                }
+
+                .hero {
+                    padding: 140px 0 80px;
+                }
+
+                .hero-title {
+                    font-size: 28px;
+                }
+
+                .btn-large {
+                    padding: 16px 32px;
+                    font-size: 16px;
+                }
+
+                .section-header {
+                    margin-bottom: 40px;
+                }
+
+                .service-card,
+                .result-card,
+                .testimonial-card,
+                .team-card {
+                    padding: 24px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header class="header" id="header">
+            <div class="container">
+                <nav class="nav">
+                    <a href="#" class="logo">
+                        <span class="logo-icon">N</span>
+                        <span class="logo-text">Nova Digital</span>
+                    </a>
+                    <ul class="nav-menu" id="navMenu">
+                        <li><a href="#services" class="nav-link">Услуги</a></li>
+                        <li><a href="#cases" class="nav-link">Кейсы</a></li>
+                        <li><a href="#process" class="nav-link">Процесс</a></li>
+                        <li><a href="#team" class="nav-link">Команда</a></li>
+                        <li>
+                            <a href="#contact" class="nav-link">Контакты</a>
+                        </li>
+                    </ul>
+                    <a href="#contact" class="btn btn-primary nav-cta"
+                        >Заказать аудит</a
+                    >
+                    <button class="hamburger" id="hamburger" aria-label="Меню">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <section class="hero" id="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 class="hero-title">
+                            Комплексный цифровой маркетинг для
+                            <span class="highlight">роста</span> вашего бизнеса
+                        </h1>
+                        <p class="hero-subtitle">
+                            Мы объединяем креатив и технологии, чтобы превращать
+                            заявки в лояльных клиентов. Результат — измеримый
+                            рост вашей выручки.
+                        </p>
+                        <div class="hero-buttons">
+                            <a href="#contact" class="btn btn-primary btn-large"
+                                >Обсудить проект</a
+                            >
+                            <a href="#cases" class="btn btn-outline btn-large"
+                                >Смотреть кейсы</a
+                            >
+                        </div>
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">5+</span>
+                                <span class="stat-label"> лет на рынке</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">200+</span>
+                                <span class="stat-label"> проектов</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">98%</span>
+                                <span class="stat-label">
+                                    клиентов довольны</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="hero-card">
+                            <div class="hero-card-header">
+                                <div class="hero-card-dots">
+                                    <span></span><span></span><span></span>
+                                </div>
+                            </div>
+                            <div class="hero-card-body">
+                                <div class="chart-placeholder">
+                                    <div
+                                        class="chart-bar"
+                                        style="--height: 40%; --delay: 0.1s"
+                                    ></div>
+                                    <div
+                                        class="chart-bar"
+                                        style="--height: 65%; --delay: 0.2s"
+                                    ></div>
+                                    <div
+                                        class="chart-bar"
+                                        style="--height: 45%; --delay: 0.3s"
+                                    ></div>
+                                    <div
+                                        class="chart-bar"
+                                        style="--height: 80%; --delay: 0.4s"
+                                    ></div>
+                                    <div
+                                        class="chart-bar active"
+                                        style="--height: 95%; --delay: 0.5s"
+                                    ></div>
+                                </div>
+                                <div class="growth-indicator">
+                                    <span class="growth-icon">↑</span>
+                                    <span class="growth-text"
+                                        >+147% рост конверсий</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="floating-element element-1">
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <path
+                                    d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+                                />
+                            </svg>
+                        </div>
+                        <div class="floating-element element-2">
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 6v6l4 2" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-bg"></div>
+        </section>
+
+        <section class="services" id="services">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Услуги</span>
+                    <h2 class="section-title">
+                        Полный спектр цифровых решений
+                    </h2>
+                    <p class="section-subtitle">
+                        Комплексный подход к продвижению вашего бизнеса в
+                        интернете
+                    </p>
+                </div>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <circle cx="11" cy="11" r="8" />
+                                <path d="M21 21l-4.35-4.35" />
+                            </svg>
+                        </div>
+                        <h3 class="service-title">SEO Продвижение</h3>
+                        <p class="service-description">
+                            Выводим ваш сайт в топ поисковых систем. Рост
+                            органического трафика и долгосрочный результат без
+                            постоянных вложений в рекламу.
+                        </p>
+                        <ul class="service-list">
+                            <li>Технический аудит сайта</li>
+                            <li>Оптимизация контента</li>
+                            <li>Построение ссылочной массы</li>
+                            <li>Ежемесячная аналитика</li>
+                        </ul>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <rect
+                                    x="2"
+                                    y="3"
+                                    width="20"
+                                    height="14"
+                                    rx="2"
+                                    ry="2"
+                                />
+                                <path d="M8 21h8M12 17v4" />
+                            </svg>
+                        </div>
+                        <h3 class="service-title">Контекстная Реклама</h3>
+                        <p class="service-description">
+                            Настраиваем эффективные PPC-кампании в Google Ads и
+                            Яндекс.Директ. Платите только за реальные клики и
+                            заявки.
+                        </p>
+                        <ul class="service-list">
+                            <li>Анализ целевой аудитории</li>
+                            <li>Создание рекламных объявлений</li>
+                            <li>A/B тестирование</li>
+                            <li>Оптимизация ставок</li>
+                        </ul>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <path
+                                    d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+                                />
+                            </svg>
+                        </div>
+                        <h3 class="service-title">Веб-разработка</h3>
+                        <p class="service-description">
+                            Создаем современные, быстрые и удобные сайты. От
+                            лендингов до корпоративных порталов с высокой
+                            конверсией.
+                        </p>
+                        <ul class="service-list">
+                            <li>Анализ и прототипирование</li>
+                            <li>Дизайн и верстка</li>
+                            <li>Разработка на CMS</li>
+                            <li>SEO-оптимизация</li>
+                        </ul>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <path d="M18 20V10M12 20V4M6 20v-6" />
+                            </svg>
+                        </div>
+                        <h3 class="service-title">Сквозная Аналитика</h3>
+                        <p class="service-description">
+                            Даём полную картину эффективности маркетинга.
+                            Отслеживаем путь клиента от первого контакта до
+                            покупки.
+                        </p>
+                        <ul class="service-list">
+                            <li>Настройка коллтрекинга</li>
+                            <li>Интеграция CRM</li>
+                            <li>Дашборды в реальном времени</li>
+                            <li>Рекомендации по улучшению</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="results" id="cases">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Результаты</span>
+                    <h2 class="section-title">Цифры, которыми мы гордимся</h2>
+                    <p class="section-subtitle">
+                        Реальные кейсы и достижения наших клиентов
+                    </p>
+                </div>
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-icon">
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <path
+                                    d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                                />
+                            </svg>
+                        </div>
+                        <div class="result-number">+340%</div>
+                        <div class="result-label">рост выручки клиента</div>
+                        <div class="result-description">
+                            Средний показатель через 6 месяцев работы
+                        </div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-icon">
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <path
+                                    d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
+                                />
+                                <circle cx="9" cy="7" r="4" />
+                                <path
+                                    d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
+                                />
+                            </svg>
+                        </div>
+                        <div class="result-number">12 500+</div>
+                        <div class="result-label">новых клиентов</div>
+                        <div class="result-description">
+                            Привлечено для всех проектов за год
+                        </div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-icon">
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 6v6l4 2" />
+                            </svg>
+                        </div>
+                        <div class="result-number">-65%</div>
+                        <div class="result-label">снижение стоимости лида</div>
+                        <div class="result-description">
+                            Оптимизация рекламных кампаний
+                        </div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-icon">
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                        </div>
+                        <div class="result-number">#1</div>
+                        <div class="result-label">позиция в Google</div>
+                        <div class="result-description">
+                            По ключевым запросам клиентов
+                        </div>
+                    </div>
+                </div>
+                <div class="case-studies">
+                    <div class="case-card">
+                        <div class="case-image">
+                            <div class="case-overlay">
+                                <span class="case-category">e-commerce</span>
+                            </div>
+                        </div>
+                        <div class="case-content">
+                            <h3 class="case-title">
+                                Интернет-магазин электроники
+                            </h3>
+                            <p class="case-description">
+                                Полный редизайн и запуск рекламных кампаний
+                            </p>
+                            <div class="case-metrics">
+                                <div class="case-metric">
+                                    <span class="metric-value">+280%</span>
+                                    <span class="metric-label">продажи</span>
+                                </div>
+                                <div class="case-metric">
+                                    <span class="metric-value">42%</span>
+                                    <span class="metric-label">конверсия</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="case-card">
+                        <div class="case-image case-2">
+                            <div class="case-overlay">
+                                <span class="case-category">B2B</span>
+                            </div>
+                        </div>
+                        <div class="case-content">
+                            <h3 class="case-title">Строительная компания</h3>
+                            <p class="case-description">
+                                SEO-продвижение и лидогенерация
+                            </p>
+                            <div class="case-metrics">
+                                <div class="case-metric">
+                                    <span class="metric-value">+156%</span>
+                                    <span class="metric-label">заявок</span>
+                                </div>
+                                <div class="case-metric">
+                                    <span class="metric-value">3.2x</span>
+                                    <span class="metric-label">ROI</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="case-card">
+                        <div class="case-image case-3">
+                            <div class="case-overlay">
+                                <span class="case-category">Стартап</span>
+                            </div>
+                        </div>
+                        <div class="case-content">
+                            <h3 class="case-title">Мобильное приложение</h3>
+                            <p class="case-description">
+                                ASO и маркетинг для запуска
+                            </p>
+                            <div class="case-metrics">
+                                <div class="case-metric">
+                                    <span class="metric-value">50K+</span>
+                                    <span class="metric-label">установок</span>
+                                </div>
+                                <div class="case-metric">
+                                    <span class="metric-value">4.8★</span>
+                                    <span class="metric-label">рейтинг</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="process" id="process">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Процесс</span>
+                    <h2 class="section-title">Как мы работаем</h2>
+                    <p class="section-subtitle">
+                        Прозрачная система работы, которая приводит к результату
+                    </p>
+                </div>
+                <div class="process-steps">
+                    <div class="process-step">
+                        <div class="step-number">01</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Аудит и аналитика</h3>
+                            <p class="step-description">
+                                Проводим глубокий анализ вашего бизнеса, сайта и
+                                конкурентов. Выявляем точки роста и слабые
+                                места.
+                            </p>
+                        </div>
+                        <div class="step-arrow">
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">02</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Стратегия</h3>
+                            <p class="step-description">
+                                Разрабатываем индивидуальную стратегию
+                                продвижения с учётом ваших целей, бюджета и
+                                особенностей рынка.
+                            </p>
+                        </div>
+                        <div class="step-arrow">
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">03</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Внедрение</h3>
+                            <p class="step-description">
+                                Запускаем рекламные кампании, оптимизируем сайт
+                                и создаём контент. Ежедневный контроль и
+                                оперативные правки.
+                            </p>
+                        </div>
+                        <div class="step-arrow">
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">04</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Анализ и оптимизация</h3>
+                            <p class="step-description">
+                                Еженедельные отчёты, A/B тестирование и
+                                постоянное улучшение показателей. Масштабируем
+                                успешные решения.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonials" id="testimonials">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Отзывы</span>
+                    <h2 class="section-title">Что говорят клиенты</h2>
+                    <p class="section-subtitle">
+                        Реальные отзывы от предпринимателей, которые доверили
+                        нам продвижение
+                    </p>
+                </div>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">★★★★★</div>
+                        <p class="testimonial-text">
+                            "Работа с Nova Digital полностью изменила наш подход
+                            к маркетингу. За 4 месяца мы вышли на 300% рост
+                            продаж. Команда всегда на связи, оперативно
+                            реагирует на все изменения."
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">АВ</div>
+                            <div class="author-info">
+                                <div class="author-name">Алексей Волков</div>
+                                <div class="author-position">
+                                    Генеральный директор, TechShop
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">★★★★★</div>
+                        <p class="testimonial-text">
+                            "Сначала сомневались, стоит ли инвестировать в SEO.
+                            Но результат превзошёл все ожидания — трафик вырос в
+                            5 раз, а стоимость лида упала втрое. Рекомендую!"
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">МС</div>
+                            <div class="author-info">
+                                <div class="author-name">Мария Сергеева</div>
+                                <div class="author-position">
+                                    Маркетинг-директор, СтройДом
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">★★★★★</div>
+                        <p class="testimonial-text">
+                            "Нужно было запустить рекламу для нового продукта.
+                            Ребята сделали всё быстро и качественно. Окупили
+                            вложения в первый же месяц. Теперь работаем на
+                            постоянной основе."
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">ДИ</div>
+                            <div class="author-info">
+                                <div class="author-name">Дмитрий Иванов</div>
+                                <div class="author-position">
+                                    Основатель, StartUp App
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="team" id="team">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Команда</span>
+                    <h2 class="section-title">Профессионалы своего дела</h2>
+                    <p class="section-subtitle">
+                        Специалисты с опытом работы в крупнейших агентствах и
+                        IT-компаниях
+                    </p>
+                </div>
+                <div class="team-grid">
+                    <div class="team-card">
+                        <div class="team-photo">
+                            <div class="team-avatar">НП</div>
+                        </div>
+                        <h3 class="team-name">Никита Петров</h3>
+                        <div class="team-role">CEO / Основатель</div>
+                        <p class="team-bio">
+                            10+ лет в digital-маркетинге. Работал с 50+ крупными
+                            брендами.
+                        </p>
+                        <div class="team-social">
+                            <a href="#" class="social-link">LN</a>
+                            <a href="#" class="social-link">TG</a>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-photo">
+                            <div class="team-avatar">ЕС</div>
+                        </div>
+                        <h3 class="team-name">Елена Смирнова</h3>
+                        <div class="team-role">Head of SEO</div>
+                        <p class="team-bio">
+                            Сертифицированный специалист. Эксперт по
+                            техническому SEO.
+                        </p>
+                        <div class="team-social">
+                            <a href="#" class="social-link">LN</a>
+                            <a href="#" class="social-link">TG</a>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-photo">
+                            <div class="team-avatar">АК</div>
+                        </div>
+                        <h3 class="team-name">Андрей Козлов</h3>
+                        <div class="team-role">Head of PPC</div>
+                        <p class="team-bio">
+                            Google Partner. Бюджетный опыт более $1M в год.
+                        </p>
+                        <div class="team-social">
+                            <a href="#" class="social-link">LN</a>
+                            <a href="#" class="social-link">TG</a>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-photo">
+                            <div class="team-avatar">МВ</div>
+                        </div>
+                        <h3 class="team-name">Мария Воронцова</h3>
+                        <div class="team-role">Lead Designer</div>
+                        <p class="team-bio">
+                            Создаёт дизайн, который продаёт. Победитель 5
+                            дизайн-премий.
+                        </p>
+                        <div class="team-social">
+                            <a href="#" class="social-link">LN</a>
+                            <a href="#" class="social-link">TG</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact" id="contact">
+            <div class="container">
+                <div class="contact-wrapper">
+                    <div class="contact-info">
+                        <span class="section-tag">Контакты</span>
+                        <h2 class="contact-title">
+                            Готовы обсудить ваш проект?
+                        </h2>
+                        <p class="contact-subtitle">
+                            Оставьте заявку, и мы свяжемся с вами в течение 15
+                            минут для бесплатной консультации.
+                        </p>
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    >
+                                        <path
+                                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+                                        />
+                                    </svg>
+                                </div>
+                                <div class="contact-text">
+                                    <span class="contact-label">Телефон</span>
+                                    <a
+                                        href="tel:+79001234567"
+                                        class="contact-value"
+                                        >+7 (900) 123-45-67</a
+                                    >
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    >
+                                        <path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                                        />
+                                        <polyline points="22,6 12,13 2,6" />
+                                    </svg>
+                                </div>
+                                <div class="contact-text">
+                                    <span class="contact-label">Email</span>
+                                    <a
+                                        href="/cdn-cgi/l/email-protection#b6ded3dadad9f6d8d9c0d7d2dfd1dfc2d7da98c4c3"
+                                        class="contact-value"
+                                        ><span
+                                            class="__cf_email__"
+                                            data-cfemail="7b131e1717143b15140d1a1f121c120f1a1755090e"
+                                            >[email&#160;protected]</span
+                                        ></a
+                                    >
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    >
+                                        <path
+                                            d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                                        />
+                                        <circle cx="12" cy="10" r="3" />
+                                    </svg>
+                                </div>
+                                <div class="contact-text">
+                                    <span class="contact-label">Офис</span>
+                                    <span class="contact-value"
+                                        >Москва, Сити, Башня Федерация</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-form-wrapper">
+                        <form class="contact-form" id="contactForm">
+                            <div class="form-group">
+                                <label for="name" class="form-label"
+                                    >Ваше имя</label
+                                >
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    class="form-input"
+                                    placeholder="Иван Иванов"
+                                    required
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="phone" class="form-label"
+                                    >Телефон</label
+                                >
+                                <input
+                                    type="tel"
+                                    id="phone"
+                                    name="phone"
+                                    class="form-input"
+                                    placeholder="+7 (___) ___-__-__"
+                                    required
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="website" class="form-label"
+                                    >Сайт (если есть)</label
+                                >
+                                <input
+                                    type="url"
+                                    id="website"
+                                    name="website"
+                                    class="form-input"
+                                    placeholder="https://example.com"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="budget" class="form-label"
+                                    >Бюджет на продвижение</label
+                                >
+                                <select
+                                    id="budget"
+                                    name="budget"
+                                    class="form-select"
+                                >
+                                    <option value="">Выберите бюджет</option>
+                                    <option value="50-100">
+                                        50 000 – 100 000 ₽/мес
+                                    </option>
+                                    <option value="100-200">
+                                        100 000 – 200 000 ₽/мес
+                                    </option>
+                                    <option value="200-500">
+                                        200 000 – 500 000 ₽/мес
+                                    </option>
+                                    <option value="500+">500 000+ ₽/мес</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="message" class="form-label"
+                                    >Сообщение</label
+                                >
+                                <textarea
+                                    id="message"
+                                    name="message"
+                                    class="form-textarea"
+                                    placeholder="Расскажите о вашем проекте..."
+                                    rows="4"
+                                ></textarea>
+                            </div>
+                            <button
+                                type="submit"
+                                class="btn btn-primary btn-full"
+                            >
+                                Отправить заявку
+                            </button>
+                            <p class="form-note">
+                                Нажимая кнопку, вы соглашаетесь с политикой
+                                обработки персональных данных
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta">
+            <div class="container">
+                <div class="cta-content">
+                    <h2 class="cta-title">Готовы удвоить свои продажи?</h2>
+                    <p class="cta-subtitle">
+                        Получите бесплатный аудит вашего сайта и маркетинговой
+                        стратегии прямо сейчас
+                    </p>
+                    <a href="#contact" class="btn btn-secondary btn-large"
+                        >Получить бесплатный аудит</a
+                    >
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-top">
+                    <div class="footer-brand">
+                        <a href="#" class="logo">
+                            <span class="logo-icon">N</span>
+                            <span class="logo-text">Nova Digital</span>
+                        </a>
+                        <p class="footer-description">
+                            Цифровое маркетинговое агентство полного цикла.
+                            Помогаем бизнесу расти в онлайне.
+                        </p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4 class="footer-title">Услуги</h4>
+                            <ul class="footer-list">
+                                <li><a href="#services">SEO продвижение</a></li>
+                                <li>
+                                    <a href="#services">Контекстная реклама</a>
+                                </li>
+                                <li><a href="#services">Веб-разработка</a></li>
+                                <li><a href="#services">Аналитика</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">Компания</h4>
+                            <ul class="footer-list">
+                                <li><a href="#cases">Кейсы</a></li>
+                                <li><a href="#team">Команда</a></li>
+                                <li><a href="#process">Процесс</a></li>
+                                <li><a href="#contact">Контакты</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">Контакты</h4>
+                            <ul class="footer-list">
+                                <li>
+                                    <a href="tel:+79001234567"
+                                        >+7 (900) 123-45-67</a
+                                    >
+                                </li>
+                                <li>
+                                    <a
+                                        href="/cdn-cgi/l/email-protection#dbb3beb7b7b49bb5b4adbabfb2bcb2afbab7f5a9ae"
+                                        ><span
+                                            class="__cf_email__"
+                                            data-cfemail="157d7079797a557b7a6374717c727c6174793b6760"
+                                            >[email&#160;protected]</span
+                                        ></a
+                                    >
+                                </li>
+                                <li>Москва, Сити, Башня Федерация</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p class="footer-copyright">
+                        © 2024 Nova Digital. Все права защищены.
+                    </p>
+                    <div class="footer-social">
+                        <a
+                            href="#"
+                            class="footer-social-link"
+                            aria-label="Telegram"
+                        >
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"
+                                />
+                            </svg>
+                        </a>
+                        <a
+                            href="#"
+                            class="footer-social-link"
+                            aria-label="WhatsApp"
+                        >
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"
+                                />
+                            </svg>
+                        </a>
+                        <a href="#" class="footer-social-link" aria-label="VK">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.023-1.71-1.397-1.488-1.958-1.744-2.277-1.744-.21 0-.42.042-.6.126-.18.084-.345.252-.345.456v1.596c0 .276-.21.528-.546.528-.756 0-2.304-1.836-3.234-3.306-.954-1.512-1.68-2.628-1.786-2.898-.147-.336-.084-.528.108-.756.21-.228.546-.456.84-.672.21-.147.378-.252.504-.378.168-.168.252-.294.336-.42.126-.168.168-.294.21-.462.084-.21 0-.378-.084-.546-.168-.294-.504-.756-.756-1.092-.378-.504-.84-.882-1.26-1.092-.294-.147-.546-.21-.756-.294-.21-.084-.378-.168-.546-.168-.21 0-.42.084-.588.252-.21.21-.294.462-.294.756v1.092c0 .21-.042.378-.126.504-.084.084-.21.21-.378.294-.168.084-.336.168-.546.21-.252.042-.504.042-.798.042-.63 0-1.176-.126-1.596-.378-.42-.252-.756-.63-.966-1.092-.252-.504-.336-1.092-.336-1.68 0-.546.084-1.05.294-1.512.168-.378.42-.756.714-1.05.378-.378.84-.63 1.344-.756.504-.126 1.05-.168 1.596-.168.63 0 1.26.042 1.848.126.462.084.84.21 1.092.378.252.168.462.378.588.63.21.336.294.714.294 1.092 0 .21-.042.42-.126.588-.084.21-.21.378-.378.504-.168.126-.336.252-.546.336-.21.084-.42.147-.672.147-.294 0-.546-.084-.756-.252-.168-.126-.294-.294-.378-.462-.126-.21-.21-.42-.294-.672-.084-.21-.126-.42-.168-.588-.042-.21-.042-.42 0-.588.042-.21.084-.378.168-.546.126-.252.294-.462.504-.63.252-.21.546-.336.882-.378.378-.042.756-.042 1.176-.042.714 0 1.344.084 1.89.294.504.168.924.42 1.26.756.378.378.63.84.756 1.344.084.378.126.84.126 1.344v.168c0 .546-.084 1.092-.294 1.596-.21.546-.546 1.05-.966 1.428-.42.42-.924.714-1.512.924-.504.168-1.092.252-1.68.252z"
+                                />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <div class="modal" id="successModal">
+            <div class="modal-content">
+                <div class="modal-icon">
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                </div>
+                <h3 class="modal-title">Спасибо за заявку!</h3>
+                <p class="modal-text">Мы свяжемся с вами в течение 15 минут</p>
+                <button class="btn btn-primary modal-close" id="modalClose">
+                    Закрыть
+                </button>
+            </div>
+        </div>
+
+        <script
+            data-cfasync="false"
+            src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"
+        ></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                initHeader();
+                initMobileMenu();
+                initSmoothScroll();
+                initScrollAnimations();
+                initContactForm();
+            });
+
+            function initHeader() {
+                const header = document.getElementById("header");
+                let lastScroll = 0;
+
+                window.addEventListener("scroll", function () {
+                    const currentScroll = window.pageYOffset;
+
+                    if (currentScroll > 100) {
+                        header.classList.add("scrolled");
+                    } else {
+                        header.classList.remove("scrolled");
+                    }
+
+                    lastScroll = currentScroll;
+                });
+            }
+
+            function initMobileMenu() {
+                const hamburger = document.getElementById("hamburger");
+                const navMenu = document.getElementById("navMenu");
+                const navLinks = document.querySelectorAll(".nav-link");
+
+                if (hamburger && navMenu) {
+                    hamburger.addEventListener("click", function () {
+                        hamburger.classList.toggle("active");
+                        navMenu.classList.toggle("active");
+                        document.body.style.overflow =
+                            navMenu.classList.contains("active")
+                                ? "hidden"
+                                : "";
+                    });
+
+                    navLinks.forEach(function (link) {
+                        link.addEventListener("click", function () {
+                            hamburger.classList.remove("active");
+                            navMenu.classList.remove("active");
+                            document.body.style.overflow = "";
+                        });
+                    });
+
+                    document.addEventListener("click", function (e) {
+                        if (
+                            !hamburger.contains(e.target) &&
+                            !navMenu.contains(e.target)
+                        ) {
+                            hamburger.classList.remove("active");
+                            navMenu.classList.remove("active");
+                            document.body.style.overflow = "";
+                        }
+                    });
+                }
+            }
+
+            function initSmoothScroll() {
+                const links = document.querySelectorAll('a[href^="#"]');
+
+                links.forEach(function (link) {
+                    link.addEventListener("click", function (e) {
+                        const href = this.getAttribute("href");
+
+                        if (href !== "#") {
+                            e.preventDefault();
+                            const target = document.querySelector(href);
+
+                            if (target) {
+                                const headerHeight =
+                                    document.getElementById(
+                                        "header",
+                                    ).offsetHeight;
+                                const targetPosition =
+                                    target.getBoundingClientRect().top +
+                                    window.pageYOffset -
+                                    headerHeight;
+
+                                window.scrollTo({
+                                    top: targetPosition,
+                                    behavior: "smooth",
+                                });
+                            }
+                        }
+                    });
+                });
+            }
+
+            function initScrollAnimations() {
+                const observerOptions = {
+                    root: null,
+                    rootMargin: "0px",
+                    threshold: 0.1,
+                };
+
+                const observer = new IntersectionObserver(function (
+                    entries,
+                    observer,
+                ) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("visible");
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, observerOptions);
+
+                const animateElements = document.querySelectorAll(
+                    ".service-card, .result-card, .case-card, .process-step, " +
+                        ".testimonial-card, .team-card, .section-header, .contact-info, .contact-form-wrapper",
+                );
+
+                animateElements.forEach(function (el, index) {
+                    el.style.transitionDelay = (index % 4) * 0.1 + "s";
+                    el.classList.add("fade-in");
+                    observer.observe(el);
+                });
+            }
+
+            function initContactForm() {
+                const form = document.getElementById("contactForm");
+                const modal = document.getElementById("successModal");
+                const modalClose = document.getElementById("modalClose");
+
+                if (form) {
+                    form.addEventListener("submit", function (e) {
+                        e.preventDefault();
+
+                        const name = form.querySelector("#name");
+                        const phone = form.querySelector("#phone");
+
+                        if (!name.value.trim() || !phone.value.trim()) {
+                            alert("Пожалуйста, заполните обязательные поля");
+                            return;
+                        }
+
+                        const submitBtn = form.querySelector(
+                            'button[type="submit"]',
+                        );
+                        const originalText = submitBtn.textContent;
+
+                        submitBtn.textContent = "Отправка...";
+                        submitBtn.disabled = true;
+
+                        setTimeout(function () {
+                            if (modal) {
+                                modal.classList.add("active");
+                            }
+
+                            form.reset();
+                            submitBtn.textContent = originalText;
+                            submitBtn.disabled = false;
+                        }, 1500);
+                    });
+                }
+
+                if (modalClose && modal) {
+                    modalClose.addEventListener("click", function () {
+                        modal.classList.remove("active");
+                    });
+
+                    modal.addEventListener("click", function (e) {
+                        if (e.target === modal) {
+                            modal.classList.remove("active");
+                        }
+                    });
+
+                    document.addEventListener("keydown", function (e) {
+                        if (
+                            e.key === "Escape" &&
+                            modal.classList.contains("active")
+                        ) {
+                            modal.classList.remove("active");
+                        }
+                    });
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                const phoneInput = document.getElementById("phone");
+
+                if (phoneInput) {
+                    phoneInput.addEventListener("input", function (e) {
+                        let value = e.target.value.replace(/\D/g, "");
+                        let formattedValue = "";
+
+                        if (value.length > 0) {
+                            formattedValue = "+" + value;
+                        }
+
+                        if (value.length > 1) {
+                            formattedValue =
+                                "+" +
+                                value.substring(0, 1) +
+                                " (" +
+                                value.substring(1, 4);
+                        }
+
+                        if (value.length > 4) {
+                            formattedValue += ") " + value.substring(4, 7);
+                        }
+
+                        if (value.length > 7) {
+                            formattedValue += "-" + value.substring(7, 9);
+                        }
+
+                        if (value.length > 9) {
+                            formattedValue += "-" + value.substring(9, 11);
+                        }
+
+                        e.target.value = formattedValue;
+                    });
+                }
+            });
+        </script>
+
+        <script>
+            (function () {
+                "use strict";
+
+                if (window.self === window.top) {
+                    return;
+                }
+
+                if (window.__iframeHighlightInitialized) {
+                    return;
+                }
+                window.__iframeHighlightInitialized = true;
+                console.log("Iframe Выделенный скрипт загружен");
+
+                var overlay = document.createElement("div");
+                overlay.id = "iframe-highlight-overlay";
+                overlay.style.cssText =
+                    "\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100vw;\n    height: 100vh;\n    pointer-events: none;\n    z-index: 999999;\n    overflow: hidden;\n  ";
+
+                var highlightBox = document.createElement("div");
+                highlightBox.id = "iframe-highlight-box";
+                highlightBox.style.cssText =
+                    "\n    position: absolute;\n    border: 2px dashed #007AFF;\n    background: rgba(0, 122, 255, 0.08);\n    pointer-events: none;\n    display: none;\n    transition: all 0.1s ease;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);\n    border-radius: 2px;\n  ";
+
+                var selectedBox = document.createElement("div");
+                selectedBox.id = "iframe-selected-box";
+                selectedBox.style.cssText =
+                    "\n    position: absolute;\n    border: 2px solid #007AFF;\n    pointer-events: none;\n    display: none;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 107, 53, 0.4);\n    border-radius: 2px;\n    z-index: 1000000;\n  ";
+
+                var tagLabel = document.createElement("div");
+                tagLabel.id = "iframe-tag-label";
+                tagLabel.style.cssText =
+                    "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 2px 6px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 2px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000001;\n    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);\n    font-weight: 500;\n  ";
+
+                var selectedLabel = document.createElement("div");
+                selectedLabel.id = "iframe-selected-label";
+                selectedLabel.style.cssText =
+                    "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 3px 8px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 3px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000002;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);\n    font-weight: 600;\n  ";
+                overlay.appendChild(highlightBox);
+                overlay.appendChild(selectedBox);
+                overlay.appendChild(tagLabel);
+                overlay.appendChild(selectedLabel);
+                document.body.appendChild(overlay);
+
+                var selectedElement = null;
+                var highlightEnabled = false;
+
+                function updateSelectedHighlight(element) {
+                    console.log(
+                        "updateSelectedHighlight called with: ",
+                        element,
+                    );
+                    if (!element) {
+                        selectedBox.style.display = "none";
+                        selectedLabel.style.display = "none";
+                        selectedElement = null;
+                        console.log("Cleared selected highlight");
+                        return;
+                    }
+                    selectedElement = element;
+                    var rect = element.getBoundingClientRect();
+                    console.log("Selected element rect: ", rect);
+
+                    selectedBox.style.display = "block";
+                    selectedBox.style.left = "".concat(rect.left - 2, "px");
+                    selectedBox.style.top = "".concat(rect.top - 2, "px");
+                    selectedBox.style.width = "".concat(rect.width + 4, "px");
+                    selectedBox.style.height = "".concat(rect.height + 4, "px");
+
+                    selectedLabel.style.display = "block";
+                    selectedLabel.textContent = "\u2713 <".concat(
+                        element.tagName.toLowerCase(),
+                        ">",
+                    );
+
+                    var labelTop = rect.top - 28;
+                    var labelLeft = rect.left;
+
+                    if (labelTop < 5) {
+                        labelTop = rect.bottom + 5;
+                    }
+
+                    var labelWidth = selectedLabel.offsetWidth || 100;
+                    if (labelLeft + labelWidth > window.innerWidth - 10) {
+                        labelLeft = window.innerWidth - labelWidth - 10;
+                    }
+                    selectedLabel.style.left = "".concat(
+                        Math.max(5, labelLeft),
+                        "px",
+                    );
+                    selectedLabel.style.top = "".concat(labelTop, "px");
+                    console.log("Selected highlight positioned at:", {
+                        left: selectedBox.style.left,
+                        top: selectedBox.style.top,
+                        width: selectedBox.style.width,
+                        height: selectedBox.style.height,
+                    });
+                }
+                function getElementSelector(element) {
+                    if (!(element instanceof Element))
+                        throw new Error("Argument must be a DOM element");
+                    var segments = [];
+                    var current = element;
+                    while (current !== document.documentElement) {
+                        var selector = "";
+                        if (
+                            current.id &&
+                            document.querySelectorAll("#".concat(current.id))
+                                .length === 1
+                        ) {
+                            segments.unshift("#".concat(current.id));
+                            break;
+                        }
+
+                        var classes = Array.from(current.classList).filter(
+                            function (c) {
+                                return !c.startsWith("js-");
+                            },
+                        );
+                        var className =
+                            classes.length > 0 ? ".".concat(classes[0]) : "";
+
+                        var tag = current.tagName.toLowerCase();
+                        if (!className) {
+                            var siblings = Array.from(
+                                current.parentNode.children,
+                            );
+                            var index =
+                                siblings.findIndex(function (el) {
+                                    return el === current;
+                                }) + 1;
+                            selector = ""
+                                .concat(tag, ":nth-child(")
+                                .concat(index, ")");
+                        } else {
+                            selector = className;
+                        }
+                        segments.unshift(selector);
+                        current = current.parentElement;
+                    }
+
+                    if (current === document.documentElement) {
+                        segments.unshift("html");
+                    }
+                    return segments.join(" > ");
+                }
+
+                function getElementText(element) {
+                    var _element$textContent;
+                    if (element.tagName === "INPUT") {
+                        return element.value || element.placeholder || "";
+                    }
+                    if (element.tagName === "TEXTAREA") {
+                        return element.value || element.placeholder || "";
+                    }
+                    var text =
+                        ((_element$textContent = element.textContent) ===
+                            null || _element$textContent === void 0
+                            ? void 0
+                            : _element$textContent.trim()) || "";
+                    return text.length > 50
+                        ? text.substring(0, 50) + "..."
+                        : text;
+                }
+
+                function getElementAttributes(element) {
+                    var attrs = {};
+                    for (var i = 0; i < element.attributes.length; i++) {
+                        var attr = element.attributes[i];
+                        attrs[attr.name] = attr.value;
+                    }
+                    return attrs;
+                }
+
+                function handleMouseOver(e) {
+                    if (!highlightEnabled) return;
+                    var target = e.target;
+                    if (
+                        !target ||
+                        target === overlay ||
+                        target === highlightBox ||
+                        target === tagLabel ||
+                        target === selectedBox ||
+                        target === selectedLabel
+                    ) {
+                        return;
+                    }
+
+                    if (
+                        target === document.documentElement ||
+                        target === document.body
+                    ) {
+                        return;
+                    }
+
+                    if (target === selectedElement) {
+                        highlightBox.style.display = "none";
+                        tagLabel.style.display = "none";
+                        return;
+                    }
+                    var rect = target.getBoundingClientRect();
+                    var selector = getElementSelector(target);
+                    var text = getElementText(target);
+                    var attributes = getElementAttributes(target);
+
+                    highlightBox.style.display = "block";
+                    highlightBox.style.left = "".concat(rect.left - 2, "px");
+                    highlightBox.style.top = "".concat(rect.top - 2, "px");
+                    highlightBox.style.width = "".concat(rect.width + 4, "px");
+                    highlightBox.style.height = "".concat(
+                        rect.height + 4,
+                        "px",
+                    );
+
+                    tagLabel.style.display = "block";
+                    tagLabel.textContent = "<".concat(
+                        target.tagName.toLowerCase(),
+                        ">",
+                    );
+
+                    var labelTop = rect.top - 22;
+                    var labelLeft = rect.left;
+
+                    if (labelTop < 0) {
+                        labelTop = rect.bottom + 5;
+                    }
+
+                    if (labelLeft + tagLabel.offsetWidth > window.innerWidth) {
+                        labelLeft =
+                            window.innerWidth - tagLabel.offsetWidth - 5;
+                    }
+                    tagLabel.style.left = "".concat(
+                        Math.max(0, labelLeft),
+                        "px",
+                    );
+                    tagLabel.style.top = "".concat(labelTop, "px");
+
+                    var elementInfo = {
+                        tagName: target.tagName.toLowerCase(),
+                        rect: {
+                            left: rect.left,
+                            top: rect.top,
+                            right: rect.right,
+                            bottom: rect.bottom,
+                            width: rect.width,
+                            height: rect.height,
+                            x: rect.x,
+                            y: rect.y,
+                        },
+                        selector: selector,
+                        text: text,
+                        attributes: attributes,
+                        url: window.location.href,
+                        path: window.location.pathname,
+                        timestamp: Date.now(),
+                    };
+                    try {
+                        window.parent.postMessage(
+                            {
+                                type: "iframe-element-hover",
+                                data: elementInfo,
+                                source: "iframe-highlight-injector",
+                            },
+                            "*",
+                        );
+                    } catch (error) {
+                        console.warn(
+                            "Не удается отправить сообщение в родительское окно: ",
+                            error,
+                        );
+                    }
+                }
+
+                function handleMouseOut(e) {
+                    if (!highlightEnabled) return;
+                    var relatedTarget = e.relatedTarget;
+
+                    if (
+                        relatedTarget &&
+                        (relatedTarget === highlightBox ||
+                            relatedTarget === tagLabel ||
+                            relatedTarget === overlay ||
+                            relatedTarget === selectedBox ||
+                            relatedTarget === selectedLabel)
+                    ) {
+                        return;
+                    }
+                    highlightBox.style.display = "none";
+                    tagLabel.style.display = "none";
+                    try {
+                        window.parent.postMessage(
+                            {
+                                type: "iframe-element-hover",
+                                data: null,
+                                source: "iframe-highlight-injector",
+                            },
+                            "*",
+                        );
+                    } catch (error) {
+                        console.warn(
+                            "Не удается отправить сообщение в родительское окно: ",
+                            error,
+                        );
+                    }
+                }
+
+                function handleClick(e) {
+                    var target = e.target;
+                    if (
+                        !target ||
+                        target === overlay ||
+                        target === highlightBox ||
+                        target === tagLabel ||
+                        target === selectedBox ||
+                        target === selectedLabel
+                    ) {
+                        return;
+                    }
+
+                    if (
+                        target === document.documentElement ||
+                        target === document.body
+                    ) {
+                        return;
+                    }
+
+                    var isInteractiveElement = [
+                        "input",
+                        "textarea",
+                        "select",
+                        "button",
+                        "a",
+                    ].includes(target.tagName.toLowerCase());
+
+                    if (highlightEnabled) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    var rect = target.getBoundingClientRect();
+                    var selector = getElementSelector(target);
+                    var text = getElementText(target);
+                    var attributes = getElementAttributes(target);
+                    console.log("Element clicked:", {
+                        tagName: target.tagName,
+                        selector: selector,
+                        rect: rect,
+                    });
+
+                    updateSelectedHighlight(target);
+
+                    highlightBox.style.display = "none";
+                    tagLabel.style.display = "none";
+                    var elementInfo = {
+                        tagName: target.tagName.toLowerCase(),
+                        rect: {
+                            left: rect.left,
+                            top: rect.top,
+                            right: rect.right,
+                            bottom: rect.bottom,
+                            width: rect.width,
+                            height: rect.height,
+                            x: rect.x,
+                            y: rect.y,
+                        },
+                        selector: selector,
+                        text: text,
+                        attributes: attributes,
+                        url: window.location.href,
+                        path: window.location.pathname,
+                        timestamp: Date.now(),
+                    };
+                    try {
+                        window.parent.postMessage(
+                            {
+                                type: "iframe-element-click",
+                                data: elementInfo,
+                                source: "iframe-highlight-injector",
+                            },
+                            "*",
+                        );
+                    } catch (error) {
+                        console.warn(
+                            "Не удается отправить сообщение в родительское окно: ",
+                            error,
+                        );
+                    }
+                }
+
+                function handleParentMessage(event) {
+                    console.log("Received message from parent:", event.data);
+                    if (event.data.type === "iframe-highlight-toggle") {
+                        var enabled = event.data.enabled;
+                        console.log("Highlight toggle:", enabled);
+                        if (enabled) {
+                            enableHighlight();
+                        } else {
+                            disableHighlight();
+                        }
+                    } else if (event.data.type === "enable-iframe-highlight") {
+                        console.log("Enable iframe highlight");
+                        enableHighlight();
+                    } else if (event.data.type === "disable-iframe-highlight") {
+                        console.log("Disable iframe highlight");
+                        disableHighlight();
+                    } else if (event.data.type === "toggle-iframe-highlight") {
+                        var _enabled =
+                            event.data.enabled !== undefined
+                                ? event.data.enabled
+                                : !highlightEnabled;
+                        console.log("Toggle iframe highlight to:", _enabled);
+                        if (_enabled) {
+                            enableHighlight();
+                        } else {
+                            disableHighlight();
+                        }
+                    } else if (event.data.type === "update-selected-element") {
+                        var selector = event.data.selector;
+                        console.log(
+                            "Update selected element with selector:",
+                            selector,
+                        );
+                        if (selector) {
+                            try {
+                                var element = document.querySelector(selector);
+                                console.log(
+                                    "Found element by selector:",
+                                    element,
+                                );
+                                updateSelectedHighlight(element);
+                            } catch (error) {
+                                console.warn(
+                                    "Failed to select element:",
+                                    error,
+                                );
+                                updateSelectedHighlight(null);
+                            }
+                        } else {
+                            updateSelectedHighlight(null);
+                        }
+                    } else if (event.data.type === "clear-selected-element") {
+                        console.log("Clear selected element");
+                        updateSelectedHighlight(null);
+                    }
+                }
+
+                function enableHighlight() {
+                    console.log("Enabling highlight");
+                    document.addEventListener(
+                        "mouseover",
+                        handleMouseOver,
+                        true,
+                    );
+                    document.addEventListener("mouseout", handleMouseOut, true);
+                    document.addEventListener("click", handleClick, true);
+                    highlightEnabled = true;
+                    overlay.style.display = "block";
+                }
+
+                function disableHighlight() {
+                    console.log("Disabling highlight");
+                    highlightEnabled = false;
+                    highlightBox.style.display = "none";
+                    tagLabel.style.display = "none";
+                }
+
+                function fullyDisableHighlight() {
+                    console.log("Fully disabling highlight");
+                    highlightEnabled = false;
+                    document.removeEventListener(
+                        "mouseover",
+                        handleMouseOver,
+                        true,
+                    );
+                    document.removeEventListener(
+                        "mouseout",
+                        handleMouseOut,
+                        true,
+                    );
+                    document.removeEventListener("click", handleClick, true);
+                    overlay.style.display = "none";
+                    highlightBox.style.display = "none";
+                    tagLabel.style.display = "none";
+                    selectedBox.style.display = "none";
+                    selectedLabel.style.display = "none";
+                }
+
+                enableHighlight();
+                window.addEventListener("message", handleParentMessage);
+
+                window.__iframeHighlightControl = {
+                    enable: enableHighlight,
+                    disable: disableHighlight,
+                    fullyDisable: fullyDisableHighlight,
+                    isEnabled: function isEnabled() {
+                        return highlightEnabled;
+                    },
+                    getSelectedElement: function getSelectedElement() {
+                        return selectedElement;
+                    },
+                    updateSelected: updateSelectedHighlight,
+                    sendToggleMessage: function sendToggleMessage(enabled) {
+                        window.parent.postMessage(
+                            {
+                                type: "iframe-highlight-status",
+                                enabled: enabled || highlightEnabled,
+                                source: "iframe-highlight-injector",
+                            },
+                            "*",
+                        );
+                    },
+                };
+
+                try {
+                    window.parent.postMessage(
+                        {
+                            type: "iframe-highlight-ready",
+                            data: {
+                                url: window.location.href,
+                                userAgent: navigator.userAgent,
+                                timestamp: Date.now(),
+                            },
+                            source: "iframe-highlight-injector",
+                        },
+                        "*",
+                    );
+                } catch (error) {
+                    console.warn(
+                        "Не удается отправить сообщение в родительское окно: ",
+                        error,
+                    );
+                }
+
+                window.__iframeHighlightCleanup = function () {
+                    fullyDisableHighlight();
+                    window.removeEventListener("message", handleParentMessage);
+                    if (overlay.parentElement) {
+                        overlay.parentElement.removeChild(overlay);
+                    }
+                    delete window.__iframeHighlightInitialized;
+                    delete window.__iframeHighlightCleanup;
+                };
+            })();
+        </script>
+    </body>
+</html>

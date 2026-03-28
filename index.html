@@ -1,831 +1,931 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Портфолио — Головкин Илья</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #0f0f23 100%);
-            color: #e0e0e0;
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .particle {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: #00d4ff;
-            border-radius: 50%;
-            opacity: 0.3;
-            animation: float 20s infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0); }
-            25% { transform: translateY(-100px) translateX(50px); }
-            50% { transform: translateY(-50px) translateX(-50px); }
-            75% { transform: translateY(-150px) translateX(100px); }
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px 20px 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .header {
-            text-align: center;
-            padding: 60px 20px 40px;
-            position: relative;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(0, 212, 255, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: pulse 3s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.5; }
-            50% { transform: translateX(-50%) scale(1.1); opacity: 0.7; }
-        }
-
-        .header-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        h1 {
-            font-size: clamp(2.5em, 5vw, 4em);
-            background: linear-gradient(135deg, #00d4ff, #7b2cbf, #00d4ff);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 20px;
-            animation: gradient 3s ease infinite;
-        }
-
-        @keyframes gradient {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .subtitle {
-            font-size: 1.3em;
-            color: #a0a0a0;
-            margin-bottom: 10px;
-        }
-
-        .student-info {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 15px 30px;
-            background: rgba(0, 212, 255, 0.1);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 50px;
-            font-size: 1.1em;
-        }
-
-        .section-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 14px;
-            margin-top: 50px;
-            flex-wrap: wrap;
-        }
-
-        .section-tab {
-            padding: 14px 30px;
-            border-radius: 14px;
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            background: rgba(0, 212, 255, 0.06);
-            color: #a0c8e0;
-            font-size: 1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 0.3px;
-        }
-
-        .section-tab:hover {
-            border-color: rgba(0, 212, 255, 0.6);
-            background: rgba(0, 212, 255, 0.12);
-            color: #e5f6ff;
-        }
-
-        .section-tab.active {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(123, 44, 191, 0.2));
-            border-color: #00d4ff;
-            color: #fff;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
-        }
-
-        .section-tab.commercial.active {
-            background: linear-gradient(135deg, rgba(255, 170, 0, 0.25), rgba(255, 100, 0, 0.15));
-            border-color: #ffaa00;
-            color: #fff;
-            box-shadow: 0 0 20px rgba(255, 170, 0, 0.2);
-        }
-
-        .subject-filter {
-            margin-top: 28px;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            min-height: 48px;
-        }
-
-        .subject-btn {
-            border: 1px solid rgba(0, 212, 255, 0.35);
-            background: rgba(0, 212, 255, 0.08);
-            color: #b8dfff;
-            border-radius: 999px;
-            padding: 10px 16px;
-            font-size: 0.95em;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .subject-btn-icon {
-            width: 16px;
-            height: 16px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            flex: 0 0 auto;
-        }
-
-        .subject-btn-icon svg {
-            width: 100%;
-            height: 100%;
-            stroke: currentColor;
-            stroke-width: 2;
-            fill: none;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .subject-btn:hover {
-            background: rgba(0, 212, 255, 0.16);
-            border-color: rgba(0, 212, 255, 0.6);
-            color: #e5f6ff;
-        }
-
-        .subject-btn.active {
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
-            border-color: transparent;
-            color: #fff;
-            box-shadow: 0 8px 22px rgba(0, 212, 255, 0.3);
-        }
-
-        .subject-count {
-            font-size: 0.8em;
-            padding: 3px 8px;
-            border-radius: 999px;
-            background: rgba(0, 0, 0, 0.25);
-        }
-
-        .section-label {
-            text-align: center;
-            margin-top: 50px;
-            margin-bottom: -20px;
-        }
-
-        .section-label-inner {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 24px;
-            border-radius: 999px;
-            font-size: 0.85em;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-        }
-
-        .section-label-inner.edu {
-            background: rgba(0, 212, 255, 0.1);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            color: #00d4ff;
-        }
-
-        .section-label-inner.com {
-            background: rgba(255, 170, 0, 0.1);
-            border: 1px solid rgba(255, 170, 0, 0.35);
-            color: #ffaa00;
-        }
-
-        .works-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-            margin-top: 60px;
-        }
-
-        .work-card {
-            background: linear-gradient(145deg, rgba(22, 33, 62, 0.9), rgba(26, 26, 46, 0.9));
-            border-radius: 20px;
-            padding: 30px;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .work-card.commercial {
-            border-color: rgba(255, 170, 0, 0.25);
-            background: linear-gradient(145deg, rgba(35, 28, 15, 0.9), rgba(26, 22, 10, 0.9));
-        }
-
-        .work-card.commercial:hover {
-            box-shadow: 0 20px 50px rgba(255, 170, 0, 0.2);
-            border-color: rgba(255, 170, 0, 0.5);
-        }
-
-        .subject-badge {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 999px;
-            border: 1px solid rgba(0, 212, 255, 0.35);
-            background: rgba(0, 212, 255, 0.12);
-            color: #c2ecff;
-            font-size: 0.75em;
-            letter-spacing: 0.2px;
-            max-width: calc(100% - 32px);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .subject-badge.commercial-badge {
-            border-color: rgba(255, 170, 0, 0.4);
-            background: rgba(255, 170, 0, 0.12);
-            color: #ffe0a0;
-        }
-
-        .subject-badge-icon {
-            width: 14px;
-            height: 14px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            flex: 0 0 auto;
-        }
-
-        .subject-badge-icon svg {
-            width: 100%;
-            height: 100%;
-            stroke: currentColor;
-            stroke-width: 2;
-            fill: none;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .work-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.08), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .work-card.commercial::before {
-            background: linear-gradient(90deg, transparent, rgba(255, 170, 0, 0.08), transparent);
-        }
-
-        .work-card:hover::before {
-            left: 100%;
-        }
-
-        .work-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(0, 212, 255, 0.3);
-            border-color: rgba(0, 212, 255, 0.5);
-        }
-
-        .work-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .work-icon.commercial-icon {
-            background: linear-gradient(135deg, #ffaa00, #ff6600);
-        }
-
-        .work-icon svg {
-            width: 32px;
-            height: 32px;
-            stroke: currentColor;
-            stroke-width: 2;
-            fill: none;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .work-card:hover .work-icon {
-            transform: rotate(10deg) scale(1.1);
-        }
-
-        .work-date {
-            font-size: 0.9em;
-            color: #00d4ff;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        .work-date.commercial-date {
-            color: #ffaa00;
-        }
-
-        .work-title {
-            font-size: 1.5em;
-            margin-bottom: 15px;
-            color: #fff;
-        }
-
-        .work-description {
-            color: #a0a0a0;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .work-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .tag {
-            padding: 5px 12px;
-            background: rgba(0, 212, 255, 0.15);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 15px;
-            font-size: 0.85em;
-            color: #00d4ff;
-        }
-
-        .tag.gold {
-            background: rgba(201, 162, 39, 0.15);
-            border-color: rgba(201, 162, 39, 0.4);
-            color: #e8d48b;
-        }
-
-        .tag.orange {
-            background: rgba(255, 170, 0, 0.15);
-            border-color: rgba(255, 170, 0, 0.35);
-            color: #ffcc66;
-        }
-
-        .work-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .work-link:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
-        }
-
-        .work-link.gold {
-            background: linear-gradient(135deg, #c9a227, #8b7317);
-        }
-
-        .work-link.gold:hover {
-            box-shadow: 0 5px 15px rgba(201, 162, 39, 0.4);
-        }
-
-        .work-link.orange {
-            background: linear-gradient(135deg, #ffaa00, #ff6600);
-        }
-
-        .work-link.orange:hover {
-            box-shadow: 0 5px 15px rgba(255, 170, 0, 0.4);
-        }
-
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 40px;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 20px;
-            background: rgba(0, 212, 255, 0.05);
-            border-radius: 15px;
-            min-width: 150px;
-        }
-
-        .stat-number {
-            font-size: 2.5em;
-            font-weight: bold;
-            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stat-label {
-            color: #a0a0a0;
-            margin-top: 5px;
-        }
-
-        .empty-state {
-            margin-top: 30px;
-            padding: 40px;
-            border-radius: 18px;
-            border: 1px dashed rgba(0, 212, 255, 0.4);
-            text-align: center;
-            color: #9bc9dc;
-            background: rgba(0, 212, 255, 0.06);
-            display: none;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 60px 20px 40px;
-            color: #666;
-        }
-
-        .footer a {
-            color: #00d4ff;
-            text-decoration: none;
-        }
-
-        .footer a:hover { color: #00e5ff; }
-
-        @media (max-width: 768px) {
-            .works-grid { grid-template-columns: 1fr; margin-top: 36px; }
-            .subject-filter { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 6px; }
-            .subject-btn { white-space: nowrap; }
-            .section-tabs { gap: 10px; }
-            .section-tab { padding: 11px 20px; font-size: 0.9em; }
-        }
-    </style>
-</head>
-<body>
-    <div class="particles" id="particles"></div>
-
-    <div class="container">
-        <header class="header">
-            <div class="header-content">
-                <h1 id="mainTitle">Портфолио работ</h1>
-                <p class="subtitle">Практические работы и коммерческие проекты</p>
-                <div class="student-info">
-                    <strong>Головкин Илья</strong> • Веб-разработчик • Группа 9/3 РПО 23/2
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Портфолио</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: "Inter", "Segoe UI", sans-serif;
+                background: linear-gradient(
+                    135deg,
+                    #0f0f23 0%,
+                    #1a1a2e 50%,
+                    #0f0f23 100%
+                );
+                color: #e0e0e0;
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
+            .particles {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 0;
+            }
+            .particle {
+                position: absolute;
+                width: 2px;
+                height: 2px;
+                background: #00d4ff;
+                border-radius: 50%;
+                opacity: 0.3;
+                animation: float 20s infinite;
+            }
+            @keyframes float {
+                0%,
+                100% {
+                    transform: translateY(0) translateX(0);
+                }
+                25% {
+                    transform: translateY(-100px) translateX(50px);
+                }
+                50% {
+                    transform: translateY(-50px) translateX(-50px);
+                }
+                75% {
+                    transform: translateY(-150px) translateX(100px);
+                }
+            }
+            .container {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 20px;
+                position: relative;
+                z-index: 1;
+            }
+            .header {
+                text-align: center;
+                padding: 60px 20px 40px;
+                position: relative;
+            }
+            .header::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 300px;
+                height: 300px;
+                background: radial-gradient(
+                    circle,
+                    rgba(0, 212, 255, 0.15) 0%,
+                    transparent 70%
+                );
+                border-radius: 50%;
+                animation: pulse 3s ease-in-out infinite;
+            }
+            @keyframes pulse {
+                0%,
+                100% {
+                    transform: translateX(-50%) scale(1);
+                    opacity: 0.5;
+                }
+                50% {
+                    transform: translateX(-50%) scale(1.1);
+                    opacity: 0.7;
+                }
+            }
+            .header-content {
+                position: relative;
+                z-index: 1;
+            }
+            h1 {
+                font-size: clamp(2.5em, 5vw, 4em);
+                background: linear-gradient(135deg, #00d4ff, #7b2cbf, #00d4ff);
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                margin-bottom: 20px;
+                animation: gradient 3s ease infinite;
+            }
+            @keyframes gradient {
+                0%,
+                100% {
+                    background-position: 0% 50%;
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
+            }
+            .subtitle {
+                font-size: 1.3em;
+                color: #a0a0a0;
+                margin-bottom: 10px;
+            }
+            .student-info {
+                display: inline-block;
+                margin-top: 20px;
+                padding: 15px 30px;
+                background: rgba(0, 212, 255, 0.1);
+                border: 1px solid rgba(0, 212, 255, 0.3);
+                border-radius: 50px;
+                font-size: 1.1em;
+            }
+            .stats {
+                display: flex;
+                justify-content: center;
+                gap: 40px;
+                margin-top: 40px;
+                flex-wrap: wrap;
+            }
+            .stat-item {
+                text-align: center;
+                padding: 20px;
+                background: rgba(0, 212, 255, 0.05);
+                border-radius: 15px;
+                min-width: 150px;
+            }
+            .stat-number {
+                font-size: 2.5em;
+                font-weight: bold;
+                background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .stat-label {
+                color: #a0a0a0;
+                margin-top: 5px;
+            }
+            .section-tabs {
+                display: flex;
+                justify-content: center;
+                gap: 14px;
+                margin-top: 50px;
+                flex-wrap: wrap;
+            }
+            .section-tab {
+                padding: 14px 30px;
+                border-radius: 14px;
+                border: 2px solid rgba(0, 212, 255, 0.3);
+                background: rgba(0, 212, 255, 0.06);
+                color: #a0c8e0;
+                font-size: 1em;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .section-tab:hover {
+                border-color: rgba(0, 212, 255, 0.6);
+                background: rgba(0, 212, 255, 0.12);
+                color: #e5f6ff;
+            }
+            .section-tab.active {
+                background: linear-gradient(
+                    135deg,
+                    rgba(0, 212, 255, 0.25),
+                    rgba(123, 44, 191, 0.2)
+                );
+                border-color: #00d4ff;
+                color: #fff;
+                box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+            }
+            .section-tab.commercial.active {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 170, 0, 0.25),
+                    rgba(255, 100, 0, 0.15)
+                );
+                border-color: #ffaa00;
+                color: #fff;
+                box-shadow: 0 0 20px rgba(255, 170, 0, 0.2);
+            }
+            .subject-filter {
+                margin-top: 28px;
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 12px;
+                min-height: 48px;
+            }
+            .subject-btn {
+                border: 1px solid rgba(0, 212, 255, 0.35);
+                background: rgba(0, 212, 255, 0.08);
+                color: #b8dfff;
+                border-radius: 999px;
+                padding: 10px 16px;
+                font-size: 0.95em;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .subject-btn:hover {
+                background: rgba(0, 212, 255, 0.16);
+                border-color: rgba(0, 212, 255, 0.6);
+                color: #e5f6ff;
+            }
+            .subject-btn.active {
+                background: linear-gradient(135deg, #00d4ff, #0099cc);
+                border-color: transparent;
+                color: #fff;
+                box-shadow: 0 8px 22px rgba(0, 212, 255, 0.3);
+            }
+            .subject-count {
+                font-size: 0.8em;
+                padding: 3px 8px;
+                border-radius: 999px;
+                background: rgba(0, 0, 0, 0.25);
+            }
+            .works-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+                gap: 30px;
+                margin-top: 50px;
+            }
+            .work-card {
+                background: linear-gradient(
+                    145deg,
+                    rgba(22, 33, 62, 0.9),
+                    rgba(26, 26, 46, 0.9)
+                );
+                border-radius: 20px;
+                padding: 30px;
+                border: 1px solid rgba(0, 212, 255, 0.2);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                cursor: pointer;
+                position: relative;
+                overflow: hidden;
+            }
+            .work-card.commercial {
+                border-color: rgba(255, 170, 0, 0.25);
+                background: linear-gradient(
+                    145deg,
+                    rgba(35, 28, 15, 0.9),
+                    rgba(26, 22, 10, 0.9)
+                );
+            }
+            .work-card::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(0, 212, 255, 0.08),
+                    transparent
+                );
+                transition: left 0.5s ease;
+            }
+            .work-card.commercial::before {
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 170, 0, 0.08),
+                    transparent
+                );
+            }
+            .work-card:hover::before {
+                left: 100%;
+            }
+            .work-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 20px 50px rgba(0, 212, 255, 0.3);
+                border-color: rgba(0, 212, 255, 0.5);
+            }
+            .work-card.commercial:hover {
+                box-shadow: 0 20px 50px rgba(255, 170, 0, 0.2);
+                border-color: rgba(255, 170, 0, 0.5);
+            }
+            .subject-badge {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 6px 12px;
+                border-radius: 999px;
+                border: 1px solid rgba(0, 212, 255, 0.35);
+                background: rgba(0, 212, 255, 0.12);
+                color: #c2ecff;
+                font-size: 0.75em;
+                max-width: calc(100% - 32px);
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .subject-badge.com {
+                border-color: rgba(255, 170, 0, 0.4);
+                background: rgba(255, 170, 0, 0.12);
+                color: #ffe0a0;
+            }
+            .work-icon {
+                width: 60px;
+                height: 60px;
+                background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+                border-radius: 15px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                transition: all 0.3s ease;
+            }
+            .work-icon.com {
+                background: linear-gradient(135deg, #ffaa00, #ff6600);
+            }
+            .work-icon svg {
+                width: 32px;
+                height: 32px;
+                stroke: currentColor;
+                stroke-width: 2;
+                fill: none;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+            }
+            .work-card:hover .work-icon {
+                transform: rotate(10deg) scale(1.1);
+            }
+            .work-date {
+                font-size: 0.9em;
+                color: #00d4ff;
+                margin-bottom: 10px;
+                font-weight: bold;
+            }
+            .work-date.com {
+                color: #ffaa00;
+            }
+            .work-title {
+                font-size: 1.35em;
+                margin-bottom: 12px;
+                color: #fff;
+            }
+            .work-description {
+                color: #a0a0a0;
+                line-height: 1.6;
+                margin-bottom: 20px;
+                font-size: 0.93em;
+            }
+            .work-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-bottom: 20px;
+            }
+            .tag {
+                padding: 5px 12px;
+                background: rgba(0, 212, 255, 0.15);
+                border: 1px solid rgba(0, 212, 255, 0.3);
+                border-radius: 15px;
+                font-size: 0.82em;
+                color: #00d4ff;
+            }
+            .tag.gold {
+                background: rgba(201, 162, 39, 0.15);
+                border-color: rgba(201, 162, 39, 0.4);
+                color: #e8d48b;
+            }
+            .tag.orange {
+                background: rgba(255, 170, 0, 0.15);
+                border-color: rgba(255, 170, 0, 0.35);
+                color: #ffcc66;
+            }
+            .work-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 12px 24px;
+                background: linear-gradient(135deg, #00d4ff, #0099cc);
+                color: white;
+                text-decoration: none;
+                border-radius: 10px;
+                font-weight: bold;
+                transition: all 0.3s ease;
+            }
+            .work-link:hover {
+                transform: translateX(5px);
+                box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+            }
+            .work-link.gold {
+                background: linear-gradient(135deg, #c9a227, #8b7317);
+            }
+            .work-link.orange {
+                background: linear-gradient(135deg, #ffaa00, #ff6600);
+            }
+            .work-link.orange:hover {
+                box-shadow: 0 5px 15px rgba(255, 170, 0, 0.4);
+            }
+            .empty-state {
+                margin-top: 30px;
+                padding: 40px;
+                border-radius: 18px;
+                border: 1px dashed rgba(0, 212, 255, 0.4);
+                text-align: center;
+                color: #9bc9dc;
+                background: rgba(0, 212, 255, 0.06);
+                display: none;
+            }
+            .footer {
+                text-align: center;
+                padding: 60px 20px 40px;
+                color: #666;
+            }
+            .footer a {
+                color: #00d4ff;
+                text-decoration: none;
+            }
+            @media (max-width: 768px) {
+                .works-grid {
+                    grid-template-columns: 1fr;
+                    margin-top: 36px;
+                }
+                .section-tabs {
+                    gap: 10px;
+                }
+                .section-tab {
+                    padding: 11px 20px;
+                    font-size: 0.9em;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="particles" id="particles"></div>
+        <div class="container">
+            <header class="header">
+                <div class="header-content">
+                    <h1 id="mainTitle">Портфолио работ</h1>
+                    <p class="subtitle">
+                        Практические работы и коммерческие проекты
+                    </p>
+                    <div class="student-info">
+                        <strong>Головкин Илья</strong> • Веб-разработчик •
+                        Группа 9/3 РПО 23/2
+                    </div>
+                </div>
+            </header>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="workCount">0</div>
+                    <div class="stat-label">Всего работ</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="commercialCount">0</div>
+                    <div class="stat-label">Коммерческих проектов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="subjectCount">0</div>
+                    <div class="stat-label">Предметов</div>
                 </div>
             </div>
-        </header>
 
-        <div class="stats">
-            <div class="stat-item">
-                <div class="stat-number" id="workCount">0</div>
-                <div class="stat-label">Всего работ</div>
+            <div class="section-tabs">
+                <button
+                    class="section-tab active"
+                    data-section="edu"
+                    onclick="switchSection('edu')"
+                >
+                    📚 Учебные работы
+                </button>
+                <button
+                    class="section-tab commercial"
+                    data-section="com"
+                    onclick="switchSection('com')"
+                >
+                    💼 Коммерческие работы
+                </button>
             </div>
-            <div class="stat-item">
-                <div class="stat-number" id="commercialCount">0</div>
-                <div class="stat-label">Коммерческих проектов</div>
+
+            <div id="section-edu">
+                <div class="subject-filter" id="subjectFilter"></div>
+                <div class="works-grid" id="worksGrid"></div>
+                <div class="empty-state" id="emptyState">
+                    По выбранному предмету пока нет практических работ.
+                </div>
             </div>
-            <div class="stat-item">
-                <div class="stat-number" id="subjectCount">0</div>
-                <div class="stat-label">Предметов</div>
+
+            <div id="section-com" style="display: none">
+                <div
+                    class="works-grid"
+                    id="commercialGrid"
+                    style="margin-top: 40px"
+                ></div>
             </div>
+
+            <footer class="footer">
+                <p>
+                    <a href="https://github.com/remodik" target="_blank"
+                        >GitHub</a
+                    >
+                    • Hosted on GitHub Pages
+                </p>
+            </footer>
         </div>
 
-        <div class="section-tabs">
-            <button class="section-tab active" data-section="edu" onclick="switchSection('edu')">📚 Учебные работы</button>
-            <button class="section-tab commercial" data-section="com" onclick="switchSection('com')">💼 Коммерческие работы</button>
-        </div>
+        <script>
+            const SVG = {
+                books: '<svg viewBox="0 0 24 24"><path d="M3 6.5a2.5 2.5 0 0 1 2.5-2.5H11v15H5.5A2.5 2.5 0 0 0 3 21V6.5z"/><path d="M21 6.5A2.5 2.5 0 0 0 18.5 4H13v15h5.5A2.5 2.5 0 0 1 21 21V6.5z"/></svg>',
+                book: '<svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h11v17H6a2 2 0 0 0-2 2V5z"/><path d="M17 3h1a2 2 0 0 1 2 2v16"/></svg>',
+                flask: '<svg viewBox="0 0 24 24"><path d="M10 2h4"/><path d="M12 2v6l5.5 9.5A2.5 2.5 0 0 1 15.4 21H8.6a2.5 2.5 0 0 1-2.1-3.5L12 8"/><path d="M8.5 14h7"/></svg>',
+                building:
+                    '<svg viewBox="0 0 24 24"><rect x="3" y="10" width="18" height="10" rx="1"/><path d="M6 10V6l6-3 6 3v4"/></svg>',
+                fileText:
+                    '<svg viewBox="0 0 24 24"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/><path d="M9 13h6M9 17h6M9 9h2"/></svg>',
+                wrench: '<svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.2 2.2-2.6-.5-.5-2.6z"/></svg>',
+                chart: '<svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 14 3-3 3 2 4-5"/></svg>',
+                shield: '<svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 5 3.4 8.7 7 9.9 3.6-1.2 7-4.9 7-9.9V6z"/></svg>',
+                briefcase:
+                    '<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/></svg>',
+                puzzle: '<svg viewBox="0 0 24 24"><path d="M12 2h3a2 2 0 0 1 2 2v3h3a2 2 0 0 1 2 2v3h-3a2 2 0 1 0 0 4h3v3a2 2 0 0 1-2 2h-3v-3a2 2 0 1 0-4 0v3h-3a2 2 0 0 1-2-2v-3H5a2 2 0 0 1-2-2v-3h3a2 2 0 1 0 0-4H3V9a2 2 0 0 1 2-2h3V4a2 2 0 0 1 2-2h2"/></svg>',
+                globe: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+                zap: '<svg viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
+                star: '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+                cpu: '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg>',
+                lock: '<svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+                gamepad:
+                    '<svg viewBox="0 0 24 24"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="15" cy="11" r="1"/><circle cx="17" cy="13" r="1"/><path d="M4 7h16a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/></svg>',
+                terminal:
+                    '<svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>',
+                trending:
+                    '<svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+            };
+            const I = (k) => SVG[k] || SVG.book;
 
-        <div id="section-edu">
-            <div class="subject-filter" id="subjectFilter"></div>
-            <div class="works-grid" id="worksGrid"></div>
-            <div class="empty-state" id="emptyState">По выбранному предмету пока нет практических работ.</div>
-        </div>
-
-        <div id="section-com" style="display:none;">
-            <div class="section-label" style="margin-top:36px;">
-                <div class="section-label-inner com">💼 Коммерческие работы — фриланс-проекты</div>
-            </div>
-            <div class="works-grid" id="commercialGrid" style="margin-top: 40px;"></div>
-        </div>
-
-        <footer class="footer">
-            <p>
-                <a href="https://github.com/remodik" target="_blank">GitHub</a> •
-                Hosted on GitHub Pages
-            </p>
-        </footer>
-    </div>
-
-    <script>
-        const iconSvg = {
-            books: '<svg viewBox="0 0 24 24"><path d="M3 6.5a2.5 2.5 0 0 1 2.5-2.5H11v15H5.5A2.5 2.5 0 0 0 3 21V6.5z"/><path d="M21 6.5A2.5 2.5 0 0 0 18.5 4H13v15h5.5A2.5 2.5 0 0 1 21 21V6.5z"/></svg>',
-            book: '<svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h11v17H6a2 2 0 0 0-2 2V5z"/><path d="M17 3h1a2 2 0 0 1 2 2v16"/></svg>',
-            flask: '<svg viewBox="0 0 24 24"><path d="M10 2h4"/><path d="M12 2v6l5.5 9.5A2.5 2.5 0 0 1 15.4 21H8.6a2.5 2.5 0 0 1-2.1-3.5L12 8"/><path d="M8.5 14h7"/></svg>',
-            building: '<svg viewBox="0 0 24 24"><rect x="3" y="10" width="18" height="10" rx="1"/><path d="M6 10V6l6-3 6 3v4"/><path d="M8 14h.01M12 14h.01M16 14h.01"/></svg>',
-            fileText: '<svg viewBox="0 0 24 24"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/><path d="M9 13h6M9 17h6M9 9h2"/></svg>',
-            wrench: '<svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.2 2.2-2.6-.5-.5-2.6z"/></svg>',
-            chart: '<svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 14 3-3 3 2 4-5"/></svg>',
-            shield: '<svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 5 3.4 8.7 7 9.9 3.6-1.2 7-4.9 7-9.9V6z"/></svg>',
-            briefcase: '<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/></svg>',
-            puzzle: '<svg viewBox="0 0 24 24"><path d="M12 2h3a2 2 0 0 1 2 2v3h3a2 2 0 0 1 2 2v3h-3a2 2 0 1 0 0 4h3v3a2 2 0 0 1-2 2h-3v-3a2 2 0 1 0-4 0v3h-3a2 2 0 0 1-2-2v-3H5a2 2 0 0 1-2-2v-3h3a2 2 0 1 0 0-4H3V9a2 2 0 0 1 2-2h3V4a2 2 0 0 1 2-2h2"/></svg>',
-            globe: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
-            zap: '<svg viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>'
-        };
-
-        function renderIcon(name) {
-            return iconSvg[name] || iconSvg.book;
-        }
-
-        const works = [
-            {
-                url: 'quality-systems/operator_manual_practice_work_2.html',
-                date: '14 марта 2026',
-                title: 'Руководство оператора (Практическая №2)',
-                description: 'Практическая работа с оформлением руководства оператора по ГОСТ 19.505-79: назначение, условия выполнения, порядок запуска и сообщения оператору.',
-                icon: 'flask',
-                subject: 'Обеспечение качества функционирования компьютерных систем',
-                tags: ['ГОСТ 19.505-79', 'Руководство оператора', 'Эксплуатация ПО']
-            },
-            {
-                url: 'practical_doc_manual.html',
-                date: '20 марта 2026',
-                title: 'Руководство пользователя программного продукта',
-                description: 'Практическая работа с электронным руководством пользователя для TaskFlow Manager: назначение, установка, входные и выходные данные, сообщения пользователю.',
-                icon: 'fileText',
-                subject: 'Внедрение и поддержка компьютерных систем',
-                tags: ['Документация ПО', 'Руководство пользователя', 'Внедрение', 'Поддержка']
-            },
-            {
-                url: '12-10-2025/main-2.html',
-                date: '10 декабря 2025',
-                title: 'План коммуникаций — Банк «Прогресс»',
-                description: 'Интерактивный план коммуникаций для проекта мобильного банковского приложения. Включает матрицу стейкхолдеров, каналы связи и диаграмму информационных потоков.',
-                icon: 'building',
-                iconStyle: 'background: linear-gradient(135deg, #c9a227, #8b7317);',
-                linkVariant: 'gold',
-                subject: 'Управление программными проектами',
-                tags: [{ label: 'Three.js', variant: 'gold' }, { label: 'WebGL', variant: 'gold' }, { label: 'Коммуникации' }, { label: 'Банкинг' }]
-            },
-            {
-                url: '12-24-2025/main.html',
-                date: '24 декабря 2025',
-                title: 'Устав проекта EduTrack',
-                description: 'Профессиональный устав проекта для образовательного приложения EduTrack. Система управления персональным обучением и карьерой для студентов колледжей.',
-                icon: 'fileText',
-                subject: 'Управление программными проектами',
-                tags: ['Устав проекта', 'Риск-анализ', 'Управление проектами']
-            },
-            {
-                url: '12-10-2025/main.html',
-                date: '10 декабря 2025',
-                title: 'Оценка трудоемкости и сроков разработки ПО',
-                description: 'Интерактивная работа по планированию проекта мобильного приложения. Включает декомпозицию задач, расчет трудоемкости, диаграмму Ганта и анализ рисков.',
-                icon: 'wrench',
-                subject: 'Управление программными проектами',
-                tags: ['Планирование', 'Оценка проектов', 'Интерактив', 'Диаграмма Ганта']
-            },
-            {
-                url: '12-3-2025/main.html',
-                date: '3 декабря 2025',
-                title: 'Проект «Корпоративная доска заметок»',
-                description: 'Устав проекта, WBS и прогноз рисков для корпоративной доски заметок (ToDo Board) на WPF и SQL Server.',
-                icon: 'chart',
-                subject: 'Управление программными проектами',
-                tags: ['WBS', 'Риски', 'WPF', 'SQL Server']
-            }
-        ];
-
-        const commercialWorks = [
-            {
-                url: 'ocean-landing/index.html',
-                date: 'Март 2026',
-                title: 'ABYSSAL — лендинг в морской тематике',
-                description: 'Демонстрационный лендинг на чистом HTML/CSS/JavaScript без конструкторов. Анимированный canvas-фон с эффектом воды, плавная прокрутка, адаптивная вёрстка, кастомные анимации.',
-                icon: 'globe',
-                tags: [
-                    { label: 'HTML/CSS/JS', variant: 'orange' },
-                    { label: 'Canvas', variant: 'orange' },
-                    { label: 'Анимации' },
-                    { label: 'Адаптив' },
-                    { label: 'Без конструкторов' }
-                ],
-                isCommercial: true
-            }
-        ];
-
-        const subjectMeta = {
-            'Обеспечение качества функционирования компьютерных систем': { icon: 'shield' },
-            'Внедрение и поддержка компьютерных систем': { icon: 'puzzle' },
-            'Управление программными проектами': { icon: 'briefcase' }
-        };
-
-        let selectedSubject = 'all';
-        let currentSection = 'edu';
-
-        function switchSection(section) {
-            currentSection = section;
-            document.getElementById('section-edu').style.display = section === 'edu' ? 'block' : 'none';
-            document.getElementById('section-com').style.display = section === 'com' ? 'block' : 'none';
-            document.querySelectorAll('.section-tab').forEach(tab => {
-                tab.classList.toggle('active', tab.dataset.section === section);
-            });
-        }
-
-        function createParticles() {
-            const container = document.getElementById('particles');
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 20 + 's';
-                container.appendChild(particle);
-            }
-        }
-
-        function buildSubjectButtons() {
-            const countsBySubject = new Map();
-            works.forEach(work => {
-                countsBySubject.set(work.subject, (countsBySubject.get(work.subject) || 0) + 1);
-            });
-
-            const buttons = [
-                { id: 'all', title: 'Все предметы', count: works.length, icon: 'books' },
-                ...Array.from(countsBySubject.entries()).map(([subject, count]) => ({
-                    id: subject, title: subject, count, icon: subjectMeta[subject]?.icon || 'book'
-                }))
+            const works = [
+                {
+                    url: "quality-systems/operator_manual_practice_work_2.html",
+                    date: "14 марта 2026",
+                    title: "Руководство оператора (Практическая №2)",
+                    description:
+                        "Оформление руководства оператора по ГОСТ 19.505-79: назначение, условия выполнения, порядок запуска и сообщения оператору.",
+                    icon: "flask",
+                    subject:
+                        "Обеспечение качества функционирования компьютерных систем",
+                    tags: [
+                        "ГОСТ 19.505-79",
+                        "Руководство оператора",
+                        "Эксплуатация ПО",
+                    ],
+                },
+                {
+                    url: "practical_doc_manual.html",
+                    date: "20 марта 2026",
+                    title: "Руководство пользователя TaskFlow Manager",
+                    description:
+                        "Электронное руководство пользователя: назначение, установка, входные и выходные данные, сообщения пользователю.",
+                    icon: "fileText",
+                    subject: "Внедрение и поддержка компьютерных систем",
+                    tags: [
+                        "Документация ПО",
+                        "Руководство пользователя",
+                        "Внедрение",
+                    ],
+                },
+                {
+                    url: "12-10-2025/main-2.html",
+                    date: "10 декабря 2025",
+                    title: "План коммуникаций — Банк «Прогресс»",
+                    description:
+                        "Интерактивный план коммуникаций для проекта мобильного банковского приложения с матрицей стейкхолдеров.",
+                    icon: "building",
+                    iconStyle:
+                        "background:linear-gradient(135deg,#c9a227,#8b7317);",
+                    linkVariant: "gold",
+                    subject: "Управление программными проектами",
+                    tags: [
+                        { label: "Three.js", variant: "gold" },
+                        { label: "WebGL", variant: "gold" },
+                        { label: "Коммуникации" },
+                    ],
+                },
+                {
+                    url: "12-24-2025/main.html",
+                    date: "24 декабря 2025",
+                    title: "Устав проекта EduTrack",
+                    description:
+                        "Профессиональный устав проекта для образовательного приложения — система управления обучением и карьерой.",
+                    icon: "fileText",
+                    subject: "Управление программными проектами",
+                    tags: [
+                        "Устав проекта",
+                        "Риск-анализ",
+                        "Управление проектами",
+                    ],
+                },
+                {
+                    url: "12-10-2025/main.html",
+                    date: "10 декабря 2025",
+                    title: "Оценка трудоемкости и сроков разработки ПО",
+                    description:
+                        "Интерактивная работа по планированию проекта: декомпозиция задач, расчёт трудоёмкости, диаграмма Ганта.",
+                    icon: "wrench",
+                    subject: "Управление программными проектами",
+                    tags: ["Планирование", "Диаграмма Ганта", "Интерактив"],
+                },
+                {
+                    url: "12-3-2025/main.html",
+                    date: "3 декабря 2025",
+                    title: "Проект «Корпоративная доска заметок»",
+                    description:
+                        "Устав проекта, WBS и прогноз рисков для корпоративной доски заметок на WPF и SQL Server.",
+                    icon: "chart",
+                    subject: "Управление программными проектами",
+                    tags: ["WBS", "Риски", "WPF", "SQL Server"],
+                },
             ];
 
-            const subjectFilter = document.getElementById('subjectFilter');
-            subjectFilter.innerHTML = buttons.map(button => `
-                <button class="subject-btn${button.id === selectedSubject ? ' active' : ''}" data-subject="${button.id}">
-                    <span class="subject-btn-icon">${renderIcon(button.icon)}</span>
-                    <span>${button.title}</span>
-                    <span class="subject-count">${button.count}</span>
-                </button>
-            `).join('');
+            const commercial = [
+                {
+                    url: "landings/ocean-landing.html",
+                    title: "ABYSSAL — глубоководный лендинг",
+                    description:
+                        "Атмосферный лендинг с анимированным canvas-фоном, эффектом воды и частицами. Чистый HTML/CSS/JS, адаптив.",
+                    icon: "globe",
+                    tags: [
+                        { label: "Canvas", variant: "orange" },
+                        { label: "Анимации", variant: "orange" },
+                        { label: "Адаптив" },
+                    ],
+                },
+                {
+                    url: "landings/product-landing.html",
+                    title: "Zenith Studio — digital-агентство",
+                    description:
+                        "Современный корпоративный лендинг для digital-агентства. Минималистичный дизайн, анимации при скролле, секции услуг.",
+                    icon: "star",
+                    tags: [
+                        { label: "Корпоративный", variant: "orange" },
+                        { label: "Минимализм" },
+                        { label: "Скролл-анимации" },
+                    ],
+                },
+                {
+                    url: "landings/nova-digital-landing.html",
+                    title: "Nova Digital — маркетинговое агентство",
+                    description:
+                        "Лендинг для маркетингового агентства с яркими акцентами, блоком преимуществ и формой обратной связи.",
+                    icon: "zap",
+                    tags: [
+                        { label: "Маркетинг", variant: "orange" },
+                        { label: "Адаптив" },
+                        { label: "Форма" },
+                    ],
+                },
+                {
+                    url: "landings/financetrack-landing.html",
+                    title: "FinanceTrack — финансовый трекер",
+                    description:
+                        "Лендинг для финансового приложения на русском языке. Дашборд-превью, блок функций, тарифы и CTA.",
+                    icon: "trending",
+                    tags: [
+                        { label: "Финансы", variant: "orange" },
+                        { label: "Русский язык" },
+                        { label: "Дашборд" },
+                    ],
+                },
+                {
+                    url: "landings/taskflow-landing.html",
+                    title: "TaskFlow — AI-платформа для задач",
+                    description:
+                        "Технологичный лендинг для AI-сервиса управления задачами. Тёмный стиль, анимированные элементы.",
+                    icon: "cpu",
+                    tags: [
+                        { label: "AI/Tech", variant: "orange" },
+                        { label: "Тёмный стиль" },
+                        { label: "Анимации" },
+                    ],
+                },
+                {
+                    url: "landings/business-landing.html",
+                    title: "NEXUS — финансовая инфраструктура",
+                    description:
+                        "Премиальный лендинг для финтех-компании. Строгий корпоративный стиль, инфографика, блок интеграций.",
+                    icon: "briefcase",
+                    tags: [
+                        { label: "Финтех", variant: "orange" },
+                        { label: "Корпоративный" },
+                        { label: "Премиум" },
+                    ],
+                },
+                {
+                    url: "landings/SecureShield-landing.html",
+                    title: "SecureShield — кибербезопасность",
+                    description:
+                        "Лендинг для AI-платформы кибербезопасности. Тёмный технологичный стиль, анимированные элементы.",
+                    icon: "lock",
+                    tags: [
+                        { label: "Кибербез", variant: "orange" },
+                        { label: "AI" },
+                        { label: "Тёмный стиль" },
+                    ],
+                },
+                {
+                    url: "landings/scifi_landing.html",
+                    title: "NEXUS PROTOCOL — sci-fi лендинг",
+                    description:
+                        "Атмосферный фантастический лендинг с глитч-эффектами, неоновыми акцентами и анимированным фоном.",
+                    icon: "terminal",
+                    tags: [
+                        { label: "Sci-Fi", variant: "orange" },
+                        { label: "Глитч-эффекты" },
+                        { label: "Неон" },
+                    ],
+                },
+                {
+                    url: "landings/game-landing.html",
+                    title: "ECLIPSE — игровой лендинг",
+                    description:
+                        "Эпичный лендинг в стиле игровых проектов. Тёмный фон, частицы, динамичная типографика.",
+                    icon: "gamepad",
+                    tags: [
+                        { label: "Gaming", variant: "orange" },
+                        { label: "Эпичный стиль" },
+                        { label: "Частицы" },
+                    ],
+                },
+                {
+                    url: "landings/hacker-landing.html",
+                    title: "PHANTOM PROTOCOL — хакерский стиль",
+                    description:
+                        "Лендинг в стиле хакерского интерфейса с ASCII-артом, матричным дождём и глитч-анимациями.",
+                    icon: "terminal",
+                    tags: [
+                        { label: "Хакер-стиль", variant: "orange" },
+                        { label: "ASCII" },
+                        { label: "Матрица" },
+                    ],
+                },
+                {
+                    url: "landings/anime-landing.html",
+                    title: "Celestial Requiem — аниме-лендинг",
+                    description:
+                        "Лендинг в аниме-стилистике с японской типографикой, сакурой, частицами и атмосферным оформлением.",
+                    icon: "star",
+                    tags: [
+                        { label: "Аниме-стиль", variant: "orange" },
+                        { label: "Японский" },
+                        { label: "Частицы" },
+                    ],
+                },
+            ];
 
-            subjectFilter.querySelectorAll('.subject-btn').forEach(button => {
-                button.addEventListener('click', () => {
-                    selectedSubject = button.dataset.subject;
-                    buildSubjectButtons();
-                    renderWorks();
-                });
+            const subjectMeta = {
+                "Обеспечение качества функционирования компьютерных систем": {
+                    icon: "shield",
+                },
+                "Внедрение и поддержка компьютерных систем": { icon: "puzzle" },
+                "Управление программными проектами": { icon: "briefcase" },
+            };
+
+            let selectedSubject = "all";
+
+            function switchSection(s) {
+                document.getElementById("section-edu").style.display =
+                    s === "edu" ? "block" : "none";
+                document.getElementById("section-com").style.display =
+                    s === "com" ? "block" : "none";
+                document
+                    .querySelectorAll(".section-tab")
+                    .forEach((t) =>
+                        t.classList.toggle("active", t.dataset.section === s),
+                    );
+            }
+
+            function tags(arr) {
+                return arr
+                    .map((t) => {
+                        const o = typeof t === "string" ? { label: t } : t;
+                        return `<span class="tag${o.variant === "gold" ? " gold" : o.variant === "orange" ? " orange" : ""}">${o.label}</span>`;
+                    })
+                    .join("");
+            }
+
+            function buildSubjectButtons() {
+                const counts = new Map();
+                works.forEach((w) =>
+                    counts.set(w.subject, (counts.get(w.subject) || 0) + 1),
+                );
+                const btns = [
+                    {
+                        id: "all",
+                        title: "Все предметы",
+                        count: works.length,
+                        icon: "books",
+                    },
+                    ...Array.from(counts.entries()).map(([s, c]) => ({
+                        id: s,
+                        title: s,
+                        count: c,
+                        icon: subjectMeta[s]?.icon || "book",
+                    })),
+                ];
+                document.getElementById("subjectFilter").innerHTML = btns
+                    .map(
+                        (b) => `
+			<button class="subject-btn${b.id === selectedSubject ? " active" : ""}" data-subject="${b.id}">
+				<span style="width:16px;height:16px;display:inline-flex;align-items:center;">${I(b.icon)}</span>
+				<span>${b.title}</span><span class="subject-count">${b.count}</span>
+			</button>`,
+                    )
+                    .join("");
+                document.querySelectorAll(".subject-btn").forEach((btn) =>
+                    btn.addEventListener("click", () => {
+                        selectedSubject = btn.dataset.subject;
+                        buildSubjectButtons();
+                        renderWorks();
+                    }),
+                );
+            }
+
+            function renderWorks() {
+                const list =
+                    selectedSubject === "all"
+                        ? works
+                        : works.filter((w) => w.subject === selectedSubject);
+                document.getElementById("worksGrid").innerHTML = list
+                    .map(
+                        (w) => `
+			<article class="work-card" onclick="location.href='${w.url}'">
+				<div class="subject-badge"><span style="width:14px;height:14px;display:inline-flex;">${I(subjectMeta[w.subject]?.icon || "book")}</span><span>${w.subject}</span></div>
+				<div class="work-icon"${w.iconStyle ? ` style="${w.iconStyle}"` : ""} >${I(w.icon)}</div>
+				<div class="work-date">${w.date}</div>
+				<h3 class="work-title">${w.title}</h3>
+				<p class="work-description">${w.description}</p>
+				<div class="work-tags">${tags(w.tags)}</div>
+				<a href="${w.url}" class="work-link${w.linkVariant === " gold" ? " gold" : ""}" onclick="event.stopPropagation()">Открыть работу →</a>
+			</article>`,
+                    )
+                    .join("");
+                document.getElementById("emptyState").style.display =
+                    list.length ? "none" : "block";
+            }
+
+            function renderCommercial() {
+                document.getElementById("commercialGrid").innerHTML = commercial
+                    .map(
+                        (w) => `
+			<article class="work-card commercial" onclick="location.href='${w.url}'">
+				<div class="subject-badge com"><span style="width:14px;height:14px;display:inline-flex;">${I("briefcase")}</span><span>Коммерческий проект</span></div>
+				<div class="work-icon com">${I(w.icon)}</div>
+				<div class="work-date com">Март 2026</div>
+				<h3 class="work-title">${w.title}</h3>
+				<p class="work-description">${w.description}</p>
+				<div class="work-tags">${tags(w.tags)}</div>
+				<a href="${w.url}" class="work-link orange" onclick="event.stopPropagation()">Открыть проект →</a>
+			</article>`,
+                    )
+                    .join("");
+            }
+
+            function fillStats() {
+                document.getElementById("workCount").textContent =
+                    works.length + commercial.length;
+                document.getElementById("commercialCount").textContent =
+                    commercial.length;
+                document.getElementById("subjectCount").textContent = new Set(
+                    works.map((w) => w.subject),
+                ).size;
+            }
+
+            function createParticles() {
+                const c = document.getElementById("particles");
+                for (let i = 0; i < 50; i++) {
+                    const p = document.createElement("div");
+                    p.className = "particle";
+                    p.style.cssText = `left:${Math.random() * 100}%;top:${Math.random() * 100}%;animation-delay:${Math.random() * 20}s`;
+                    c.appendChild(p);
+                }
+            }
+
+            function typeWriter() {
+                const el = document.getElementById("mainTitle"),
+                    text = el.textContent;
+                el.textContent = "";
+                let i = 0;
+                const t = setInterval(() => {
+                    if (i < text.length) {
+                        el.textContent += text[i++];
+                    } else clearInterval(t);
+                }, 80);
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                createParticles();
+                buildSubjectButtons();
+                renderWorks();
+                renderCommercial();
+                fillStats();
+                typeWriter();
             });
-        }
-
-        function renderWorks() {
-            const worksGrid = document.getElementById('worksGrid');
-            const emptyState = document.getElementById('emptyState');
-            const filtered = selectedSubject === 'all' ? works : works.filter(w => w.subject === selectedSubject);
-
-            worksGrid.innerHTML = filtered.map(work => {
-                const tagsHtml = work.tags.map(tag => {
-                    const t = typeof tag === 'string' ? { label: tag } : tag;
-                    return `<span class="tag${t.variant === 'gold' ? ' gold' : ''}">${t.label}</span>`;
-                }).join('');
-
-                const linkClass = work.linkVariant === 'gold' ? 'work-link gold' : 'work-link';
-                const iconStyle = work.iconStyle ? ` style="${work.iconStyle}"` : '';
-                const subjectIcon = subjectMeta[work.subject]?.icon || 'book';
-
-                return `
-                    <article class="work-card" onclick="location.href='${work.url}'">
-                        <div class="subject-badge">
-                            <span class="subject-badge-icon">${renderIcon(subjectIcon)}</span>
-                            <span>${work.subject}</span>
-                        </div>
-                        <div class="work-icon"${iconStyle}>${renderIcon(work.icon)}</div>
-                        <div class="work-date">${work.date}</div>
-                        <h3 class="work-title">${work.title}</h3>
-                        <p class="work-description">${work.description}</p>
-                        <div class="work-tags">${tagsHtml}</div>
-                        <a href="${work.url}" class="${linkClass}" onclick="event.stopPropagation()">Открыть работу →</a>
-                    </article>
-                `;
-            }).join('');
-
-            emptyState.style.display = filtered.length ? 'none' : 'block';
-        }
-
-        function renderCommercialWorks() {
-            const grid = document.getElementById('commercialGrid');
-            grid.innerHTML = commercialWorks.map(work => {
-                const tagsHtml = work.tags.map(tag => {
-                    const t = typeof tag === 'string' ? { label: tag } : tag;
-                    return `<span class="tag${t.variant === 'orange' ? ' orange' : ''}">${t.label}</span>`;
-                }).join('');
-
-                return `
-                    <article class="work-card commercial" onclick="location.href='${work.url}'">
-                        <div class="subject-badge commercial-badge">
-                            <span class="subject-badge-icon">${renderIcon('briefcase')}</span>
-                            <span>Коммерческий проект</span>
-                        </div>
-                        <div class="work-icon commercial-icon">${renderIcon(work.icon)}</div>
-                        <div class="work-date commercial-date">${work.date}</div>
-                        <h3 class="work-title">${work.title}</h3>
-                        <p class="work-description">${work.description}</p>
-                        <div class="work-tags">${tagsHtml}</div>
-                        <a href="${work.url}" class="work-link orange" onclick="event.stopPropagation()">Открыть проект →</a>
-                    </article>
-                `;
-            }).join('');
-        }
-
-        function fillStats() {
-            document.getElementById('workCount').textContent = works.length + commercialWorks.length;
-            document.getElementById('commercialCount').textContent = commercialWorks.length;
-            document.getElementById('subjectCount').textContent = new Set(works.map(w => w.subject)).size;
-        }
-
-        function typeWriter() {
-            const title = document.getElementById('mainTitle');
-            const text = title.textContent;
-            title.textContent = '';
-            let i = 0;
-            const interval = setInterval(() => {
-                if (i < text.length) { title.textContent += text.charAt(i); i++; }
-                else clearInterval(interval);
-            }, 80);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            createParticles();
-            buildSubjectButtons();
-            renderWorks();
-            renderCommercialWorks();
-            fillStats();
-            typeWriter();
-        });
-    </script>
-    <script src="nav-header.js"></script>
-</body>
+        </script>
+        <script src="nav-header.js"></script>
+    </body>
 </html>

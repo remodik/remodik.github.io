@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS — The Future of Finance Infrastructure</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --accent: #22d3ee;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg: #09090b;
+            --bg-card: #18181b;
+            --bg-elevated: #27272a;
+            --text: #fafafa;
+            --text-secondary: #a1a1aa;
+            --border: #27272a;
+            --gradient-1: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+            --gradient-2: linear-gradient(135deg, #22d3ee 0%, #6366f1 100%);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        .gradient-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            background:
+                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 30% at 50% 80%, rgba(34, 211, 238, 0.08) 0%, transparent 50%);
+        }
+
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-center a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-center a:hover {
+            color: var(--text);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--text);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--text);
+            color: var(--bg);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--text-secondary);
+            transform: translateY(-1px);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg-card);
+            border-color: var(--text-secondary);
+        }
+
+        .btn-large {
+            padding: 16px 32px;
+            font-size: 1rem;
+        }
+
+        .btn-gradient {
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+        }
+
+        .btn-gradient:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 20px 80px;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--primary-light);
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out 0.2s forwards;
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 25px;
+            max-width: 900px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out 0.4s forwards;
+        }
+
+        .hero-title .gradient {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-description {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out 0.6s forwards;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 60px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out 0.8s forwards;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 60px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out 1s forwards;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .trusted {
+            padding: 80px 10%;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .trusted-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 30px;
+        }
+
+        .trusted-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;
+            flex-wrap: wrap;
+            opacity: 0.5;
+        }
+
+        .trusted-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .section {
+            padding: 150px 10%;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 80px;
+        }
+
+        .section-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .feature-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gradient-1);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .feature-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 300px);
+            gap: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .bento-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: auto;
+            }
+        }
+
+        .bento-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .bento-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .bento-card.large {
+            grid-column: span 2;
+        }
+
+        .bento-card.tall {
+            grid-row: span 2;
+        }
+
+        .bento-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .bento-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .stats-visual {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+        }
+
+        .stat-bar {
+            height: 8px;
+            background: var(--bg-elevated);
+            border-radius: 4px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .stat-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease-out;
+        }
+
+        .stat-bar-fill.purple { background: var(--gradient-1); width: 0; }
+        .stat-bar-fill.cyan { background: var(--gradient-2); width: 0; }
+        .stat-bar-fill.green { background: linear-gradient(90deg, #10b981, #22d3ee); width: 0%; }
+
+        .stat-bar-fill.animate.purple { width: 85%; }
+        .stat-bar-fill.animate.cyan { width: 70%; }
+        .stat-bar-fill.animate.green { width: 92%; }
+
+        .code-preview {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 15px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            overflow: hidden;
+        }
+
+        .code-line {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        .code-line-number {
+            color: var(--text-secondary);
+            opacity: 0.3;
+            user-select: none;
+        }
+
+        .code-keyword { color: #c084fc; }
+        .code-function { color: #22d3ee; }
+        .code-string { color: #4ade80; }
+        .code-comment { color: var(--text-secondary); opacity: 0.5; }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .metric-card {
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.5s ease-out;
+        }
+
+        .metric-card.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .metric-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .metric-value.purple { color: var(--primary-light); }
+        .metric-value.cyan { color: var(--accent); }
+        .metric-value.green { color: var(--success); }
+        .metric-value.gold { color: var(--warning); }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .testimonial-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .testimonial-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            color: var(--text-secondary);
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .testimonial-avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+        }
+
+        .testimonial-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .testimonial-role {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 150px 10%;
+            position: relative;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        .cta-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+        }
+
+        .cta-description {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto 40px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        footer {
+            padding: 80px 10%;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .footer-brand .logo {
+            margin-bottom: 15px;
+        }
+
+        .footer-brand p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 80px;
+        }
+
+        .footer-column h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 12px;
+        }
+
+        .footer-column a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .footer-column a:hover {
+            color: var(--text);
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader" id="loader">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <div id="canvas-container"></div>
+    <div class="gradient-mesh"></div>
+    <div class="noise"></div>
+
+    <nav class="nav">
+        <div class="logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.5L18.5 7 12 9.5 5.5 7 12 4.5z"/></svg>
+            </div>
+            NEXUS
+        </div>
+        <ul class="nav-center">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#solutions">Solutions</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#docs">Docs</a></li>
+        </ul>
+        <div class="nav-right">
+            <a href="#" class="nav-link">Log in</a>
+            <a href="#" class="btn btn-primary">Get Started</a>
+        </div>
+    </nav>
+
+    <div class="content">
+        <section class="hero">
+            <div class="hero-badge">
+                <div class="badge-dot"></div>
+                Now processing $2B+ monthly
+            </div>
+            <h1 class="hero-title">
+                Financial infrastructure for the <span class="gradient">internet economy</span>
+            </h1>
+            <p class="hero-description">
+                Build, scale, and optimize your financial operations with APIs designed
+                for developers. From payments to treasury management.
+            </p>
+            <div class="hero-buttons">
+                <a href="#" class="btn btn-gradient btn-large">Start Building →</a>
+                <a href="#" class="btn btn-ghost btn-large">Contact Sales</a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-value" id="stat1">0%</div>
+                    <div class="hero-stat-label">Uptime SLA</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value" id="stat2">0ms</div>
+                    <div class="hero-stat-label">Avg Response</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value" id="stat3">0+</div>
+                    <div class="hero-stat-label">Countries</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="trusted">
+            <div class="trusted-label">Trusted by industry leaders</div>
+            <div class="trusted-logos">
+                <span class="trusted-logo">Vercel</span>
+                <span class="trusted-logo">Linear</span>
+                <span class="trusted-logo">Notion</span>
+                <span class="trusted-logo">Figma</span>
+                <span class="trusted-logo">Stripe</span>
+            </div>
+        </section>
+
+        <section class="section" id="features">
+            <div class="section-header">
+                <div class="section-label">Features</div>
+                <h2 class="section-title">Everything you need to scale</h2>
+                <p class="section-description">
+                    Powerful APIs, intuitive dashboards, and enterprise-grade security.
+                    All in one platform.
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Instant Payments</h3>
+                    <p class="feature-text">
+                        Process payments in milliseconds with our globally distributed
+                        infrastructure. Support for 135+ currencies.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3 class="feature-title">Bank-Grade Security</h3>
+                    <p class="feature-text">
+                        SOC 2 Type II certified. End-to-end encryption, tokenization,
+                        and real-time fraud detection.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Real-time Analytics</h3>
+                    <p class="feature-text">
+                        Monitor every transaction with detailed dashboards. Custom reports
+                        and webhook notifications.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3 class="feature-title">Global Coverage</h3>
+                    <p class="feature-text">
+                        Accept payments from anywhere. Local payment methods, multi-currency
+                        support, and automatic FX.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3 class="feature-title">Smart Routing</h3>
+                    <p class="feature-text">
+                        Intelligent payment routing maximizes approval rates and minimizes
+                        costs across all providers.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛠️</div>
+                    <h3 class="feature-title">Developer First</h3>
+                    <p class="feature-text">
+                        Beautiful APIs, comprehensive SDKs, and documentation that developers
+                        actually enjoy reading.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <div class="section-label">Platform</div>
+                <h2 class="section-title">Built for performance</h2>
+                <p class="section-description">
+                    See why thousands of companies trust Nexus for their financial infrastructure.
+                </p>
+            </div>
+            <div class="bento-grid">
+                <div class="bento-card large">
+                    <div class="bento-title">Transaction Volume</div>
+                    <div class="bento-text">Real-time processing metrics</div>
+                    <div class="stats-visual">
+                        <div class="stat-bar"><div class="stat-bar-fill purple"></div></div>
+                        <div class="stat-bar"><div class="stat-bar-fill cyan"></div></div>
+                        <div class="stat-bar"><div class="stat-bar-fill green"></div></div>
+                    </div>
+                </div>
+                <div class="bento-card">
+                    <div class="bento-title">99.99%</div>
+                    <div class="bento-text">Guaranteed uptime</div>
+                </div>
+                <div class="bento-card">
+                    <div class="bento-title">< 50ms</div>
+                    <div class="bento-text">API latency P99</div>
+                </div>
+                <div class="bento-card large">
+                    <div class="bento-title">Developer Experience</div>
+                    <div class="bento-text">Clean, intuitive APIs</div>
+                    <div class="code-preview">
+                        <div class="code-line">
+                            <span class="code-line-number">1</span>
+                            <span><span class="code-keyword">const</span> payment = <span class="code-keyword">await</span> nexus.<span class="code-function">payments</span>.<span class="code-function">create</span>({</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="code-line-number">2</span>
+                            <span>amount: <span class="code-string">5000</span>,</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="code-line-number">3</span>
+                            <span>currency: <span class="code-string">'usd'</span>,</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="code-line-number">4</span>
+                            <span>customer: <span class="code-string">'cus_xxx'</span></span>
+                        </div>
+                        <div class="code-line">
+                            <span class="code-line-number">5</span>
+                            <span>});</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <div class="section-label">Metrics</div>
+                <h2 class="section-title">Numbers that matter</h2>
+            </div>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value purple" id="metric1">0</div>
+                    <div class="metric-label">Transactions per second</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value cyan" id="metric2">$0</div>
+                    <div class="metric-label">Processed annually</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value green" id="metric3">0</div>
+                    <div class="metric-label">Enterprise customers</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value gold" id="metric4">0%</div>
+                    <div class="metric-label">Fraud prevention rate</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <div class="section-label">Testimonials</div>
+                <h2 class="section-title">Loved by finance teams</h2>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">
+                        "Nexus transformed our payment infrastructure. We went from 72-hour
+                        settlements to real-time processing. The API is a joy to work with."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar"></div>
+                        <div>
+                            <div class="testimonial-name">Sarah Chen</div>
+                            <div class="testimonial-role">CTO at Finova</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">
+                        "The analytics dashboard alone saved us 20 hours per week. We can
+                        now make data-driven decisions in real-time instead of waiting for reports."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar"></div>
+                        <div>
+                            <div class="testimonial-name">Marcus Rodriguez</div>
+                            <div class="testimonial-role">VP Finance at ScaleUp</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">
+                        "Best-in-class documentation and support. Our integration took 3 days
+                        instead of the 3 months we budgeted. Incredible developer experience."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar"></div>
+                        <div>
+                            <div class="testimonial-name">Emily Watson</div>
+                            <div class="testimonial-role">Lead Engineer at CloudBase</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <h2 class="cta-title">Ready to get started?</h2>
+            <p class="cta-description">
+                Join thousands of companies building the future of finance with Nexus.
+            </p>
+            <div class="cta-buttons">
+                <a href="#" class="btn btn-gradient btn-large">Create Free Account</a>
+                <a href="#" class="btn btn-ghost btn-large">Talk to Sales</a>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-top">
+            <div class="footer-brand">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.5L18.5 7 12 9.5 5.5 7 12 4.5z"/></svg>
+                    </div>
+                    NEXUS
+                </div>
+                <p>Financial infrastructure for the internet economy.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Security</a></li>
+                        <li><a href="#">Enterprise</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Developers</h4>
+                    <ul>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">API Reference</a></li>
+                        <li><a href="#">SDKs</a></li>
+                        <li><a href="#">Status</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 Nexus. All rights reserved.</span>
+            <div>
+                <a href="#" style="color: var(--text-secondary); margin-left: 20px;">Privacy</a>
+                <a href="#" style="color: var(--text-secondary); margin-left: 20px;">Terms</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        let scene, camera, renderer;
+        let particles, morphingShape;
+        let mouseX = 0, mouseY = 0;
+        let time = 0;
+
+        function init() {
+            scene = new THREE.Scene();
+
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 30;
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            createParticles();
+
+            createMorphingShape();
+
+            createDataFlow();
+
+            window.addEventListener('resize', onResize);
+            document.addEventListener('mousemove', onMouseMove);
+
+            setupScrollAnimations();
+
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+                animateHeroStats();
+            }, 1000);
+
+            animate();
+        }
+
+        function createParticles() {
+            const particleCount = 200;
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+
+            const colorPalette = [
+                [0.39, 0.4, 0.95],
+                [0.55, 0.36, 0.96],
+                [0.13, 0.83, 0.93],
+            ];
+
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 60;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 60;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 30;
+
+                const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+                colors[i * 3] = color[0];
+                colors[i * 3 + 1] = color[1];
+                colors[i * 3 + 2] = color[2];
+            }
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: 0.15,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.6
+            });
+
+            particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+        }
+
+        function createMorphingShape() {
+            const geometry = new THREE.IcosahedronGeometry(5, 3);
+            const material = new THREE.MeshBasicMaterial({
+                color: 0x6366f1,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.15
+            });
+
+            morphingShape = new THREE.Mesh(geometry, material);
+            morphingShape.position.set(15, 0, -10);
+            scene.add(morphingShape);
+
+            const innerGeometry = new THREE.IcosahedronGeometry(3, 2);
+            const innerMaterial = new THREE.MeshBasicMaterial({
+                color: 0x22d3ee,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.1
+            });
+
+            const innerShape = new THREE.Mesh(innerGeometry, innerMaterial);
+            morphingShape.add(innerShape);
+        }
+
+        let dataLines = [];
+
+        function createDataFlow() {
+            const lineCount = 15;
+
+            for (let i = 0; i < lineCount; i++) {
+                const points = [];
+                const startX = -30;
+                const endX = 30;
+                const y = (Math.random() - 0.5) * 20;
+                const z = (Math.random() - 0.5) * 10 - 5;
+
+                for (let j = 0; j <= 50; j++) {
+                    const x = startX + (endX - startX) * (j / 50);
+                    const offsetY = Math.sin(j * 0.2) * 2;
+                    points.push(new THREE.Vector3(x, y + offsetY, z));
+                }
+
+                const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                const material = new THREE.LineBasicMaterial({
+                    color: i % 2 === 0 ? 0x6366f1 : 0x22d3ee,
+                    transparent: true,
+                    opacity: 0.1
+                });
+
+                const line = new THREE.Line(geometry, material);
+                line.userData = {
+                    speed: Math.random() * 0.02 + 0.01,
+                    offset: Math.random() * Math.PI * 2
+                };
+
+                dataLines.push(line);
+                scene.add(line);
+            }
+        }
+
+        function setupScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            document.querySelectorAll('.feature-card, .metric-card').forEach(el => {
+                observer.observe(el);
+            });
+
+            const statsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        document.querySelectorAll('.stat-bar-fill').forEach(bar => {
+                            bar.classList.add('animate');
+                        });
+                        statsObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            document.querySelectorAll('.bento-card').forEach(el => {
+                statsObserver.observe(el);
+            });
+
+            const metricsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateMetrics();
+                        metricsObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            document.querySelectorAll('.metrics-grid').forEach(el => {
+                metricsObserver.observe(el);
+            });
+        }
+
+        function animateHeroStats() {
+            animateValue('stat1', 0, 99.99, 2000, '%', 2);
+            animateValue('stat2', 0, 45, 2000, 'ms', 0);
+            animateValue('stat3', 0, 195, 2000, '+', 0);
+        }
+
+        function animateMetrics() {
+            animateValue('metric1', 0, 50000, 2000, '', 0, true);
+            animateValue('metric2', 0, 24, 2000, 'B', 0, false, '$');
+            animateValue('metric3', 0, 2500, 2000, '', 0, true);
+            animateValue('metric4', 0, 99.7, 2000, '%', 1);
+        }
+
+        function animateValue(id, start, end, duration, suffix, decimals, thousands = false, prefix = '') {
+            const el = document.getElementById(id);
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+
+                let value = start + (end - start) * eased;
+                let displayValue = decimals > 0 ? value.toFixed(decimals) : Math.floor(value);
+
+                if (thousands) {
+                    displayValue = Math.floor(value).toLocaleString();
+                }
+
+                el.textContent = prefix + displayValue + suffix;
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        function onResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function onMouseMove(e) {
+            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.01;
+
+            if (particles) {
+                particles.rotation.y = time * 0.02;
+                particles.rotation.x = Math.sin(time * 0.1) * 0.1;
+            }
+
+            if (morphingShape) {
+                morphingShape.rotation.x = time * 0.1;
+                morphingShape.rotation.y = time * 0.15;
+
+                const scale = 1 + Math.sin(time * 0.5) * 0.1;
+                morphingShape.scale.setScalar(scale);
+
+                if (morphingShape.children[0]) {
+                    morphingShape.children[0].rotation.x = -time * 0.2;
+                    morphingShape.children[0].rotation.y = -time * 0.25;
+                }
+            }
+
+            dataLines.forEach((line, i) => {
+                const positions = line.geometry.attributes.position.array;
+                for (let j = 0; j < positions.length / 3; j++) {
+                    positions[j * 3 + 1] += Math.sin(time * 2 + j * 0.1 + line.userData.offset) * 0.02;
+                }
+                line.geometry.attributes.position.needsUpdate = true;
+
+                line.material.opacity = 0.05 + Math.sin(time + i) * 0.05;
+            });
+
+            camera.position.x += (mouseX * 3 - camera.position.x) * 0.02;
+            camera.position.y += (mouseY * 2 - camera.position.y) * 0.02;
+            camera.lookAt(0, 0, 0);
+
+            renderer.render(scene, camera);
+        }
+
+        init();
+    </script>
+</body>
+</html>
