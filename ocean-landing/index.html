@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<!--suppress JSUnresolvedReference -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABYSSAL // DEEP HORIZON</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Michroma&family=Quicksand:wght@300;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #00ffcc;
+            --secondary: #0088ff;
+            --accent: #ff00aa;
+            --deep: #000a14;
+            --mid: #001a2e;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            background: linear-gradient(180deg, var(--deep) 0%, #001428 50%, var(--mid) 100%);
+            color: #fff;
+            font-family: 'Quicksand', sans-serif;
+            overflow-x: hidden;
+            min-height: 500vh;
+        }
+        
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .caustics {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.15;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="caustics"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="20" xChannelSelector="R" yChannelSelector="G"/></filter></defs><rect width="100" height="100" fill="%2300ffcc" filter="url(%23caustics)" opacity="0.5"/></svg>');
+            animation: causticMove 8s ease-in-out infinite;
+        }
+        
+        @keyframes causticMove {
+            0%, 100% { transform: scale(1.2) translateY(0); }
+            50% { transform: scale(1.3) translateY(-20px); }
+        }
+
+        .light-rays {
+            position: fixed;
+            top: -50%;
+            left: 50%;
+            width: 200%;
+            height: 150%;
+            transform: translateX(-50%);
+            background: 
+                linear-gradient(180deg, rgba(0, 255, 200, 0.03) 0%, transparent 60%),
+                repeating-linear-gradient(
+                    95deg,
+                    transparent 0px,
+                    transparent 100px,
+                    rgba(0, 255, 200, 0.02) 100px,
+                    rgba(0, 255, 200, 0.02) 200px
+                );
+            pointer-events: none;
+            z-index: 1;
+            animation: raysSway 15s ease-in-out infinite;
+        }
+        
+        @keyframes raysSway {
+            0%, 100% { transform: translateX(-50%) skewX(0deg); }
+            50% { transform: translateX(-48%) skewX(2deg); }
+        }
+        
+        .content {
+            position: relative;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        .content > * {
+            pointer-events: auto;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: linear-gradient(180deg, rgba(0, 10, 20, 0.9) 0%, transparent 100%);
+        }
+        
+        .logo {
+            font-family: 'Michroma', sans-serif;
+            font-size: 1.3rem;
+            color: var(--primary);
+            text-shadow: 0 0 30px var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            animation: sonarPulse 3s ease-out infinite;
+        }
+        
+        @keyframes sonarPulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 204, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(0, 255, 204, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 204, 0); }
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            transform: translateX(-50%) scale(0);
+            transition: transform 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+            text-shadow: 0 0 20px var(--primary);
+        }
+        
+        .nav-links a:hover::before {
+            transform: translateX(-50%) scale(1);
+        }
+
+        .depth-indicator {
+            position: fixed;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .depth-line {
+            width: 2px;
+            height: 200px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary), var(--accent));
+            border-radius: 1px;
+            position: relative;
+            opacity: 0.3;
+        }
+        
+        .depth-marker {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--primary);
+            transition: top 0.3s ease-out;
+        }
+        
+        .depth-value {
+            font-family: 'Michroma', sans-serif;
+            font-size: 0.7rem;
+            color: var(--primary);
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            letter-spacing: 0.2em;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero-depth {
+            font-family: 'Michroma', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.5em;
+            color: var(--primary);
+            opacity: 0.7;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.5s forwards;
+        }
+        
+        .hero-depth::before,
+        .hero-depth::after {
+            content: '';
+            width: 50px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary));
+        }
+        
+        .hero-depth::after {
+            background: linear-gradient(90deg, var(--primary), transparent);
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .hero-title {
+            font-family: 'Michroma', sans-serif;
+            font-size: clamp(3rem, 10vw, 7rem);
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: riseUp 1.5s ease-out 0.8s forwards;
+        }
+        
+        .hero-title .main {
+            display: block;
+            background: linear-gradient(180deg, #fff 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            filter: drop-shadow(0 0 30px rgba(0, 255, 204, 0.3));
+        }
+        
+        .hero-title .sub {
+            display: block;
+            font-size: 0.25em;
+            letter-spacing: 0.5em;
+            color: rgba(255, 255, 255, 0.4);
+            -webkit-text-fill-color: initial;
+            margin-top: 20px;
+        }
+        
+        @keyframes riseUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero-description {
+            max-width: 500px;
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 50px;
+            opacity: 0;
+            animation: riseUp 1s ease-out 1.3s forwards;
+        }
+        
+        .hero-cta {
+            display: flex;
+            gap: 20px;
+            opacity: 0;
+            animation: riseUp 1s ease-out 1.6s forwards;
+        }
+        
+        .btn {
+            padding: 18px 50px;
+            font-family: 'Michroma', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 50px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #000;
+            border: none;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(0, 255, 204, 0.3);
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid rgba(0, 255, 204, 0.4);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(0, 255, 204, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.2), inset 0 0 30px rgba(0, 255, 204, 0.05);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 2s forwards;
+        }
+        
+        .scroll-hint span {
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .scroll-mouse {
+            width: 24px;
+            height: 40px;
+            border: 2px solid rgba(0, 255, 204, 0.4);
+            border-radius: 12px;
+            position: relative;
+        }
+        
+        .scroll-mouse::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            width: 4px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 2px;
+            transform: translateX(-50%);
+            animation: scrollDown 2s ease-in-out infinite;
+        }
+        
+        @keyframes scrollDown {
+            0%, 100% {
+                opacity: 1; top: 8px;
+            }
+
+            50% {
+                opacity: 0.3; top: 20px;
+            }
+        }
+
+        .section {
+            min-height: 100vh;
+            padding: 150px 10%;
+            position: relative;
+        }
+        
+        .section-header {
+            margin-bottom: 80px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease-out;
+        }
+        
+        .section-header.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .section-label {
+            font-family: 'Michroma', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .section-label::before {
+            content: '';
+            width: 30px;
+            height: 1px;
+            background: var(--primary);
+        }
+        
+        .section-title {
+            font-family: 'Michroma', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 400;
+            color: #fff;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.03) 0%, rgba(0, 136, 255, 0.03) 100%);
+            border: 1px solid rgba(0, 255, 204, 0.1);
+            border-radius: 20px;
+            padding: 50px 40px;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.6s ease-out;
+        }
+        
+        .feature-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 255, 204, 0.1) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+        
+        .feature-card:hover {
+            border-color: rgba(0, 255, 204, 0.3);
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+        }
+        
+        .feature-title {
+            font-family: 'Michroma', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        
+        .feature-text {
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .stats-section {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            flex-wrap: wrap;
+            padding: 100px 10%;
+        }
+        
+        .stat {
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.8s ease-out;
+        }
+        
+        .stat.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .stat-value {
+            font-family: 'Michroma', sans-serif;
+            font-size: 3.5rem;
+            background: linear-gradient(180deg, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-unit {
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 10px;
+        }
+
+        .crew-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+        
+        .crew-card {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+        
+        .crew-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .crew-avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 3px;
+            position: relative;
+        }
+        
+        .crew-avatar::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            background: var(--deep);
+            border-radius: 50%;
+        }
+        
+        .crew-avatar::after {
+            content: '';
+            position: absolute;
+            inset: 10px;
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.2), rgba(0, 136, 255, 0.2));
+            border-radius: 50%;
+        }
+        
+        .crew-name {
+            font-family: 'Michroma', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        
+        .crew-role {
+            font-size: 0.8rem;
+            color: var(--primary);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .sonar-container {
+            position: fixed;
+            bottom: 40px;
+            left: 40px;
+            z-index: 50;
+        }
+        
+        .sonar {
+            width: 80px;
+            height: 80px;
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .sonar::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid var(--primary);
+            border-radius: 50%;
+            animation: sonarWave 3s ease-out infinite;
+        }
+        
+        .sonar::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid var(--primary);
+            border-radius: 50%;
+            animation: sonarWave 3s ease-out 1.5s infinite;
+        }
+        
+        @keyframes sonarWave {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        
+        .sonar-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--primary);
+        }
+        
+        .sonar-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50%;
+            height: 1px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+            transform-origin: left center;
+            animation: sonarSweep 3s linear infinite;
+        }
+        
+        @keyframes sonarSweep {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        footer {
+            padding: 80px 10%;
+            border-top: 1px solid rgba(0, 255, 204, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        footer p {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.85rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .loader {
+            position: fixed;
+            inset: 0;
+            background: var(--deep);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1s, visibility 1s;
+        }
+        
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loader-bubbles {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .loader-bubble {
+            width: 15px;
+            height: 15px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: bubbleRise 1.5s ease-in-out infinite;
+        }
+        
+        .loader-bubble:nth-child(2) { animation-delay: 0.2s; }
+        .loader-bubble:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes bubbleRise {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; }
+            50% { transform: translateY(-20px) scale(1.2); opacity: 1; }
+        }
+        
+        .loader-text {
+            font-family: 'Michroma', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.4em;
+            color: var(--primary);
+        }
+        
+        .loader-depth {
+            margin-top: 15px;
+            font-family: 'Michroma', sans-serif;
+            font-size: 1.5rem;
+            color: rgba(0, 255, 204, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="loader" id="loader">
+        <div class="loader-bubbles">
+            <div class="loader-bubble"></div>
+            <div class="loader-bubble"></div>
+            <div class="loader-bubble"></div>
+        </div>
+        <div class="loader-text">DESCENDING</div>
+        <div class="loader-depth" id="loaderDepth">0m</div>
+    </div>
+    
+    <div id="canvas-container"></div>
+    <div class="caustics"></div>
+    <div class="light-rays"></div>
+    
+    <nav class="nav">
+        <div class="logo">
+            <div class="logo-icon">◉</div>
+            ABYSSAL
+        </div>
+        <ul class="nav-links">
+            <li><a href="#mission">Mission</a></li>
+            <li><a href="#systems">Systems</a></li>
+            <li><a href="#crew">Crew</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+    
+    <div class="depth-indicator">
+        <div class="depth-value">DEPTH</div>
+        <div class="depth-line">
+            <div class="depth-marker" id="depthMarker"></div>
+        </div>
+        <div class="depth-value" id="currentDepth">0m</div>
+    </div>
+    
+    <div class="sonar-container">
+        <div class="sonar">
+            <div class="sonar-dot"></div>
+            <div class="sonar-line"></div>
+        </div>
+    </div>
+    
+    <div class="content">
+        <section class="hero">
+            <div class="hero-depth">DEPTH: 11,034 METERS</div>
+            <h1 class="hero-title">
+                <span class="main">ABYSSAL</span>
+                <span class="sub">Deep Horizon Initiative</span>
+            </h1>
+            <p class="hero-description">
+                Journey to the deepest frontiers of Earth's ocean. 
+                Where light fades and pressure crushes, we discover 
+                life beyond imagination.
+            </p>
+            <div class="hero-cta">
+                <a href="#" class="btn btn-primary">Begin Descent</a>
+                <a href="#" class="btn btn-secondary">View Mission</a>
+            </div>
+            <div class="scroll-hint">
+                <span>Descend</span>
+                <div class="scroll-mouse"></div>
+            </div>
+        </section>
+        
+        <section class="section" id="mission">
+            <div class="section-header">
+                <div class="section-label">01 // MISSION BRIEF</div>
+                <h2 class="section-title">Explore the Unknown</h2>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔬</div>
+                    <h3 class="feature-title">Bio-Discovery</h3>
+                    <p class="feature-text">
+                        Document previously unknown species thriving in extreme 
+                        conditions. Each dive reveals life forms that challenge 
+                        our understanding of biology.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📡</div>
+                    <h3 class="feature-title">Deep Mapping</h3>
+                    <p class="feature-text">
+                        Chart the unexplored 80% of the ocean floor using 
+                        advanced sonar arrays and autonomous surveying drones 
+                        capable of withstanding crushing pressures.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚗️</div>
+                    <h3 class="feature-title">Resource Analysis</h3>
+                    <p class="feature-text">
+                        Study mineral deposits and thermal vents for sustainable 
+                        extraction methods that could power civilization for 
+                        centuries to come.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌡️</div>
+                    <h3 class="feature-title">Climate Research</h3>
+                    <p class="feature-text">
+                        Monitor deep ocean currents and carbon absorption patterns 
+                        critical to understanding and combating global climate change.
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="stats-section">
+            <div class="stat">
+                <div class="stat-value"><span id="depthStat">0</span><span class="stat-unit">m</span></div>
+                <div class="stat-label">Maximum Depth</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value"><span id="speciesStat">0</span></div>
+                <div class="stat-label">Species Discovered</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value"><span id="hoursStat">0</span><span class="stat-unit">k</span></div>
+                <div class="stat-label">Dive Hours</div>
+            </div>
+        </section>
+        
+        <section class="section" id="crew">
+            <div class="section-header">
+                <div class="section-label">02 // DIVE TEAM</div>
+                <h2 class="section-title">Meet the Crew</h2>
+            </div>
+            <div class="crew-grid">
+                <div class="crew-card">
+                    <div class="crew-avatar"></div>
+                    <h3 class="crew-name">Dr. Elena Vasquez</h3>
+                    <p class="crew-role">Mission Commander</p>
+                </div>
+                <div class="crew-card">
+                    <div class="crew-avatar"></div>
+                    <h3 class="crew-name">James Chen</h3>
+                    <p class="crew-role">Chief Engineer</p>
+                </div>
+                <div class="crew-card">
+                    <div class="crew-avatar"></div>
+                    <h3 class="crew-name">Dr. Amara Okonkwo</h3>
+                    <p class="crew-role">Marine Biologist</p>
+                </div>
+                <div class="crew-card">
+                    <div class="crew-avatar"></div>
+                    <h3 class="crew-name">Viktor Petrov</h3>
+                    <p class="crew-role">Submersible Pilot</p>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <p>© 2025 ABYSSAL DEEP HORIZON // OCEANIC RESEARCH INITIATIVE</p>
+        <div class="footer-links">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Contact</a>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        let scene, camera, renderer;
+        let jellyfishGroup, bubbles, particles;
+        let mouseX = 0, mouseY = 0;
+        let targetMouseX = 0, targetMouseY = 0;
+        let scrollY = 0;
+        let time = 0;
+
+        const jellyfishVertexShader = `
+            uniform float time;
+            varying vec2 vUv;
+            varying vec3 vNormal;
+            varying vec3 vPosition;
+            
+            void main() {
+                vUv = uv;
+                vNormal = normalize(normalMatrix * normal);
+                
+                vec3 pos = position;
+
+                float pulse = sin(time * 2.0 + position.y * 3.0) * 0.1;
+                pos.x += pos.x * pulse;
+                pos.z += pos.z * pulse;
+
+                pos.x += sin(time + position.y * 2.0) * 0.05;
+                
+                vPosition = pos;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+            }
+        `;
+        
+        const jellyfishFragmentShader = `
+            uniform float time;
+            uniform vec3 color1;
+            uniform vec3 color2;
+            varying vec2 vUv;
+            varying vec3 vNormal;
+            varying vec3 vPosition;
+            
+            void main() {
+                vec3 viewDir = normalize(cameraPosition - vPosition);
+                float fresnel = pow(1.0 - max(dot(viewDir, vNormal), 0.0), 2.0);
+
+                vec3 baseColor = mix(color1, color2, vUv.y);
+
+                float glow = fresnel * 1.5;
+                vec3 glowColor = color1 * 2.0;
+
+                float pulse = sin(time * 3.0) * 0.2 + 0.8;
+                
+                vec3 finalColor = baseColor + glowColor * glow;
+                finalColor *= pulse;
+                
+                float alpha = 0.6 + fresnel * 0.4;
+                
+                gl_FragColor = vec4(finalColor, alpha);
+            }
+        `;
+        
+        function init() {
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x001428, 0.03);
+            
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 10;
+            
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            createJellyfish();
+
+            createBubbles();
+
+            createParticles();
+
+            const ambientLight = new THREE.AmbientLight(0x001428, 0.5);
+            scene.add(ambientLight);
+
+            const light1 = new THREE.PointLight(0x00ffcc, 1, 20);
+            light1.position.set(5, 0, 5);
+            scene.add(light1);
+            
+            const light2 = new THREE.PointLight(0xff00aa, 0.5, 15);
+            light2.position.set(-5, 3, 3);
+            scene.add(light2);
+
+            window.addEventListener('resize', onWindowResize);
+            document.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('scroll', onScroll);
+
+            setupScrollAnimations();
+
+            simulateLoading();
+        }
+        
+        function createJellyfish() {
+            jellyfishGroup = new THREE.Group();
+            
+            const jellyfishColors = [
+                { color1: new THREE.Color(0x00ffcc), color2: new THREE.Color(0x0088ff) },
+                { color1: new THREE.Color(0xff00aa), color2: new THREE.Color(0x8800ff) },
+                { color1: new THREE.Color(0x00ff88), color2: new THREE.Color(0x00ffcc) },
+                { color1: new THREE.Color(0xff6600), color2: new THREE.Color(0xff00aa) }
+            ];
+            
+            for (let i = 0; i < 8; i++) {
+                const colors = jellyfishColors[i % jellyfishColors.length];
+
+                const bellGeometry = new THREE.SphereGeometry(0.5, 32, 32, 0, Math.PI * 2, 0, Math.PI / 2);
+                const bellMaterial = new THREE.ShaderMaterial({
+                    vertexShader: jellyfishVertexShader,
+                    fragmentShader: jellyfishFragmentShader,
+                    uniforms: {
+                        time: { value: 0 },
+                        color1: { value: colors.color1 },
+                        color2: { value: colors.color2 }
+                    },
+                    transparent: true,
+                    side: THREE.DoubleSide,
+                    blending: THREE.AdditiveBlending
+                });
+                
+                const bell = new THREE.Mesh(bellGeometry, bellMaterial);
+                bell.rotation.x = Math.PI;
+
+                const tentacleGroup = new THREE.Group();
+                const tentacleCount = 8;
+                
+                for (let j = 0; j < tentacleCount; j++) {
+                    const angle = (j / tentacleCount) * Math.PI * 2;
+                    const radius = 0.3;
+                    
+                    const points = [];
+                    for (let k = 0; k < 20; k++) {
+                        const y = -k * 0.15;
+                        const x = Math.cos(angle) * radius + Math.sin(k * 0.5) * 0.05;
+                        const z = Math.sin(angle) * radius + Math.cos(k * 0.5) * 0.05;
+                        points.push(new THREE.Vector3(x, y, z));
+                    }
+                    
+                    const curve = new THREE.CatmullRomCurve3(points);
+                    const tubeGeometry = new THREE.TubeGeometry(curve, 20, 0.02, 8, false);
+                    const tubeMaterial = new THREE.MeshBasicMaterial({
+                        color: colors.color1,
+                        transparent: true,
+                        opacity: 0.6,
+                        blending: THREE.AdditiveBlending
+                    });
+                    
+                    const tentacle = new THREE.Mesh(tubeGeometry, tubeMaterial);
+                    tentacleGroup.add(tentacle);
+                }
+
+                const jellyfish = new THREE.Group();
+                jellyfish.add(bell);
+                jellyfish.add(tentacleGroup);
+
+                jellyfish.position.set(
+                    (Math.random() - 0.5) * 20,
+                    (Math.random() - 0.5) * 15,
+                    (Math.random() - 0.5) * 10 - 5
+                );
+                
+                jellyfish.userData = {
+                    speed: Math.random() * 0.005 + 0.002,
+                    rotationSpeed: (Math.random() - 0.5) * 0.01,
+                    floatOffset: Math.random() * Math.PI * 2,
+                    originalY: jellyfish.position.y
+                };
+                
+                const scale = Math.random() * 0.5 + 0.5;
+                jellyfish.scale.set(scale, scale, scale);
+                
+                jellyfishGroup.add(jellyfish);
+            }
+            
+            scene.add(jellyfishGroup);
+        }
+        
+        function createBubbles() {
+            const bubbleCount = 100;
+            const positions = new Float32Array(bubbleCount * 3);
+            const sizes = new Float32Array(bubbleCount);
+            const speeds = [];
+            
+            for (let i = 0; i < bubbleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 30;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 30;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
+                
+                sizes[i] = Math.random() * 3 + 1;
+                speeds.push(Math.random() * 0.02 + 0.01);
+            }
+            
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+            geometry.userData.speeds = speeds;
+            
+            const material = new THREE.PointsMaterial({
+                size: 0.15,
+                color: 0x88ffff,
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending
+            });
+            
+            bubbles = new THREE.Points(geometry, material);
+            scene.add(bubbles);
+        }
+        
+        function createParticles() {
+            const particleCount = 500;
+            const positions = new Float32Array(particleCount * 3);
+            
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 50;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 50;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 30;
+            }
+            
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            
+            const material = new THREE.PointsMaterial({
+                size: 0.05,
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.3
+            });
+            
+            particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+        }
+        
+        function simulateLoading() {
+            let depth = 0;
+            const depthEl = document.getElementById('loaderDepth');
+            
+            const interval = setInterval(() => {
+                depth += Math.floor(Math.random() * 500 + 200);
+                if (depth >= 11034) {
+                    depth = 11034;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('loader').classList.add('hidden');
+                    }, 500);
+                }
+                depthEl.textContent = depth.toLocaleString() + 'm';
+            }, 150);
+        }
+        
+        function setupScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.2 });
+            
+            document.querySelectorAll('.section-header, .feature-card, .stat, .crew-card').forEach(el => {
+                observer.observe(el);
+            });
+
+            const statsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateStats();
+                        statsObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            const statsSection = document.querySelector('.stats-section');
+            if (statsSection) statsObserver.observe(statsSection);
+        }
+        
+        function animateStats() {
+            animateNumber('depthStat', 11034, 2000);
+            animateNumber('speciesStat', 847, 2000);
+            animateNumber('hoursStat', 156, 2000);
+        }
+        
+        function animateNumber(id, target, duration) {
+            const el = document.getElementById(id);
+            const start = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                
+                el.textContent = Math.floor(eased * target).toLocaleString();
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        function onMouseMove(event) {
+            targetMouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            targetMouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        }
+        
+        function onScroll() {
+            scrollY = window.scrollY;
+
+            const maxScroll = document.body.scrollHeight - window.innerHeight;
+            const scrollProgress = scrollY / maxScroll;
+            
+            const marker = document.getElementById('depthMarker');
+            marker.style.top = (scrollProgress * 188) + 'px';
+            
+            const depthDisplay = document.getElementById('currentDepth');
+            const currentDepth = Math.floor(scrollProgress * 11034);
+            depthDisplay.textContent = currentDepth.toLocaleString() + 'm';
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            time += 0.01;
+
+            mouseX += (targetMouseX - mouseX) * 0.05;
+            mouseY += (targetMouseY - mouseY) * 0.05;
+
+            if (jellyfishGroup) {
+                jellyfishGroup.children.forEach((jellyfish, index) => {
+                    const data = jellyfish.userData;
+
+                    jellyfish.position.y = data.originalY + Math.sin(time + data.floatOffset) * 0.5;
+
+                    jellyfish.position.y += data.speed;
+                    if (jellyfish.position.y > 10) {
+                        jellyfish.position.y = -10;
+                        data.originalY = -10;
+                    }
+
+                    jellyfish.rotation.y += data.rotationSpeed;
+
+                    const bell = jellyfish.children[0];
+                    if (bell.material.uniforms) {
+                        bell.material.uniforms.time.value = time;
+                    }
+                });
+            }
+
+            if (bubbles) {
+                const positions = bubbles.geometry.attributes.position.array;
+                const speeds = bubbles.geometry.userData.speeds;
+                
+                for (let i = 0; i < positions.length / 3; i++) {
+                    positions[i * 3 + 1] += speeds[i];
+
+                    positions[i * 3] += Math.sin(time * 2 + i) * 0.002;
+                    
+                    if (positions[i * 3 + 1] > 15) {
+                        positions[i * 3 + 1] = -15;
+                    }
+                }
+                
+                bubbles.geometry.attributes.position.needsUpdate = true;
+            }
+
+            if (particles) {
+                particles.rotation.y = time * 0.01;
+                
+                const positions = particles.geometry.attributes.position.array;
+                for (let i = 0; i < positions.length / 3; i++) {
+                    positions[i * 3 + 1] -= 0.005;
+                    if (positions[i * 3 + 1] < -25) {
+                        positions[i * 3 + 1] = 25;
+                    }
+                }
+                particles.geometry.attributes.position.needsUpdate = true;
+            }
+
+            camera.position.x = mouseX * 2;
+            camera.position.y = mouseY * 1.5;
+            camera.position.z = 10 - scrollY * 0.002;
+            camera.lookAt(0, scrollY * -0.003, 0);
+            
+            renderer.render(scene, camera);
+        }
+        
+        init();
+        animate();
+    </script>
+</body>
+</html>
