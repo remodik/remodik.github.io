@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Практические работы</title>
+    <title>Портфолио — Головкин Илья</title>
     <style>
         * {
             margin: 0;
@@ -116,12 +116,54 @@
             font-size: 1.1em;
         }
 
+        .section-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .section-tab {
+            padding: 14px 30px;
+            border-radius: 14px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            background: rgba(0, 212, 255, 0.06);
+            color: #a0c8e0;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .section-tab:hover {
+            border-color: rgba(0, 212, 255, 0.6);
+            background: rgba(0, 212, 255, 0.12);
+            color: #e5f6ff;
+        }
+
+        .section-tab.active {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(123, 44, 191, 0.2));
+            border-color: #00d4ff;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .section-tab.commercial.active {
+            background: linear-gradient(135deg, rgba(255, 170, 0, 0.25), rgba(255, 100, 0, 0.15));
+            border-color: #ffaa00;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 170, 0, 0.2);
+        }
+
         .subject-filter {
-            margin-top: 45px;
+            margin-top: 28px;
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
             gap: 12px;
+            min-height: 48px;
         }
 
         .subject-btn {
@@ -177,6 +219,36 @@
             background: rgba(0, 0, 0, 0.25);
         }
 
+        .section-label {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: -20px;
+        }
+
+        .section-label-inner {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 24px;
+            border-radius: 999px;
+            font-size: 0.85em;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .section-label-inner.edu {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            color: #00d4ff;
+        }
+
+        .section-label-inner.com {
+            background: rgba(255, 170, 0, 0.1);
+            border: 1px solid rgba(255, 170, 0, 0.35);
+            color: #ffaa00;
+        }
+
         .works-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -194,6 +266,16 @@
             cursor: pointer;
             position: relative;
             overflow: hidden;
+        }
+
+        .work-card.commercial {
+            border-color: rgba(255, 170, 0, 0.25);
+            background: linear-gradient(145deg, rgba(35, 28, 15, 0.9), rgba(26, 22, 10, 0.9));
+        }
+
+        .work-card.commercial:hover {
+            box-shadow: 0 20px 50px rgba(255, 170, 0, 0.2);
+            border-color: rgba(255, 170, 0, 0.5);
         }
 
         .subject-badge {
@@ -214,6 +296,12 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+
+        .subject-badge.commercial-badge {
+            border-color: rgba(255, 170, 0, 0.4);
+            background: rgba(255, 170, 0, 0.12);
+            color: #ffe0a0;
         }
 
         .subject-badge-icon {
@@ -242,8 +330,12 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.08), transparent);
             transition: left 0.5s ease;
+        }
+
+        .work-card.commercial::before {
+            background: linear-gradient(90deg, transparent, rgba(255, 170, 0, 0.08), transparent);
         }
 
         .work-card:hover::before {
@@ -270,6 +362,10 @@
             transition: all 0.3s ease;
         }
 
+        .work-icon.commercial-icon {
+            background: linear-gradient(135deg, #ffaa00, #ff6600);
+        }
+
         .work-icon svg {
             width: 32px;
             height: 32px;
@@ -289,6 +385,10 @@
             color: #00d4ff;
             margin-bottom: 10px;
             font-weight: bold;
+        }
+
+        .work-date.commercial-date {
+            color: #ffaa00;
         }
 
         .work-title {
@@ -325,6 +425,12 @@
             color: #e8d48b;
         }
 
+        .tag.orange {
+            background: rgba(255, 170, 0, 0.15);
+            border-color: rgba(255, 170, 0, 0.35);
+            color: #ffcc66;
+        }
+
         .work-link {
             display: inline-flex;
             align-items: center;
@@ -339,7 +445,6 @@
         }
 
         .work-link:hover {
-            background: linear-gradient(135deg, #00e5ff, #00aadd);
             transform: translateX(5px);
             box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
         }
@@ -349,24 +454,15 @@
         }
 
         .work-link.gold:hover {
-            background: linear-gradient(135deg, #e8d48b, #c9a227);
             box-shadow: 0 5px 15px rgba(201, 162, 39, 0.4);
         }
 
-        .footer {
-            text-align: center;
-            padding: 60px 20px 40px;
-            color: #666;
+        .work-link.orange {
+            background: linear-gradient(135deg, #ffaa00, #ff6600);
         }
 
-        .footer a {
-            color: #00d4ff;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer a:hover {
-            color: #00e5ff;
+        .work-link.orange:hover {
+            box-shadow: 0 5px 15px rgba(255, 170, 0, 0.4);
         }
 
         .stats {
@@ -410,27 +506,25 @@
             display: none;
         }
 
-        @keyframes pulse-badge {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        .footer {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: #666;
         }
 
+        .footer a {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+
+        .footer a:hover { color: #00e5ff; }
+
         @media (max-width: 768px) {
-            .works-grid {
-                grid-template-columns: 1fr;
-                margin-top: 36px;
-            }
-
-            .subject-filter {
-                justify-content: flex-start;
-                overflow-x: auto;
-                flex-wrap: nowrap;
-                padding-bottom: 6px;
-            }
-
-            .subject-btn {
-                white-space: nowrap;
-            }
+            .works-grid { grid-template-columns: 1fr; margin-top: 36px; }
+            .subject-filter { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 6px; }
+            .subject-btn { white-space: nowrap; }
+            .section-tabs { gap: 10px; }
+            .section-tab { padding: 11px 20px; font-size: 0.9em; }
         }
     </style>
 </head>
@@ -441,9 +535,9 @@
         <header class="header">
             <div class="header-content">
                 <h1 id="mainTitle">Портфолио работ</h1>
-                <p class="subtitle">Практические работы по нескольким предметам</p>
+                <p class="subtitle">Практические работы и коммерческие проекты</p>
                 <div class="student-info">
-                    <strong>Головкин Илья</strong> • Группа 9/3 РПО 23/2
+                    <strong>Головкин Илья</strong> • Веб-разработчик • Группа 9/3 РПО 23/2
                 </div>
             </div>
         </header>
@@ -451,25 +545,39 @@
         <div class="stats">
             <div class="stat-item">
                 <div class="stat-number" id="workCount">0</div>
-                <div class="stat-label">Практических работ</div>
+                <div class="stat-label">Всего работ</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="commercialCount">0</div>
+                <div class="stat-label">Коммерческих проектов</div>
             </div>
             <div class="stat-item">
                 <div class="stat-number" id="subjectCount">0</div>
                 <div class="stat-label">Предметов</div>
             </div>
-            <div class="stat-item">
-                <div class="stat-number" id="tagCount">0</div>
-                <div class="stat-label">Тематических тегов</div>
-            </div>
         </div>
 
-        <div class="subject-filter" id="subjectFilter"></div>
-        <div class="works-grid" id="worksGrid"></div>
-        <div class="empty-state" id="emptyState">По выбранному предмету пока нет практических работ.</div>
+        <div class="section-tabs">
+            <button class="section-tab active" data-section="edu" onclick="switchSection('edu')">📚 Учебные работы</button>
+            <button class="section-tab commercial" data-section="com" onclick="switchSection('com')">💼 Коммерческие работы</button>
+        </div>
+
+        <div id="section-edu">
+            <div class="subject-filter" id="subjectFilter"></div>
+            <div class="works-grid" id="worksGrid"></div>
+            <div class="empty-state" id="emptyState">По выбранному предмету пока нет практических работ.</div>
+        </div>
+
+        <div id="section-com" style="display:none;">
+            <div class="section-label" style="margin-top:36px;">
+                <div class="section-label-inner com">💼 Коммерческие работы — фриланс-проекты</div>
+            </div>
+            <div class="works-grid" id="commercialGrid" style="margin-top: 40px;"></div>
+        </div>
 
         <footer class="footer">
-            <p style="margin-top: 10px;">
-                <a href="https://github.com" target="_blank">GitHub</a> •
+            <p>
+                <a href="https://github.com/remodik" target="_blank">GitHub</a> •
                 Hosted on GitHub Pages
             </p>
         </footer>
@@ -477,16 +585,18 @@
 
     <script>
         const iconSvg = {
-            books: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5a2.5 2.5 0 0 1 2.5-2.5H11v15H5.5A2.5 2.5 0 0 0 3 21V6.5z"/><path d="M21 6.5A2.5 2.5 0 0 0 18.5 4H13v15h5.5A2.5 2.5 0 0 1 21 21V6.5z"/></svg>',
-            book: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h11v17H6a2 2 0 0 0-2 2V5z"/><path d="M17 3h1a2 2 0 0 1 2 2v16"/></svg>',
-            flask: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 2h4"/><path d="M12 2v6l5.5 9.5A2.5 2.5 0 0 1 15.4 21H8.6a2.5 2.5 0 0 1-2.1-3.5L12 8"/><path d="M8.5 14h7"/></svg>',
-            building: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="10" width="18" height="10" rx="1"/><path d="M6 10V6l6-3 6 3v4"/><path d="M8 14h.01M12 14h.01M16 14h.01"/></svg>',
-            fileText: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/><path d="M9 13h6M9 17h6M9 9h2"/></svg>',
-            wrench: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.2 2.2-2.6-.5-.5-2.6z"/></svg>',
-            chart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 14 3-3 3 2 4-5"/></svg>',
-            shield: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v6c0 5 3.4 8.7 7 9.9 3.6-1.2 7-4.9 7-9.9V6z"/></svg>',
-            briefcase: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/></svg>',
-            puzzle: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2h3a2 2 0 0 1 2 2v3h3a2 2 0 0 1 2 2v3h-3a2 2 0 1 0 0 4h3v3a2 2 0 0 1-2 2h-3v-3a2 2 0 1 0-4 0v3h-3a2 2 0 0 1-2-2v-3H5a2 2 0 0 1-2-2v-3h3a2 2 0 1 0 0-4H3V9a2 2 0 0 1 2-2h3V4a2 2 0 0 1 2-2h2"/></svg>'
+            books: '<svg viewBox="0 0 24 24"><path d="M3 6.5a2.5 2.5 0 0 1 2.5-2.5H11v15H5.5A2.5 2.5 0 0 0 3 21V6.5z"/><path d="M21 6.5A2.5 2.5 0 0 0 18.5 4H13v15h5.5A2.5 2.5 0 0 1 21 21V6.5z"/></svg>',
+            book: '<svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h11v17H6a2 2 0 0 0-2 2V5z"/><path d="M17 3h1a2 2 0 0 1 2 2v16"/></svg>',
+            flask: '<svg viewBox="0 0 24 24"><path d="M10 2h4"/><path d="M12 2v6l5.5 9.5A2.5 2.5 0 0 1 15.4 21H8.6a2.5 2.5 0 0 1-2.1-3.5L12 8"/><path d="M8.5 14h7"/></svg>',
+            building: '<svg viewBox="0 0 24 24"><rect x="3" y="10" width="18" height="10" rx="1"/><path d="M6 10V6l6-3 6 3v4"/><path d="M8 14h.01M12 14h.01M16 14h.01"/></svg>',
+            fileText: '<svg viewBox="0 0 24 24"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/><path d="M9 13h6M9 17h6M9 9h2"/></svg>',
+            wrench: '<svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.2 2.2-2.6-.5-.5-2.6z"/></svg>',
+            chart: '<svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 14 3-3 3 2 4-5"/></svg>',
+            shield: '<svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 5 3.4 8.7 7 9.9 3.6-1.2 7-4.9 7-9.9V6z"/></svg>',
+            briefcase: '<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/></svg>',
+            puzzle: '<svg viewBox="0 0 24 24"><path d="M12 2h3a2 2 0 0 1 2 2v3h3a2 2 0 0 1 2 2v3h-3a2 2 0 1 0 0 4h3v3a2 2 0 0 1-2 2h-3v-3a2 2 0 1 0-4 0v3h-3a2 2 0 0 1-2-2v-3H5a2 2 0 0 1-2-2v-3h3a2 2 0 1 0 0-4H3V9a2 2 0 0 1 2-2h3V4a2 2 0 0 1 2-2h2"/></svg>',
+            globe: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+            zap: '<svg viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>'
         };
 
         function renderIcon(name) {
@@ -521,12 +631,7 @@
                 iconStyle: 'background: linear-gradient(135deg, #c9a227, #8b7317);',
                 linkVariant: 'gold',
                 subject: 'Управление программными проектами',
-                tags: [
-                    { label: 'Three.js', variant: 'gold' },
-                    { label: 'WebGL', variant: 'gold' },
-                    { label: 'Коммуникации' },
-                    { label: 'Банкинг' }
-                ]
+                tags: [{ label: 'Three.js', variant: 'gold' }, { label: 'WebGL', variant: 'gold' }, { label: 'Коммуникации' }, { label: 'Банкинг' }]
             },
             {
                 url: '12-24-2025/main.html',
@@ -557,6 +662,24 @@
             }
         ];
 
+        const commercialWorks = [
+            {
+                url: 'ocean-landing/index.html',
+                date: 'Март 2026',
+                title: 'ABYSSAL — лендинг в морской тематике',
+                description: 'Демонстрационный лендинг на чистом HTML/CSS/JavaScript без конструкторов. Анимированный canvas-фон с эффектом воды, плавная прокрутка, адаптивная вёрстка, кастомные анимации.',
+                icon: 'globe',
+                tags: [
+                    { label: 'HTML/CSS/JS', variant: 'orange' },
+                    { label: 'Canvas', variant: 'orange' },
+                    { label: 'Анимации' },
+                    { label: 'Адаптив' },
+                    { label: 'Без конструкторов' }
+                ],
+                isCommercial: true
+            }
+        ];
+
         const subjectMeta = {
             'Обеспечение качества функционирования компьютерных систем': { icon: 'shield' },
             'Внедрение и поддержка компьютерных систем': { icon: 'puzzle' },
@@ -564,6 +687,16 @@
         };
 
         let selectedSubject = 'all';
+        let currentSection = 'edu';
+
+        function switchSection(section) {
+            currentSection = section;
+            document.getElementById('section-edu').style.display = section === 'edu' ? 'block' : 'none';
+            document.getElementById('section-com').style.display = section === 'com' ? 'block' : 'none';
+            document.querySelectorAll('.section-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.section === section);
+            });
+        }
 
         function createParticles() {
             const container = document.getElementById('particles');
@@ -577,29 +710,21 @@
             }
         }
 
-        function openWork(url) {
-            globalThis.location.href = url;
-        }
-
         function buildSubjectButtons() {
             const countsBySubject = new Map();
-            works.forEach((work) => {
-                const current = countsBySubject.get(work.subject) || 0;
-                countsBySubject.set(work.subject, current + 1);
+            works.forEach(work => {
+                countsBySubject.set(work.subject, (countsBySubject.get(work.subject) || 0) + 1);
             });
 
             const buttons = [
                 { id: 'all', title: 'Все предметы', count: works.length, icon: 'books' },
                 ...Array.from(countsBySubject.entries()).map(([subject, count]) => ({
-                    id: subject,
-                    title: subject,
-                    count,
-                    icon: subjectMeta[subject]?.icon || 'book'
+                    id: subject, title: subject, count, icon: subjectMeta[subject]?.icon || 'book'
                 }))
             ];
 
             const subjectFilter = document.getElementById('subjectFilter');
-            subjectFilter.innerHTML = buttons.map((button) => `
+            subjectFilter.innerHTML = buttons.map(button => `
                 <button class="subject-btn${button.id === selectedSubject ? ' active' : ''}" data-subject="${button.id}">
                     <span class="subject-btn-icon">${renderIcon(button.icon)}</span>
                     <span>${button.title}</span>
@@ -607,7 +732,7 @@
                 </button>
             `).join('');
 
-            subjectFilter.querySelectorAll('.subject-btn').forEach((button) => {
+            subjectFilter.querySelectorAll('.subject-btn').forEach(button => {
                 button.addEventListener('click', () => {
                     selectedSubject = button.dataset.subject;
                     buildSubjectButtons();
@@ -619,15 +744,12 @@
         function renderWorks() {
             const worksGrid = document.getElementById('worksGrid');
             const emptyState = document.getElementById('emptyState');
-            const filteredWorks = selectedSubject === 'all'
-                ? works
-                : works.filter((work) => work.subject === selectedSubject);
+            const filtered = selectedSubject === 'all' ? works : works.filter(w => w.subject === selectedSubject);
 
-            worksGrid.innerHTML = filteredWorks.map((work) => {
-                const tagsHtml = work.tags.map((tag) => {
-                    const normalizedTag = typeof tag === 'string' ? { label: tag } : tag;
-                    const tagClass = normalizedTag.variant === 'gold' ? 'tag gold' : 'tag';
-                    return `<span class="${tagClass}">${normalizedTag.label}</span>`;
+            worksGrid.innerHTML = filtered.map(work => {
+                const tagsHtml = work.tags.map(tag => {
+                    const t = typeof tag === 'string' ? { label: tag } : tag;
+                    return `<span class="tag${t.variant === 'gold' ? ' gold' : ''}">${t.label}</span>`;
                 }).join('');
 
                 const linkClass = work.linkVariant === 'gold' ? 'work-link gold' : 'work-link';
@@ -635,7 +757,7 @@
                 const subjectIcon = subjectMeta[work.subject]?.icon || 'book';
 
                 return `
-                    <article class="work-card" data-url="${work.url}">
+                    <article class="work-card" onclick="location.href='${work.url}'">
                         <div class="subject-badge">
                             <span class="subject-badge-icon">${renderIcon(subjectIcon)}</span>
                             <span>${work.subject}</span>
@@ -645,68 +767,61 @@
                         <h3 class="work-title">${work.title}</h3>
                         <p class="work-description">${work.description}</p>
                         <div class="work-tags">${tagsHtml}</div>
-                        <a href="${work.url}" class="${linkClass}" onclick="event.stopPropagation()">
-                            Открыть работу →
-                        </a>
+                        <a href="${work.url}" class="${linkClass}" onclick="event.stopPropagation()">Открыть работу →</a>
                     </article>
                 `;
             }).join('');
 
-            worksGrid.querySelectorAll('.work-card').forEach((card) => {
-                card.addEventListener('click', () => openWork(card.dataset.url));
-            });
+            emptyState.style.display = filtered.length ? 'none' : 'block';
+        }
 
-            emptyState.style.display = filteredWorks.length ? 'none' : 'block';
+        function renderCommercialWorks() {
+            const grid = document.getElementById('commercialGrid');
+            grid.innerHTML = commercialWorks.map(work => {
+                const tagsHtml = work.tags.map(tag => {
+                    const t = typeof tag === 'string' ? { label: tag } : tag;
+                    return `<span class="tag${t.variant === 'orange' ? ' orange' : ''}">${t.label}</span>`;
+                }).join('');
+
+                return `
+                    <article class="work-card commercial" onclick="location.href='${work.url}'">
+                        <div class="subject-badge commercial-badge">
+                            <span class="subject-badge-icon">${renderIcon('briefcase')}</span>
+                            <span>Коммерческий проект</span>
+                        </div>
+                        <div class="work-icon commercial-icon">${renderIcon(work.icon)}</div>
+                        <div class="work-date commercial-date">${work.date}</div>
+                        <h3 class="work-title">${work.title}</h3>
+                        <p class="work-description">${work.description}</p>
+                        <div class="work-tags">${tagsHtml}</div>
+                        <a href="${work.url}" class="work-link orange" onclick="event.stopPropagation()">Открыть проект →</a>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function fillStats() {
+            document.getElementById('workCount').textContent = works.length + commercialWorks.length;
+            document.getElementById('commercialCount').textContent = commercialWorks.length;
+            document.getElementById('subjectCount').textContent = new Set(works.map(w => w.subject)).size;
         }
 
         function typeWriter() {
             const title = document.getElementById('mainTitle');
-            const originalText = title.textContent;
+            const text = title.textContent;
             title.textContent = '';
             let i = 0;
-
             const interval = setInterval(() => {
-                if (i < originalText.length) {
-                    title.textContent += originalText.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(interval);
-                }
+                if (i < text.length) { title.textContent += text.charAt(i); i++; }
+                else clearInterval(interval);
             }, 80);
-        }
-
-        function animateCounter(target) {
-            const counter = document.getElementById('workCount');
-            let current = 0;
-
-            const interval = setInterval(() => {
-                if (current < target) {
-                    current++;
-                    counter.textContent = current;
-                } else {
-                    clearInterval(interval);
-                }
-            }, 200);
-        }
-
-        function fillStats() {
-            const uniqueSubjects = new Set(works.map((work) => work.subject)).size;
-            const uniqueTags = new Set();
-            works.forEach((work) => {
-                work.tags.forEach((tag) => {
-                    uniqueTags.add(typeof tag === 'string' ? tag : tag.label);
-                });
-            });
-
-            document.getElementById('subjectCount').textContent = uniqueSubjects;
-            document.getElementById('tagCount').textContent = uniqueTags.size;
-            animateCounter(works.length);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             createParticles();
             buildSubjectButtons();
             renderWorks();
+            renderCommercialWorks();
             fillStats();
             typeWriter();
         });
