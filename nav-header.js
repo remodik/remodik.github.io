@@ -333,7 +333,8 @@
         if (path.includes('/12-3-2025/') ||
             path.includes('/12-10-2025/') ||
             path.includes('/12-24-2025/') ||
-            path.includes('/quality-systems/')) {
+            path.includes('/quality-systems/') ||
+            path.includes('/4-17-2026')) {
             return '..';
         }
         return '.';
@@ -349,7 +350,8 @@
         building: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="10" width="18" height="10" rx="1"/><path d="M6 10V6l6-3 6 3v4"/><path d="M8 14h.01M12 14h.01M16 14h.01"/></svg>',
         fileText: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/><path d="M9 13h6M9 17h6M9 9h2"/></svg>',
         wrench: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.2 2.2-2.6-.5-.5-2.6z"/></svg>',
-        chart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 14 3-3 3 2 4-5"/></svg>'
+        chart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 14 3-3 3 2 4-5"/></svg>',
+        bug: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3 3 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.9 3.8-4"/><path d="M20.97 5c-2 .2-3.53 1.9-3.53 3.8"/><path d="M22 13h-4"/><path d="M17.2 17c2.1.1 3.8 1.9 3.8 4"/></svg>'
     };
 
     function renderIcon(name) {
@@ -374,6 +376,12 @@
             icon: 'building',
             title: 'План коммуникаций',
             subject: 'Управление программными проектами'
+        },
+        {
+            url: '4-17-2026/main.html',
+            icon: 'bug',
+            title: 'Тестирование ПО',
+            subject: 'Обеспечение качества функционирования компьютерных систем'
         },
         {
             url: '12-24-2025/main.html',
