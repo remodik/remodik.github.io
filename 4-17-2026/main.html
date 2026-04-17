@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа: Тестирование ПО</title>
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --bg-table: #242424;
+            --bg-table-header: #2a2a2a;
+            --bg-table-hover: #333333;
+            --text-main: #e0e0e0;
+            --text-muted: #9ca3af;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #60a5fa;
+            --border-color: #333333;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background-color: var(--bg-card);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            border-bottom: 2px solid var(--accent-primary);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        h2 {
+            color: var(--accent-secondary);
+            margin-top: 40px;
+            font-size: 1.5rem;
+            border-left: 4px solid var(--accent-primary);
+            padding-left: 12px;
+        }
+
+        h3 {
+            color: #ffffff;
+            margin-top: 30px;
+        }
+
+        p {
+            color: var(--text-muted);
+        }
+
+        strong {
+            color: var(--text-main);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background-color: var(--bg-table);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--bg-table-header);
+            color: var(--accent-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            color: #d1d5db;
+            font-size: 0.95rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: var(--bg-table-hover);
+        }
+
+        .theory-box {
+            background-color: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-left: 4px solid var(--accent-primary);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+            color: #bfdbfe;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge.high { background-color: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+        .badge.medium { background-color: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid var(--warning); }
+        .badge.low { background-color: rgba(16, 185, 129, 0.2); color: var(--success); border: 1px solid var(--success); }
+
+        code {
+            background-color: #000000;
+            color: #fb7185;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Отчет по лабораторной работе<br>«Тестирование программного обеспечения»</h1>
+
+    <p><strong>Тема:</strong> Технологии разработки программного обеспечения: "Разработка через тестирование"</p>
+    <p><strong>Объект тестирования:</strong> Веб-приложение «Task Manager» (Менеджер задач).</p>
+
+    <h2>1. Поиск багов и изучение библиотек тестирования (TDD)</h2>
+    <p><strong>Задание:</strong> Найти произвольное приложение и задокументировать найденные баги. Изучить инструменты модульного тестирования.</p>
+
+    <div class="theory-box">
+        <strong>Теоретическая справка:</strong><br><br>
+        В рамках парадигмы TDD (Test-Driven Development) применяются инструменты автоматизации.
+        <b>NUnit / xUnit</b> — популярные среды модульного тестирования. Они позволяют описывать тесты с помощью атрибутов и проверять ожидаемые результаты через утверждения (Assert).
+        Разработка начинается с написания падающего теста, затем пишется минимальный код для его прохождения, после чего проводится рефакторинг.
+    </div>
+
+    <h3>Задокументированные баги (Bug Tracking):</h3>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Описание бага</th>
+            <th>Шаги воспроизведения</th>
+            <th>Ожидаемый / Фактический результат</th>
+            <th>Приоритет</th>
+        </tr>
+        <tr>
+            <td>BUG-01</td>
+            <td>Race condition при двойном клике на кнопку «Создать задачу»</td>
+            <td>1. Заполнить форму новой задачи.<br>2. Быстро дважды кликнуть ЛКМ по кнопке «Сохранить».</td>
+            <td><strong>Ожидается:</strong> Создается 1 задача, кнопка блокируется после первого клика.<br><strong style="color: var(--danger)">Факт:</strong> Создаются 2 дублирующие задачи.</td>
+            <td><span class="badge high">High</span></td>
+        </tr>
+        <tr>
+            <td>BUG-02</td>
+            <td>Уязвимость XSS (Cross-Site Scripting) в комментариях</td>
+            <td>1. Открыть задачу.<br>2. В поле комментария ввести: <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code><br>3. Сохранить комментарий.</td>
+            <td><strong>Ожидается:</strong> Теги экранируются, скрипт выводится как обычный текст.<br><strong style="color: var(--danger)">Факт:</strong> Скрипт исполняется в браузере при загрузке страницы.</td>
+            <td><span class="badge high">Critical</span></td>
+        </tr>
+        <tr>
+            <td>BUG-03</td>
+            <td>Смещение дедлайна при смене часового пояса</td>
+            <td>1. Создать задачу на 10:00 (МСК).<br>2. Сменить часовой пояс на устройстве на UTC+5.<br>3. Обновить страницу.</td>
+            <td><strong>Ожидается:</strong> Время отображается с учетом пояса (12:00) или фиксируется локально.<br><strong style="color: var(--warning)">Факт:</strong> Время задачи "съезжает" на 24 часа назад из-за ошибки парсинга ISO-строки на фронтенде.</td>
+            <td><span class="badge medium">Medium</span></td>
+        </tr>
+        <tr>
+            <td>BUG-04</td>
+            <td>Сбой пагинации при наличии более 1000 задач</td>
+            <td>1. Сгенерировать 1005 задач в проекте.<br>2. Перейти на 51-ю страницу пагинации (по 20 задач на лист).</td>
+            <td><strong>Ожидается:</strong> Отображаются задачи с 1001 по 1005.<br><strong style="color: var(--success)">Факт:</strong> Сервер возвращает HTTP 500 (Out of Memory exception) при SQL запросе с большим OFFSET.</td>
+            <td><span class="badge low">Low</span></td>
+        </tr>
+    </table>
+
+    <h2>2. Интеграционное тестирование</h2>
+    <p><strong>Выбранный метод:</strong> Нисходящее интеграционное тестирование (Top-down integration testing).</p>
+    <p><strong>Ход выполнения:</strong> Тестирование архитектуры приложения проводилось сверху вниз. Проверялся модуль пользовательского интерфейса (UI React) и его взаимодействие с REST API контроллерами. Поскольку база данных (PostgreSQL) изолировалась для чистоты тестов, вместо нее использовался <em>Mock-сервер</em>, который возвращал заранее заготовленные JSON-ответы. Это позволило проверить корректность маппинга данных и работу сетевого слоя приложения (Axios) при статусах 200 OK, 400 Bad Request и 500 Internal Server Error.</p>
+
+    <h2>3. Системное тестирование</h2>
+    <p>Системное тестирование проводилось в staging-окружении, максимально приближенном к production:</p>
+    <ul>
+        <li><strong>Функциональное тестирование:</strong> Проверка End-to-End (E2E) сценариев с помощью инструмента Cypress. Полный цикл: регистрация -> создание проекта -> добавление задачи -> назначение исполнителя -> смена статуса на "Done".</li>
+        <li><strong>Тестирование производительности (Load Testing):</strong> С помощью JMeter сгенерирована нагрузка в 500 одновременных пользователей. Выявлено, что среднее время ответа (Response Time) эндпоинта <code>/api/tasks/search</code> возрастает с 120мс до 4.5 секунд при поиске по частичному совпадению текста.</li>
+        <li><strong>UI/UX тестирование адаптивности:</strong> На устройствах с шириной экрана менее 375px (iPhone SE) боковое меню наезжало на контент, блокируя кнопку "Настройки".</li>
+    </ul>
+
+    <h2>4. Ручное тестирование, составление тестовых случаев</h2>
+    <h3>Тестовый случай (Test Case) #TC-014: Ограничение размера прикрепляемого файла</h3>
+    <table>
+        <tr>
+            <th>Параметр</th>
+            <th>Значение</th>
+        </tr>
+        <tr>
+            <td><strong>Цель:</strong></td>
+            <td>Убедиться, что система отклоняет файлы размером более 10 МБ и выводит корректное сообщение.</td>
+        </tr>
+        <tr>
+            <td><strong>Предусловия:</strong></td>
+            <td>Пользователь авторизован. Подготовлен тестовый файл <code>test_archive.zip</code> размером 12 МБ.</td>
+        </tr>
+        <tr>
+            <td><strong>Шаги:</strong></td>
+            <td>
+                1. Открыть любую существующую задачу.<br>
+                2. Нажать на иконку "Скрепка" (Прикрепить файл).<br>
+                3. Выбрать файл <code>test_archive.zip</code> (12 МБ) в диалоговом окне.<br>
+                4. Дождаться окончания загрузки.
+            </td>
+        </tr>
+        <tr>
+            <td><strong>Ожидаемый результат:</strong></td>
+            <td>Загрузка прерывается. Индикатор прогресса окрашивается в красный. Появляется всплывающее уведомление (Toast): "Ошибка: Размер файла превышает максимально допустимый (10 МБ)".</td>
+        </tr>
+        <tr>
+            <td><strong>Фактический результат:</strong></td>
+            <td>Система пытается загрузить файл, через 30 секунд падает с ошибкой 413 Payload Too Large. Уведомление для пользователя отсутствует (бесконечный лоадер).</td>
+        </tr>
+        <tr>
+            <td><strong>Статус:</strong></td>
+            <td><span class="badge high">FAILED (Провален)</span></td>
+        </tr>
+    </table>
+
+    <h2>5. Документация результатов тестирования</h2>
+
+    <h3>5.1. База дефектов (Формализованный Bug Report по TC-014)</h3>
+    <table>
+        <tr>
+            <th>Поле</th>
+            <th>Описание</th>
+        </tr>
+        <tr>
+            <td><strong>1. Компонент</strong></td>
+            <td>Frontend (Uploader) / Backend (File Controller)</td>
+        </tr>
+        <tr>
+            <td><strong>2. Версия продукта (Build)</strong></td>
+            <td>v.2.4.1-rc</td>
+        </tr>
+        <tr>
+            <td><strong>3. Описание дефекта</strong></td>
+            <td>Отсутствует client-side валидация размера загружаемого файла и некорректная обработка ошибки 413 от Nginx.</td>
+        </tr>
+        <tr>
+            <td><strong>4. Окружение (Environment)</strong></td>
+            <td>Google Chrome 120.0, Windows 11, Staging Server</td>
+        </tr>
+        <tr>
+            <td><strong>5. Уровень дефекта (Severity)</strong></td>
+            <td>Medium (Средняя) - ломает UX загрузки, но не крашит систему в целом.</td>
+        </tr>
+        <tr>
+            <td><strong>6. Приоритет (Priority)</strong></td>
+            <td>High (Высокий) - баг заметен всем пользователям при попытке загрузить большой отчет.</td>
+        </tr>
+    </table>
+</div>
+<script src="../nav-header.js"></script>
+</body>
+</html>
