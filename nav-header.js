@@ -334,7 +334,8 @@
             path.includes('/12-10-2025/') ||
             path.includes('/12-24-2025/') ||
             path.includes('/quality-systems/') ||
-            path.includes('/4-17-2026')) {
+            path.includes('/4-17-2026') ||
+            path.includes('/4-23-2026/')) {
             return '..';
         }
         return '.';
@@ -359,6 +360,12 @@
     }
 
     const navWorks = [
+        {
+            url: '4-23-2026/main.html',
+            icon: 'bug',
+            title: 'Отчёт о тестировании',
+            subject: 'Обеспечение качества функционирования компьютерных систем'
+        },
         {
             url: 'quality-systems/operator_manual_practice_work_2.html',
             icon: 'flask',

@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Отчёт о тестировании — Интернет-магазин v1.0.0</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0e0c;
+    --ink-2: #3a3830;
+    --ink-3: #7a7670;
+    --paper: #faf9f6;
+    --paper-2: #f2f0eb;
+    --paper-3: #e8e5de;
+    --accent: #1a3a5c;
+    --accent-light: #e8eef5;
+    --gold: #b8923a;
+    --gold-light: #f7f0e3;
+    --red: #8b2020;
+    --red-light: #f5eaea;
+    --amber: #7a5a10;
+    --amber-light: #f5f0e3;
+    --blue: #1a3a5c;
+    --blue-light: #e8eef5;
+    --green: #1a4a2e;
+    --green-light: #e8f2ec;
+    --border: rgba(15,14,12,0.12);
+    --border-strong: rgba(15,14,12,0.22);
+    --shadow: 0 1px 3px rgba(15,14,12,0.08), 0 4px 16px rgba(15,14,12,0.04);
+    --shadow-card: 0 2px 8px rgba(15,14,12,0.06), 0 8px 32px rgba(15,14,12,0.04);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .site-header {
+    background: var(--accent);
+    color: #fff;
+    padding: 0 3rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .site-header .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    letter-spacing: 0.01em;
+    opacity: 0.95;
+    white-space: nowrap;
+  }
+
+  .header-meta {
+    font-size: 12px;
+    opacity: 0.6;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .header-badge {
+    font-size: 11px;
+    background: rgba(255,255,255,0.12);
+    padding: 4px 12px;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.18);
+  }
+
+  .hero {
+    background: var(--accent);
+    color: #fff;
+    padding: 5rem 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 40%;
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.025);
+    pointer-events: none;
+  }
+
+  .hero-inner { max-width: 900px; margin: 0 auto; position: relative; }
+  .hero-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-label::before {
+    content: '';
+    display: inline-block;
+    width: 28px; height: 1px;
+    background: currentColor;
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    max-width: 600px;
+  }
+
+  .hero-sub {
+    font-size: 15px;
+    opacity: 0.65;
+    max-width: 500px;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-stat-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.2rem;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .hero-stat-label {
+    font-size: 12px;
+    opacity: 0.5;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .hero-divider {
+    width: 1px;
+    background: rgba(255,255,255,0.15);
+    align-self: stretch;
+    margin: 0 0.5rem;
+  }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 0 3rem; }
+
+  .section-nav {
+    background: var(--paper);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 60px;
+    z-index: 90;
+  }
+
+  .section-nav-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 3rem;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .section-nav-inner::-webkit-scrollbar { display: none; }
+  .nav-link {
+    font-size: 13px;
+    color: var(--ink-3);
+    text-decoration: none;
+    padding: 14px 16px;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    letter-spacing: 0.01em;
+  }
+
+  .nav-link:hover { color: var(--ink); border-bottom-color: var(--border-strong); }
+
+
+  .section {
+    padding: 3.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section:last-child { border-bottom: none; }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .section-number {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    min-width: 28px;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+  }
+
+  .meta-card {
+    background: var(--paper-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.1rem;
+  }
+
+  .meta-label {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 5px;
+  }
+
+  .meta-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .badge-high { background: var(--green-light); color: var(--green); }
+  .badge-high::before { background: #2d8a52; }
+  .badge-medium  { background: var(--amber-light); color: var(--amber); }
+  .badge-medium::before { background: #c4870a; }
+  .badge-critical{ background: var(--red-light); color: var(--red); }
+  .badge-critical::before{ background: var(--red); }
+  .badge-major { background: var(--amber-light); color: var(--amber); }
+  .badge-major::before{ background: #c4870a; }
+  .badge-minor { background: var(--blue-light); color: var(--blue); }
+  .badge-minor::before { background: var(--blue); }
+
+  .quality-verdict {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    background: var(--gold-light);
+    border: 1px solid rgba(184,146,58,0.25);
+    border-radius: 10px;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .quality-icon {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 18px;
+  }
+  .quality-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+  }
+  .quality-desc { font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  thead th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-strong);
+    white-space: nowrap;
+  }
+  tbody td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-2);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--paper-2); }
+
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .chart-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+  }
+  .chart-label {
+    font-size: 11px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+
+  .rec-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .rec-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+  }
+  .rec-index {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--ink-3);
+    min-width: 22px;
+    line-height: 1.4;
+  }
+  .rec-text { font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+  .rec-text code {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    background: var(--paper-3);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--ink);
+  }
+
+  .team-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1rem 1.4rem;
+    max-width: 420px;
+  }
+  .avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 15px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .team-name { font-weight: 500; font-size: 14px; }
+  .team-meta { font-size: 12px; color: var(--ink-3); }
+  .team-period {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--ink-3);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .env-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .env-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background: var(--paper-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+  }
+  .env-key { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+  .env-val { font-size: 14px; font-weight: 500; color: var(--ink); }
+  .env-val a { color: var(--accent); text-decoration: none; }
+  .env-val a:hover { text-decoration: underline; }
+
+  .top5-list { display: flex; flex-direction: column; gap: 0; }
+  .top5-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .top5-item:last-child { border-bottom: none; }
+  .top5-rank {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--paper-3);
+    min-width: 36px;
+    line-height: 1;
+    padding-top: 2px;
+    font-style: italic;
+  }
+  .top5-title { font-weight: 500; font-size: 14px; margin-bottom: 3px; }
+  .top5-desc { font-size: 13px; color: var(--ink-3); line-height: 1.5; }
+
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.4);
+    padding: 2rem 3rem;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  footer span { color: rgba(255,255,255,0.65); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-inner > * { animation: fadeUp 0.6s ease both; }
+  .hero-inner > *:nth-child(1) { animation-delay: 0.05s; }
+  .hero-inner > *:nth-child(2) { animation-delay: 0.15s; }
+  .hero-inner > *:nth-child(3) { animation-delay: 0.22s; }
+  .hero-inner > *:nth-child(4) { animation-delay: 0.3s; }
+
+  @media (max-width: 680px) {
+    .site-header { padding: 0 1.25rem; }
+    .container { padding: 0 1.25rem; }
+    .hero { padding: 3rem 1.25rem 2.5rem; }
+    .section-nav-inner { padding: 0 1.25rem; }
+    .charts-grid, .env-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 1.5rem; }
+    footer { padding: 1.5rem 1.25rem; }
+    .quality-verdict { flex-direction: column; gap: 1rem; }
+  }
+
+  @media print {
+    .site-header, .section-nav { position: static; }
+    .section { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">QA Report</div>
+  <span class="header-meta">Лабораторная работа №3,4</span>
+  <span class="header-badge">v1.0.0 · 23.04.2026</span>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">Итоговый отчёт о тестировании</div>
+    <h1>Интернет-магазин<br><em>v1.0.0</em></h1>
+    <p class="hero-sub">Acceptance Test · New Feature Test · Анализ GUI-дефектов и рекомендации по улучшению качества продукта</p>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-value">8</div>
+        <div class="hero-stat-label">Дефектов найдено</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div>
+        <div class="hero-stat-value">5</div>
+        <div class="hero-stat-label">Модулей протестировано</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div>
+        <div class="hero-stat-value">3</div>
+        <div class="hero-stat-label">Дня тестирования</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div>
+        <div class="hero-stat-value" style="color: #f0c97a;">Medium</div>
+        <div class="hero-stat-label">Оценка качества</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<nav class="section-nav" aria-label="Разделы отчёта">
+  <div class="section-nav-inner">
+    <a href="#general" class="nav-link">Общая информация</a>
+    <a href="#team" class="nav-link">Команда</a>
+    <a href="#environment" class="nav-link">Окружение</a>
+    <a href="#quality" class="nav-link">Оценка качества</a>
+    <a href="#charts" class="nav-link">Графики</a>
+    <a href="#modules" class="nav-link">Анализ по модулям</a>
+    <a href="#top5" class="nav-link">ТОП-5 дефектов</a>
+    <a href="#recs" class="nav-link">Рекомендации</a>
+  </div>
+</nav>
+
+<main>
+
+  <section id="general" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-number">01</span>
+        <h2 class="section-title">Общая информация</h2>
+      </div>
+      <div class="card-grid">
+        <div class="meta-card"><div class="meta-label">Название проекта</div><div class="meta-value">Интернет-магазин</div></div>
+        <div class="meta-card"><div class="meta-label">Номер сборки</div><div class="meta-value">v1.0.0</div></div>
+        <div class="meta-card"><div class="meta-label">Вид тестирования</div><div class="meta-value">Acceptance Test</div></div>
+        <div class="meta-card"><div class="meta-label">Тестовые активности</div><div class="meta-value">New Feature Test</div></div>
+        <div class="meta-card"><div class="meta-label">Обнаружено дефектов</div><div class="meta-value">8 (все GUI)</div></div>
+        <div class="meta-card"><div class="meta-label">Документация</div><div class="meta-value">Test Cases</div></div>
+        <div class="meta-card"><div class="meta-label">Тестируемые модули</div><div class="meta-value">Все модули приложения</div></div>
+        <div class="meta-card"><div class="meta-label">Дата отчёта</div><div class="meta-value">23 апреля 2026</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="team" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-number">02</span>
+        <h2 class="section-title">Команда и сроки тестирования</h2>
+      </div>
+      <div class="team-card">
+        <div class="avatar">ИА</div>
+        <div>
+          <div class="team-name">Иванова Анастасия Сергеевна</div>
+          <div class="team-meta">Тестировщик ПО · ivanova@test.ru</div>
+        </div>
+        <div class="team-period">20.04 – 23.04.2026<br><span style="color:var(--ink-3);font-size:11px;">3 рабочих дня</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="environment" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-number">03</span>
+        <h2 class="section-title">Тестовое окружение</h2>
+      </div>
+      <div class="env-grid">
+        <div class="env-row"><span class="env-key">Ссылка на приложение</span><span class="env-val"><a href="#">https://horusplay.ru/</a></span></div>
+        <div class="env-row"><span class="env-key">Браузер</span><span class="env-val">Google Chrome 124.0</span></div>
+        <div class="env-row"><span class="env-key">Операционная система</span><span class="env-val">Windows 11 Home 23H2</span></div>
+        <div class="env-row"><span class="env-key">Разрешение экрана</span><span class="env-val">1920 × 1080 px</span></div>
+        <div class="env-row"><span class="env-key">Мобильное устройство</span><span class="env-val">iPhone 13 · iOS 17 · Safari</span></div>
+        <div class="env-row"><span class="env-key">Кросс-браузерная проверка</span><span class="env-val">Firefox 124 (Windows)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="quality" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-number">04</span>
+        <h2 class="section-title">Общая оценка качества</h2>
+      </div>
+      <div class="quality-verdict">
+        <div class="quality-icon">◑</div>
+        <div>
+          <div class="quality-title">Среднее качество (Medium)</div>
+          <div class="quality-desc">Основной функционал приложения работоспособен: добавление товаров в корзину, оформление заказа и авторизация выполняются без ошибок. Функциональных дефектов не выявлено. Вместе с тем обнаружены 8 GUI-дефектов, ухудшающих восприятие продукта: часть из них воспроизводится на мобильных устройствах и в Firefox, что критично для широкой аудитории интернет-магазина. До релиза рекомендуется устранить дефекты приоритета Critical и Major.</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:0;">
+        <p style="font-size:14px; color:var(--ink-2); line-height:1.7;">
+          <strong style="color:var(--ink); font-weight:500;">Обоснование:</strong> оценка «Medium» обусловлена отсутствием блокирующих функциональных дефектов при наличии 1 критического и 3 серьёзных (Major) GUI-дефектов. Критический дефект — выход текста за карточку товара — напрямую мешает совершить покупку (кнопка «В корзину» становится частично недоступной). Качество данной сборки не сравнивается с предыдущей, поскольку это первая итерация. Наиболее нестабильные части: модуль каталога товаров и страница корзины.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="charts" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-number">05</span>
+        <h2 class="section-title">Графическое представление результатов</h2>
+      </div>
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-label">GUI vs функциональные дефекты</div>
+          <canvas id="pieChart" width="280" height="200"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-label">Распределение по критичности</div>
+          <canvas id="barChart" width="280" height="200"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-label">Распределение дефектов по модулям</div>
+        <canvas id="moduleChart" width="860" height="160"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <section id="modules" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-number">06</span>
+        <h2 class="section-title">Детализированный анализ качества по модулям</h2>
+      </div>
+      <div class="card" style="padding:0; overflow:hidden;">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Модуль</th>
+                <th>Дефектов</th>
+                <th>Уровень</th>
+                <th>Аргументация</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong style="font-weight:500;">Главная страница</strong></td>
+                <td style="text-align:center;">1</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Незначительный сдвиг баннера на разрешении 1280px. Не влияет на конверсию, легко устраняется.</td>
+              </tr>
+              <tr>
+                <td><strong style="font-weight:500;">Каталог товаров</strong></td>
+                <td style="text-align:center;">3</td>
+                <td><span class="badge badge-medium">Medium</span></td>
+                <td>Выход текста за карточки блокирует кнопку «В корзину»; пагинация сломана на мобильных &lt;480px; отсутствует hover на карточках товаров.</td>
+              </tr>
+              <tr>
+                <td><strong style="font-weight:500;">Корзина</strong></td>
+                <td style="text-align:center;">2</td>
+                <td><span class="badge badge-medium">Medium</span></td>
+                <td>Иконка удаления перекрывает цену (z-index); кнопка «Оформить» не реагирует на hover — снижает уверенность пользователя.</td>
+              </tr>
+              <tr>
+                <td><strong style="font-weight:500;">Оформление заказа</strong></td>
+                <td style="text-align:center;">1</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Поле «Телефон» выходит за контейнер в Firefox 124. Воспроизводится только в одном браузере.</td>
+              </tr>
+              <tr>
+                <td><strong style="font-weight:500;">Личный кабинет</strong></td>
+                <td style="text-align:center;">1</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Аватар не масштабируется при загрузке изображения большого размера — косметический дефект.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="top5" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-number">07</span>
+        <h2 class="section-title">ТОП-5 наиболее критичных дефектов</h2>
+      </div>
+      <div class="card" style="padding: 0.5rem 1.5rem;">
+        <div class="top5-list">
+          <div class="top5-item">
+            <div class="top5-rank">01</div>
+            <div>
+              <div class="top5-title">Текст названия товара выходит за карточку <span class="badge badge-critical" style="margin-left:6px;">Critical</span></div>
+              <div class="top5-desc">Каталог товаров. При заголовке длиннее ~40 символов текст перекрывает кнопку «В корзину», делая покупку невозможной без прокрутки.</div>
+            </div>
+          </div>
+          <div class="top5-item">
+            <div class="top5-rank">02</div>
+            <div>
+              <div class="top5-title">Пагинация каталога не отображается на мобильных <span class="badge badge-major" style="margin-left:6px;">Major</span></div>
+              <div class="top5-desc">Каталог товаров. При ширине viewport &lt;480px кнопки страниц пропадают. Пользователь не может переключаться между страницами.</div>
+            </div>
+          </div>
+          <div class="top5-item">
+            <div class="top5-rank">03</div>
+            <div>
+              <div class="top5-title">Иконка удаления перекрывает цену в корзине <span class="badge badge-major" style="margin-left:6px;">Major</span></div>
+              <div class="top5-desc">Корзина. Завышенный z-index иконки ×  перекрывает блок с ценой, итоговая сумма частично скрыта — пользователь не видит стоимость.</div>
+            </div>
+          </div>
+          <div class="top5-item">
+            <div class="top5-rank">04</div>
+            <div>
+              <div class="top5-title">Поле «Телефон» выходит за рамку формы в Firefox <span class="badge badge-major" style="margin-left:6px;">Major</span></div>
+              <div class="top5-desc">Оформление заказа, Firefox 124. Поле input[type=tel] расширяется за контейнер формы. Нарушает восприятие страницы оплаты.</div>
+            </div>
+          </div>
+          <div class="top5-item">
+            <div class="top5-rank">05</div>
+            <div>
+              <div class="top5-title">Нет hover-эффекта на кнопке «Оформить заказ» <span class="badge badge-minor" style="margin-left:6px;">Minor</span></div>
+              <div class="top5-desc">Корзина. Кнопка CTA не реагирует на наведение: пользователь не получает визуального подтверждения интерактивности.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="recs" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-number">08</span>
+        <h2 class="section-title">Рекомендации</h2>
+      </div>
+      <ul class="rec-list">
+        <li class="rec-item">
+          <span class="rec-index">1</span>
+          <span class="rec-text">Добавить в стили карточек каталога <code>overflow: hidden</code> и <code>text-overflow: ellipsis</code> — устранит выход заголовков товаров за границы блока. Приоритет: высокий, блокирует покупку.</span>
+        </li>
+        <li class="rec-item">
+          <span class="rec-index">2</span>
+          <span class="rec-text">Адаптировать блок пагинации для мобильных (breakpoint ≤ 480px): использовать flex-wrap или сокращённый формат (« &lt; 1 … 5 &gt; »). Охватить в мобильном регрессионном прогоне.</span>
+        </li>
+        <li class="rec-item">
+          <span class="rec-index">3</span>
+          <span class="rec-text">Исправить z-index иконки удаления в корзине. Рекомендуется провести аудит z-index по всему приложению и зафиксировать уровни в токенах дизайн-системы.</span>
+        </li>
+        <li class="rec-item">
+          <span class="rec-index">4</span>
+          <span class="rec-text">Включить Firefox в обязательный чек-лист кросс-браузерного тестирования форм перед каждым релизом. Проверить поля ввода с нестандартными типами (<code>tel</code>, <code>date</code>, <code>number</code>) во всех поддерживаемых браузерах.</span>
+        </li>
+        <li class="rec-item">
+          <span class="rec-index">5</span>
+          <span class="rec-text">Добавить <code>:hover</code> и <code>:focus-visible</code> стили ко всем интерактивным элементам согласно гайдлайнам WCAG 2.1 AA. Особое внимание — основным CTA кнопкам («В корзину», «Оформить заказ»).</span>
+        </li>
+        <li class="rec-item">
+          <span class="rec-index">6</span>
+          <span class="rec-text">Провести тестирование на реальных устройствах (iOS Safari, Android Chrome) перед следующей сборкой. Включить в pipeline автоматическую проверку адаптивности через Playwright или Cypress на ключевых breakpoint'ах.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+<script src="../nav-header.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const ACCENT = '#1a3a5c';
+const RED = '#c0392b';
+const AMBER = '#d68910';
+const BLUE = '#2980b9';
+const GRAY = '#bbb5ac';
+const TEXT = '#7a7670';
+const GRID = 'rgba(15,14,12,0.07)';
+
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+
+new Chart(document.getElementById('pieChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['GUI дефекты (100%)', 'Функциональные (0%)'],
+    datasets: [{
+      data: [100, 0.001],
+      backgroundColor: [ACCENT, GRAY],
+      borderWidth: 0,
+      hoverOffset: 6
+    }]
+  },
+  options: {
+    responsive: false,
+    animation: { animateRotate: true, duration: 900, easing: 'easeOutQuart' },
+    plugins: {
+      legend: { position: 'bottom', labels: { color: TEXT, font: { size: 12 }, boxWidth: 12, padding: 14 } },
+      tooltip: { callbacks: { label: ctx => ' ' + ctx.label } }
+    },
+    cutout: '65%'
+  }
+});
+
+new Chart(document.getElementById('barChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Critical', 'Major', 'Minor'],
+    datasets: [{
+      data: [1, 3, 4],
+      backgroundColor: [RED, AMBER, BLUE],
+      borderRadius: 5,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: false,
+    animation: { duration: 800, easing: 'easeOutQuart' },
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: TEXT, font: { size: 12 } }, grid: { display: false }, border: { display: false } },
+      y: { ticks: { color: TEXT, font: { size: 12 }, stepSize: 1 }, grid: { color: GRID }, border: { display: false }, beginAtZero: true }
+    }
+  }
+});
+
+new Chart(document.getElementById('moduleChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Главная страница', 'Каталог товаров', 'Корзина', 'Оформление заказа', 'Личный кабинет'],
+    datasets: [{
+      data: [1, 3, 2, 1, 1],
+      backgroundColor: ACCENT,
+      borderRadius: 5,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: false,
+    indexAxis: 'y',
+    animation: { duration: 900, easing: 'easeOutQuart' },
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: TEXT, font: { size: 12 }, stepSize: 1 }, grid: { color: GRID }, border: { display: false }, beginAtZero: true },
+      y: { ticks: { color: TEXT, font: { size: 12 } }, grid: { display: false }, border: { display: false } }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
